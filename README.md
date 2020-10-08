@@ -1,5 +1,4 @@
-# PL2020
-Projet de TER pour remplacer l'atelier flexible.
+# TER atelier flexible ou cellule flexible
 
 Petit guide pour lancer le projet sur votre machine : (Ubuntu 16, ROS Kinetic)
 
@@ -14,7 +13,7 @@ Petit guide pour lancer le projet sur votre machine : (Ubuntu 16, ROS Kinetic)
 - 2) Cloner la branche master de ce repository :
     (si git n'est pas installé, vous pouvez toujours télécharger le projet en zip et en extraire le code)
     
-          git clone https://github.com/PL2020/PL2020
+          git clone https://gitlab.enseeiht.fr/sandra/TERcelluleflexible.git
         
           
 - 3) Compiler les packages ros en se plaçant dans ros_ws et en effectuant :
@@ -31,8 +30,7 @@ Petit guide pour lancer le projet sur votre machine : (Ubuntu 16, ROS Kinetic)
           
 En résumé (pour copier/coller dans un terminal):
 
-          git clone https://github.com/PL2020/PL2020
-          cd PL2020
+          git clone https://gitlab.enseeiht.fr/sandra/TERcelluleflexible.git
           cd ros_ws
           catkin_make
           source devel/setup.bash
