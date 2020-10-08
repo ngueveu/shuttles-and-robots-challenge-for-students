@@ -168,7 +168,7 @@ int main(int argc, char **argv)
 				M[20]--;
 				robot.DeplacerPiece(ROBOT_2,1,2);
 				robot.DeplacerPiece(ROBOT_4,1,3);
-				cmd.SortirErgot(1);
+				// cmd.SortirErgot(1); SUN to delete
 				M[30]++;
 				display();
 			}
@@ -226,7 +226,7 @@ int main(int argc, char **argv)
 				M[80]--;
 				robot.DeplacerPiece(ROBOT_3,1,4);
 				robot.DeplacerPiece(ROBOT_1,3,4);
-				cmd.SortirErgot(8);
+				// cmd.SortirErgot(8); SUN to delete
 				M[90]++;
 				display();
 			}
