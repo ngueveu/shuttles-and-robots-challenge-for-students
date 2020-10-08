@@ -89,6 +89,34 @@ int main(int argc, char **argv)
 	// | Creation des Navettes | //
 	///////////////////////////////
 
+    vector<int> listofnavettes{1};
+    // vector<int> listofnavettes;
+    // vector<int> listofnavettes{1, 2};
+    // vector<int> listofnavettes{0, 1, 2, 3, 4, 5, 6};
+    
+    while(listofnavettes.size()<1||listofnavettes.size()>7)
+    {
+        int nbNavettes=1;
+        cout << "Combien voulez vous de navettes ? [1..6]" << endl;
+        cin >> nbNavettes;
+        if(cin.fail())
+        {
+            cout << endl << " [Erreur mauvais choix ..]" << endl;
+            cin.clear();
+            cin.ignore(256,'\n');
+        }
+        else
+        {
+            for (int i=0; i < nbNavettes; i++)
+            {
+                listofnavettes.push_back(i+1); // SUN avoid navet 0 because its initial position is different
+            }
+        }
+    }
+    
+    
+    
+    /*SUN
 	int nbNavettes=1;//Mettre 0 pour demander a l'utilisateur
 	while(nbNavettes<1||nbNavettes>6)
 	{
@@ -101,9 +129,20 @@ int main(int argc, char **argv)
 			cin.ignore(256,'\n');
 		}
 	}
+    
 	std_msgs::Int32 msg_nbNavettes;
 	msg_nbNavettes.data=nbNavettes;
 	pub_spawnShuttles.publish(msg_nbNavettes);
+    */
+    
+    
+    for (int i=0; i < listofnavettes.size(); i++)
+    {
+        std_msgs::Int32 msg_nbNavettes;
+        msg_nbNavettes.data=listofnavettes[i];
+        pub_spawnShuttles.publish(msg_nbNavettes);
+    }
+    
 
 	cmd.Initialisation();
 	for(int i=0;i<PlaceFin;i++) M[i]=0;
