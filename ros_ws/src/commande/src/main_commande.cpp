@@ -104,7 +104,6 @@ int main(int argc, char **argv)
 	std_msgs::Int32 msg_nbNavettes;
 	msg_nbNavettes.data=nbNavettes;
 	pub_spawnShuttles.publish(msg_nbNavettes);
-	int code_produit_a_ajouter=-1;
 
 	cmd.Initialisation();
 	for(int i=0;i<PlaceFin;i++) M[i]=0;

@@ -482,7 +482,7 @@ void RobotsInterface::AjouterProduit(int poste, int produit)
 			msg0.num_produit = produit*10+4;
 			pubProductAdd.publish(msg0);
 
-			produit_a_ajouter.push_back(poste*10+produit);
+			// produit_a_ajouter.push_back(poste*10+produit); SUN verif si peut etre supprimee sans bug
 		}
 		else
 			cout <<  BOLDMAGENTA << "Le produit doit etre compris entre 1 et 6." << RESET << endl;
@@ -497,12 +497,14 @@ bool RobotsInterface::ProductAddPushBack(commande_locale::SrvAddProductPushBack:
 {
 	int poste=req.poste;
 	int produit=req.produit;
-	produit_a_ajouter.push_back(poste*10+produit);
+	// produit_a_ajouter.push_back(poste*10+produit); SUN verif si peut etre supprimee sans bug
 	return true;
 }
 
+/*
 int RobotsInterface::AjoutProduitEnAttente()
 {
+    // SUN procedure a supprimer car "produit_a_ajouter" n'est jamais utilisé
 	int retour=-1;
 	if(produit_a_ajouter.size()>0)
 	{
@@ -511,3 +513,4 @@ int RobotsInterface::AjoutProduitEnAttente()
 	}
 	return retour;
 }
+*/

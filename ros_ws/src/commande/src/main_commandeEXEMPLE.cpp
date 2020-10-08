@@ -126,13 +126,14 @@ int main(int argc, char **argv)
 
 			// Code_produit : dizaine=poste, unité=produit
 			// Ex : code=24 => Produit 4 sur poste 2
-			code_produit_a_ajouter=robot.AjoutProduitEnAttente();
+			/*code_produit_a_ajouter=robot.AjoutProduitEnAttente();
 			while(code_produit_a_ajouter!=-1) // Tant qu'il reste des produits à ajouter
 			{
 				M[500+code_produit_a_ajouter]++;
 				code_produit_a_ajouter=robot.AjoutProduitEnAttente();
 				display();
 			}
+            */
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////// | DEBUT PETRI | ////////////////////////////////////////
@@ -143,7 +144,9 @@ int main(int argc, char **argv)
 			{
 				M[0]--;
 				robot.AjouterProduit(POSTE_3,2); // ajout produit n°2 (donc B) sur poste 3
+                M[532]++;
 				robot.AjouterProduit(POSTE_7,6);
+                M[576]++;
 				cmd.Stop_PS(10);
 				M[10]++;
 				display();

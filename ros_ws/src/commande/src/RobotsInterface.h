@@ -80,7 +80,7 @@ private:
 	int robotTask[4][2];
 	int robotMacroDeplacement[4];
 
-	std::vector<int> produit_a_ajouter;
+	// std::vector<int> produit_a_ajouter; SUN todelete
 
 	robots::FaireTacheMsg tache_msg;
 
@@ -114,7 +114,7 @@ public:
 	int FinDeplacerPiece(int num_robot);
 	void Evacuer();
 	void AjouterProduit(int poste, int produit);
-	int AjoutProduitEnAttente();
+	// int AjoutProduitEnAttente(); SUN to delete
 
 	bool ProductAddPushBack(commande_locale::SrvAddProductPushBack::Request& req, commande_locale::SrvAddProductPushBack::Response& rep);
 };
