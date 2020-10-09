@@ -1,3 +1,9 @@
+import sys
+
+if (len(sys.argv) <= 2):
+    sys.exit("Vous avec oublié de spécifier en argument le nom du fichier ProdConfig et le nom du fichier log")
+    
+
 # !! Ce programme doit être lancé avec python 3: python3 checker.py
 # !!! D'abord lire le fichier .config pour comprenre la synthaxe utilisé pour définir la production de chaque produit !!!
 
@@ -41,7 +47,8 @@ erreur_config = 0 # Dit si il y a une erreur de déclaration dans le fichier .co
 
 
 # Ouvrir le fichier .config qui contient le cahier des charges (voir ce fichier pour comprendre la synthaxe)
-mon_config = open("ProductConfiguration.config","r")
+mon_config = open(sys.argv[1],"r")
+# mon_config = open("ProductConfiguration.config","r")
 
 # Dans le fichier .config, on va directeemnt à la ligne où sont définit les produits
 while(1):
@@ -229,7 +236,8 @@ for i in range(6):
     temps_log.append([0, 0, 0, 0, 0, 0, 0, 0]) # Initialisation de la matrice temps_log 6x8 ( car 6 produits et 8 postes (ou taches) )
 
 # Ouvrir fichier log, enregistres ses lignes, puis referme fichier
-Log_file = open("log.txt","r")
+Log_file = open(sys.argv[2],"r")
+#Log_file = open("log.txt","r")
 Log=Log_file.readlines()
 Log_file.close()
 

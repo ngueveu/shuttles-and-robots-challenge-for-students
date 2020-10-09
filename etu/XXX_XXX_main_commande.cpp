@@ -53,9 +53,9 @@ void ShutdownCallback(const std_msgs::Byte::ConstPtr& msg)
 
 int main(int argc, char **argv)
 {
-	////////////////////////////////////////////////////
+    /* *************************************************
 	///////////  | Debut du Petri plus bas |  //////////
-	////////////////////////////////////////////////////
+     ************************************************* */
 
 
 	ros::init(argc, argv, "commande");
@@ -85,16 +85,16 @@ int main(int argc, char **argv)
 		loop_rate.sleep();
 	}
 
-	///////////////////////////////
+    /* *************************************************
 	// | Creation des Navettes | //
-	///////////////////////////////
+     ************************************************* */
 
-    vector<int> listofnavettes{1};
+    vector<int> listeNavettes{1};
     // vector<int> listofnavettes;
-    // vector<int> listofnavettes{1, 2};
+    // vector<int> listofnavettes{1, 4};
     // vector<int> listofnavettes{0, 1, 2, 3, 4, 5, 6};
     
-    while(listofnavettes.size()<1||listofnavettes.size()>7)
+    while(listeNavettes.size()<1||listeNavettes.size()>7)
     {
         int nbNavettes=1;
         cout << "Combien voulez vous de navettes ? [1..6]" << endl;
@@ -109,7 +109,7 @@ int main(int argc, char **argv)
         {
             for (int i=0; i < nbNavettes; i++)
             {
-                listofnavettes.push_back(i+1); // SUN avoid navet 0 because its initial position is different
+                listeNavettes.push_back(i+1); // SUN avoid navet 0 because its initial position is different
             }
         }
     }
@@ -136,10 +136,10 @@ int main(int argc, char **argv)
     */
     
     
-    for (int i=0; i < listofnavettes.size(); i++)
+    for (int i=0; i < listeNavettes.size(); i++)
     {
         std_msgs::Int32 msg_nbNavettes;
-        msg_nbNavettes.data=listofnavettes[i];
+        msg_nbNavettes.data=listeNavettes[i];
         pub_spawnShuttles.publish(msg_nbNavettes);
     }
     
@@ -147,11 +147,20 @@ int main(int argc, char **argv)
 	cmd.Initialisation();
 	for(int i=0;i<PlaceFin;i++) M[i]=0;
 
-	////////////////////////////////////
+    /* *************************************************
 	////// | MARQUAGE INITIAL | ////////
-	////////////////////////////////////
+    ************************************************* */
 	M[0]=1;
 	display();
+    
+    ////////////////////////////////////////////////////////////////////
+    /////////////// | DEBUT INIT ETU | //////////////
+    ////////////////////////////////////////////////////////////////////
+    
+    
+    ////////////////////////////////////////////////////////////////////
+    ////////////////  |  FIN INIT ETU  |   //////////////
+    ////////////////////////////////////////////////////////////////////
 
 	while (ros::ok())
 	{
@@ -159,8 +168,7 @@ int main(int argc, char **argv)
 		if(cmd.getPlay()==true)
 		{
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-            /////////////////////////////////////// | DEBUT PETRI | ////////////////////////////////////////
-                        ///////////////////
+            //////////////////////////////////////// | DEBUT PETRI  ETU | /////////////////////////////////////////
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
@@ -173,9 +181,9 @@ int main(int argc, char **argv)
             
             
             
-            ///////////////////////////////
-			// | Place de fin de Petri | //
-			///////////////////////////////
+            ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            //////////////////////////////////// | Place de fin de Petri ETU | //////////////////////////////////////
+            ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 			if(M[PlaceFin])
 			{
