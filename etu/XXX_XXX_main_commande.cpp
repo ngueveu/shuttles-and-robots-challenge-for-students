@@ -89,6 +89,7 @@ int main(int argc, char **argv)
 	// | Creation des Navettes | //
      ************************************************* */
 
+    /* SUN
     vector<int> listeNavettes{1};
     // vector<int> listofnavettes;
     // vector<int> listofnavettes{1, 4};
@@ -113,10 +114,14 @@ int main(int argc, char **argv)
             }
         }
     }
+     for (int i=0; i < listeNavettes.size(); i++)
+     {
+         std_msgs::Int32 msg_nbNavettes;
+         msg_nbNavettes.data=listeNavettes[i];
+         pub_spawnShuttles.publish(msg_nbNavettes);
+     }
+    */
     
-    
-    
-    /*SUN
 	int nbNavettes=1;//Mettre 0 pour demander a l'utilisateur
 	while(nbNavettes<1||nbNavettes>6)
 	{
@@ -133,15 +138,6 @@ int main(int argc, char **argv)
 	std_msgs::Int32 msg_nbNavettes;
 	msg_nbNavettes.data=nbNavettes;
 	pub_spawnShuttles.publish(msg_nbNavettes);
-    */
-    
-    
-    for (int i=0; i < listeNavettes.size(); i++)
-    {
-        std_msgs::Int32 msg_nbNavettes;
-        msg_nbNavettes.data=listeNavettes[i];
-        pub_spawnShuttles.publish(msg_nbNavettes);
-    }
     
 
 	cmd.Initialisation();

@@ -36,13 +36,11 @@ bool AddProduct(commande_locale::SrvAddProduct::Request &req, commande_locale::S
 
 void SpawnShuttlesCallback(const std_msgs::Int32::ConstPtr& msg)
 {
-    VREPController.loadModelInit(msg->data); // SUN
-    /*
+    // VREPController.loadModelInit(msg->data); // SUN
 	for(int i=0; i<msg->data; i++) // i<nbShuttles
 	{
 		VREPController.loadModelInit(i);
 	}
-    */
 }
 
 void ShutdownCallback(const std_msgs::Byte::ConstPtr& msg)
