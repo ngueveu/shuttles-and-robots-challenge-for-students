@@ -18,6 +18,8 @@
 #include <ros/ros.h>
 #include <unistd.h>
 
+#include "prodconfig/productconfig.h"
+
 using namespace std;
 
 #define RESET   "\033[0m"
@@ -120,20 +122,6 @@ int main(int argc, char **argv)
 		// Seulement si la simulation est en cours
 		if(cmd.getPlay()==true)
 		{
-			/////////////////////////////////
-			/// | GESTION AJOUT PRODUIT | ///
-			/////////////////////////////////
-
-			// Code_produit : dizaine=poste, unité=produit
-			// Ex : code=24 => Produit 4 sur poste 2
-			/*code_produit_a_ajouter=robot.AjoutProduitEnAttente();
-			while(code_produit_a_ajouter!=-1) // Tant qu'il reste des produits à ajouter
-			{
-				M[500+code_produit_a_ajouter]++;
-				code_produit_a_ajouter=robot.AjoutProduitEnAttente();
-				display();
-			}
-            */
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////// | DEBUT PETRI | ////////////////////////////////////////
