@@ -8,13 +8,18 @@ La toute première fois que vous installez le programme, il se peut que les fich
 > chmod +x scriptValidation.txt
 
 
-Pour la suite, pour compiler et exécuter il suffit de faire:
 
-> ./scriptCompileandRun XXX_XXX
+Pour la suite, pour compiler et exécuter en considérant les données du fichier data1_prodconfig.h contenu dans le dossier dataprodconfig, il suffit de faire:
+
+> ./scriptCompileandRun XXX_XXX data1
 
 
-Après une exécution, un fichier XXX_XXX_log.txt devrait apparaitre.
+
+Après une exécution, un fichier XXX_XXX_data1_log.txt devrait apparaitre.
+
+
 
 Pour vérifier si le cahier des charges aurait été respecté, vous pouvez alors lancer 
 
-> ./scriptValidation.txt XXX_XXX
+> ./scriptValidation.txt XXX_XXX data1
+

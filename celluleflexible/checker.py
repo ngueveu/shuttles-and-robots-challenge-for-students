@@ -89,8 +89,13 @@ print(' ') # Sert juste à aérer l'affichage
 
 for ligne in contenu : # on travail ligne par ligne, donc produit par produit
 
-    conf=ligne.split(":") # on split la ligne en séparant les strings (ou str) des ":"
+    if "End" in ligne :
+        # fin du contenu du fichier à lire par le checker, le reste du fichier est pour le code C++
+        break;
+        
+    ligne = ligne.replace("// ","") # on enlève le symbole de commentaires du C++
 
+    conf=ligne.split(":") # on split la ligne en séparant les strings (ou str) des ":"
 
     nom = conf[0].replace(" ","") # on enlève les espace a conf[0] (nom du produit) si l'etudiant a mis des espaces
     if nom != "\n": # Si la ligne n'est pas vide, donc si elle contient les informations du cahier des charges

@@ -18,6 +18,8 @@
 #include <ros/ros.h>
 #include <unistd.h>
 
+#include "prodconfig/productconfig.h"
+
 using namespace std;
 
 #define RESET   "\033[0m"
@@ -31,14 +33,16 @@ int M[PlaceFin+1];
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////// | DEBUT PRODUCT CONFIGURATION | /////////////////////////////////////////
+///////////////////// | DEBUT INFOS  CONFIGURATION PRODUITS | /////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-# type de produit : séquence de POSTES : durée par poste : nombre de produits
+// type de produit : séquence de POSTES : durée par poste : nombre de produits
 
-# 2 : 1 4 : 4 5 : 2
-# 6 : 7 6 5 : 3 6 3 : 1
-# 4 : 1 2 : 7 3 : 1
+// 2 : 1 4 : 4 5 : 2
+// 6 : 7 6 5 : 3 6 3 : 1
+// 4 : 1 2 : 7 3 : 1
+
+/*
 
 const vector<int> Prod_type{    2,
                                 6,
@@ -48,17 +52,17 @@ const vector<int> Prod_qte{ 2,
                             1,
                             1 };
 
-const vector<vector<int>> Prod_seqdeposte{ { 1, 4 },
-                         { 7, 6, 5 },
-                         { 1, 2 } };
+const vector<vector<int>> Prod_seqdeposte{  { POSTE_1, POSTE_4 },
+                                            { POSTE_7, POSTE_6, POSTE_5 },
+                                            { POSTE_1, POSTE_2 } };
 
-const vector<vector<int>> Prod_dureeparposte{ { 4, 5 },
-                         { 3, 6, 3 },
-                         { 7, 3 } };
-
+const vector<vector<int>> Prod_dureeparposte{   { 4, 5 },
+                                                { 3, 6, 3 },
+                                                { 7, 3 } };
+*/
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////// | FIN PRODUCT CONFIGURATION | /////////////////////////////////////////
+///////////////////// | FIN INFOS CONFIGURATION PRODUITS | ///////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
