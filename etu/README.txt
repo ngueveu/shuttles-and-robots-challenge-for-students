@@ -23,3 +23,11 @@ Pour vérifier si le cahier des charges aurait été respecté, vous pouvez alor
 
 > ./scriptValidation.txt XXX_XXX data1
 
+
+
+
+Pour générer la documentation associée à votre code:
+
+> doxygen <config_file>
+
+

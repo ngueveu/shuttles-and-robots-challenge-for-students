@@ -9,7 +9,16 @@
 ##########################################################################
 ### As a wise man once said : "Follow the white rabbit with hhbbgd...."###
 ##########################################################################*/
- 
+
+/*!
+ * \file TeamSALLAG_main_commande.cpp
+ * \brief code écrit à titre purement illustratif pour valider le bon
+ * *fonctionnement de de la simulation de la cellule flexible
+ * \author Team SALLAG (N7 2019-2020)
+ * \version 0.1
+ */
+
+
 #include "capteurs.h"
 #include "actionneurs.h"
 #include "commande.h"
@@ -128,8 +137,15 @@ int main(int argc, char **argv)
             ///////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+            
 			if (M[0]) // apparaitre produit B sur poste 3
 			{
+                /*!
+                 * \brief T1: lancement des produits
+                 * \param[in] M[0]
+                 * \param[out] M[10], M[576], M[532]
+                 * Les produits B et F sont lancés sur les postes 3 et 7
+                 */
 				M[0]--;
 				robot.AjouterProduit(POSTE_3,2); // ajout produit n°2 (donc B) sur poste 3
                 M[532]++;
@@ -142,6 +158,12 @@ int main(int argc, char **argv)
 
 			if (M[10] && capteur.get_PS(1)) // quand navette à proximité du poste 3, on le fait arrêter au niveau du poste
 			{
+                /*!
+                 * \brief T2: arrêt navette au poste 3 et lancement Tache POSTE_7
+                 * \param[in] M[10], M[576], M[532]
+                 * \param[out] M[20]
+                 * Arreter la navette au poste 3
+                 */
 				M[10]--;
 				M[532]--; // Enleve le marquage des produits
 				M[576]--; // Enleve le marquage des produits
@@ -153,6 +175,13 @@ int main(int argc, char **argv)
 
 			if (M[20] && capteur.get_PS(2) && robot.TacheFinie(POSTE_7)) // le robot 2 prend le produit B sur le poste 3 et le met sur la navette
 			{
+                /*!
+                 * \b T3: chargement navette avec produit B
+                 * \arg  Déplacer produit B par le ROBOT_2 de la position 1 à la position 2
+                 * et déplacer produit F par le ROBOR_4 de la position 1 à la position 3
+                 * \arg \b Precondition: M[20] && capteur.get_PS(2) && robot.TacheFinie(POSTE_7)
+                 * \arg \b Postcondition: M[30]++
+                 */
 				M[20]--;
 				robot.DeplacerPiece(ROBOT_2,1,2);
 				robot.DeplacerPiece(ROBOT_4,1,3);
@@ -163,6 +192,12 @@ int main(int argc, char **argv)
 
 			if (M[30]  && robot.FinDeplacerPiece(ROBOT_2) && robot.FinDeplacerPiece(ROBOT_4)) // la navette repars du poste 3 avec le produit B
 			{
+                /*!
+                 * \b T3: chargement navette avec produit B
+                 * \arg \brief Déplacer produit B par le ROBOT_2 de la position 1 à la position 2
+                 * \arg \b Precondition: M[30]  && robot.FinDeplacerPiece(ROBOT_2) && robot.FinDeplacerPiece(ROBOT_4)
+                 * \arg \b Postcondition:  {M[20]++}
+                 */
 				M[30]--;
 				cmd.Ouvrir_PS(2);
 				cmd.Ouvrir_PS(10);
@@ -175,6 +210,12 @@ int main(int argc, char **argv)
 
 			if (M[40] && capteur.get_PS(6) && capteur.get_PS(14))//On dirige la navette vers le poste 1
 			{
+                /*!
+                 * \b T4: aller au POSTE_1
+                 * \arg Déplacer produit B par le ROBOT_2 de la position 1 à la position 2
+                 * \arg \b Precondition: M[40] && capteur.get_PS(6) && capteur.get_PS(14)
+                 * \arg \b Postcondition: M[50]++
+                 */
 				M[40]--;
 				robot.DeplacerPiece(ROBOT_3,2,1);
 				aiguillage.Gauche(3);
@@ -185,6 +226,12 @@ int main(int argc, char **argv)
 
 			if (M[50] && capteur.get_DG(3) && capteur.get_DG(10) && robot.FinDeplacerPiece(ROBOT_3))// quand les aiguillages ont fini de tourner on fait partir la navette
 			{
+                /*!
+                 * \b T5: faire repartir la navette et aller au POSTE_6
+                 * \arg Quand les aiguillages ont fini de tourner on fait partir la navette
+                 * \arg \b Precondition: M[50] && capteur.get_DG(3) && capteur.get_DG(10) && robot.FinDeplacerPiece(ROBOT_3)
+                 * \arg \b Postcondition: M[60]++
+                 */
 				M[50]--;
 				cmd.Ouvrir_PS(6);
 				cmd.Stop_PS(22);
