@@ -15,6 +15,8 @@ Petit guide pour lancer le projet sur votre machine : (Ubuntu 16, ROS Kinetic)
     
           git clone https://gitlab.enseeiht.fr/sandra/TERcelluleflexible.git
         
+        
+SUITE A MODIFIER !!!!!!!!!
           
 - 3) Compiler les packages ros en se plaçant dans ros_ws et en effectuant :
 
