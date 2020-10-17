@@ -12,9 +12,9 @@ then
 fi
 
 
-if [ ! -f output/$1.doxyfileconfig.txt ]
+if [ ! -f ../celluleflexible/forTER/XXX_XXX_Doxyfile_config ]
 then
-  echo the file $1.doxyfileconfig.txt does not exists within folder output
+  echo the file ../celluleflexible/forTER/XXX_XXX_Doxyfile_config does not exists ... this should not happen ... maybe a bug happened during installation of the TER
   exit
 fi
 
@@ -22,6 +22,13 @@ fi
 cp ../celluleflexible/forTER/XXX_XXX_Doxyfile_config output/$1.doxyfileconfig.txt
 
 sed -i 's/XXX_XXX/$1/g' output/$1.doxyfileconfig.txt
+
+
+if [ ! -f output/$1.doxyfileconfig.txt ]
+then
+  echo the file $1.doxyfileconfig.txt does not exists within folder output
+  exit
+fi
 
 
 if ! type "doxygen" > /dev/null; then
