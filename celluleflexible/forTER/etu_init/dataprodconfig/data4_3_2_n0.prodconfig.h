@@ -1,3 +1,4 @@
+/*
 ## Projet Long ENSEEIHT - GEA Department - 2020
 
 ## Fichier de configuration de la simulation
@@ -34,8 +35,30 @@
 ## REMARQUE :
 ## Chaque produit a une couleur différente (pareil pour les tâches):
 ## 1 : rouge, 2 : bleu, 3 : vert, 4 : orange, 5 : rose, 6 : violet
+*/
 
-Start
+// Start
 
-2 : 1 4 : 4 5 : 1
-6 : 7 6 5 : 3 6 3 : 1
+// 2 : 1 4 : 4 5 : 2
+// 6 : 7 6 5 : 3 6 3 : 1
+// 4 : 1 2 : 7 3 : 1
+
+
+const vector<int> Prod_type{    2,
+                                6,
+                                4 };
+
+const vector<int> Prod_qte{ 2,
+                            1,
+                            1 };
+
+const vector<vector<int>> Prod_seqdeposte{  { POSTE_1, POSTE_4 },
+                                            { POSTE_7, POSTE_6, POSTE_5 },
+                                            { POSTE_1, POSTE_2 } };
+
+const vector<vector<int>> Prod_dureeparposte{   { 4, 5 },
+                                                { 3, 6, 3 },
+                                                { 7, 3 } };
+
+
+

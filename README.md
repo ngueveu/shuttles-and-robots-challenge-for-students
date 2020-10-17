@@ -1,6 +1,6 @@
 # TER atelier flexible ou cellule flexible
 
-Petit guide pour lancer le projet sur votre machine : (Ubuntu 16, ROS Kinetic)
+Petit guide pour installer le projet sur votre machine s'il n'y existe pas encore : (Ubuntu 16, ROS Kinetic)
 
 - 0) Il est toujours bon de faire un 
 
@@ -14,32 +14,18 @@ Petit guide pour lancer le projet sur votre machine : (Ubuntu 16, ROS Kinetic)
     (si git n'est pas installé, vous pouvez toujours télécharger le projet en zip et en extraire le code)
     
           git clone https://gitlab.enseeiht.fr/sandra/TERcelluleflexible.git
-        
-        
-SUITE A MODIFIER !!!!!!!!!
-          
-- 3) Compiler les packages ros en se plaçant dans ros_ws et en effectuant :
 
-          catkin_make
-          
-- 4) Sourcez les fichiers compilés (depuis le dossier ros_ws):
+- 4) Dans le dossier TERcelluleflexible il devrait y avoir deux dossier: celluleflexible et etu (si ce dossier n'existe pas, se placer à la racine du dossier TERcelluleflexible et exécuter l'instruction suivante : cp celluleflexible/forTER/etu_init etu)
 
-          source devel/setup.bash
-          
-- 5) Exécuter le launch.sh dans le dossier celluleflexible :
+- 5) Se placer dans le dossier etu (c'est dans ce dossier que s'effectueront toutes les manipulations du TER):
+    
+          cd etu
 
-          ./launch.sh
-          
-En résumé (pour copier/coller dans un terminal):
+- 5) S'assurer que les différents scripts sont bien executables:
+    
+          chmod +x scriptCompileandRun.sh
+          chmod +x scriptValidation.txt
+          chmod +x scriptDocumentation.txt
 
-          git clone https://gitlab.enseeiht.fr/sandra/TERcelluleflexible.git
-          cd celluleflexible/ros_ws
-          catkin_make
-          source devel/setup.bash
-          cd ..
-          ./launch.sh
- 
- 
-          
-          
-          
+A présent vous êtes prêt à commencer le TER, se repérer aux fichiers dans le dossier etu pour la suite.
+
