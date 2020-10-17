@@ -18,6 +18,12 @@ then
   exit
 fi
 
+
+cp ../celluleflexible/forTER/XXX_XXX_Doxyfile_config output/$1.doxyfileconfig.txt
+
+sed -i 's/XXX_XXX/$1/g' output/$1.doxyfileconfig.txt
+
+
 if ! type "doxygen" > /dev/null; then
   # install foobar here
     if ! type "./doxygen" > /dev/null; then
@@ -33,7 +39,7 @@ if ! type "doxygen" > /dev/null; then
     fi
 fi
 
-
+ 
 doxygen output/$1.doxyfileconfig.txt
 
 
