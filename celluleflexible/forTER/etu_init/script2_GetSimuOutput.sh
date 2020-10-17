@@ -23,4 +23,3 @@ cp ../celluleflexible/log.txt output/$1_$2.log.txt
 
 
 
-
