@@ -30,10 +30,6 @@ catkin_make
 source devel/setup.bash
 cd ../../etu
 ../celluleflexible/./launch.sh
-cp ../celluleflexible/log.txt output/$1_$2.log.txt
-
-cp ../celluleflexible/forTER/XXX_XXX_Doxyfile_config output/$1.doxyfileconfig.txt
-sed -i 's/XXX_XXX/$1/g' output/$1.doxyfileconfig.txt
 
 
 
