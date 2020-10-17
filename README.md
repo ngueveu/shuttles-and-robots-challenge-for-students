@@ -18,7 +18,6 @@ Petit guide pour installer le projet sur votre machine s'il n'y existe pas encor
 - 3) si le projet existait déjà mais que vous décidez de le mettre à jour (ce qui écrasera en grande partie la précédente version), alors se placer à la racine du répertoire TERcelluleflexible du git et exécuter:
 
           git fetch --all
-          git checkout -b backup-master
           git reset --hard origin/master
 
 - 4) Dans le dossier TERcelluleflexible il devrait y avoir deux dossier: celluleflexible et etu (si ce dossier n'existe pas, se placer à la racine du dossier TERcelluleflexible et exécuter l'instruction suivante : cp celluleflexible/forTER/etu_init etu)
