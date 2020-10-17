@@ -20,9 +20,9 @@
 #include <ros/ros.h>
 #include <unistd.h>
 
-#include "prodconfig/productconfig.h"
-
 using namespace std;
+
+#include "prodconfig/productconfig.h"
 
 #define RESET   "\033[0m"
 #define BOLDRED     "\033[1m\033[31m"      /* Bold Red */

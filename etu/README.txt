@@ -78,12 +78,14 @@ VERIFIER QUE LA SIMULATION COPPELIA FONCTIONNE BIEN (avec le code exemple de Tea
 
 ////////////////////////////////////////////////////////////////////////////////////////
 
-Le fichier TeamSALLAG.main_commande.cpp contenu dans le dossier exemple peut permettre de vérifier le bon fonctionnement de la simulation coppelia:
+Le fichier TeamSALLAG.main_commande.cpp contenu dans le dossier exemple peut permettre de vérifier le bon fonctionnement de la simulation coppelia :
 
-	./script1_CompileandRun.sh exemple/TeamSALLAG data4_3_2_n0
-	./script2_GetSimuOutput.sh exemple/TeamSALLAG data4_3_2_n0
-	./script3_Validation.sh exemple/TeamSALLAG data4_3_2_n0
-	./script4_Documentation.sh exemple/TeamSALLAG
+	cp exemple/TeamSALLAG.main_commande.cpp .
+	./script1_CompileandRun.sh TeamSALLAG data4_3_2_n0
+	./script2_GetSimuOutput.sh TeamSALLAG data4_3_2_n0
+	./script3_Validation.sh TeamSALLAG data4_3_2_n0
+	./script4_Documentation.sh TeamSALLAG
+	rm TeamSALLAG.main_commande.cpp
 
-Toutes les sorties associées doivent se trouver dans le dossier exemple/output
+
 

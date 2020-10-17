@@ -27,9 +27,9 @@
 #include <ros/ros.h>
 #include <unistd.h>
 
-#include "prodconfig/productconfig.h"
-
 using namespace std;
+
+#include "prodconfig/productconfig.h"
 
 #define RESET   "\033[0m"
 #define BOLDRED     "\033[1m\033[31m"      /* Bold Red */
@@ -269,7 +269,7 @@ int main(int argc, char **argv)
 			if (M[90] && robot.FinDeplacerPiece(ROBOT_1) && robot.FinDeplacerPiece(ROBOT_3)) // le robot 1 prend le produit B sur la navette et le met sur le poste 1
 			{
 				M[90]--;
-				robot.FaireTache(POSTE_5,3);
+				robot.FaireTache(POSTE_5,2);
 				robot.FaireTache(POSTE_1,4);
 				M[100]++;
 				display();
@@ -278,7 +278,6 @@ int main(int argc, char **argv)
 			if (M[100] && robot.TacheFinie(POSTE_5)) // robot 1 fais tache 1 pendant 4s
 			{
 				M[100]--;
-				robot.FaireTache(POSTE_5,1);
 				cmd.Ouvrir_PS(14);
 				cmd.Stop_PS(15);
 				M[110]++;
