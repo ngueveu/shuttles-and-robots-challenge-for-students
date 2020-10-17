@@ -16,22 +16,29 @@ Renommer le fichier principal XXX_XXX.main_commande.cpp en y mettant vos initial
 
 /////////////////////////////////////////////////////////////////////////////////////
 
-POUR COMPILER ET EXECUTER LA SIMULATION GENEREE PAR VOTRE FICHIER "VOS_INITIALES.main_commande.cpp" 
+POUR COMPILER ET LANCER LA SIMULATION GENEREE PAR VOTRE FICHIER "VOS_INITIALES.main_commande.cpp" 
 
 /////////////////////////////////////////////////////////////////////////////////////
 
 
 Pour compiler et exécuter votre fichier "VOS_INITIALES.main_commande.cpp" en considérant en données de production le fichier NOM_FICHIER_DATA.prodconfig.h contenu dans le dossier dataprodconfig, il suffit de faire:
 
-	./scriptCompileandRun.sh VOS_INITIALES NOM_FICHIER_DATA
+	./script1_CompileandRun.sh VOS_INITIALES NOM_FICHIER_DATA
 
 Par exemple, si vos initiales sont SUN_SC (et donc le fichier commande associé est SUN_SC.main_commande.cpp), et que le fichier data à considérer est data4_2_2_n0.prodconfig.h, alors l'instruction pour compiler et exécuter sera : 
 
-	./scriptCompileandRun.sh SUN_SC data4_2_2_n0
+	./script1_CompileandRun.sh SUN_SC data4_2_2_n0
 
 
+/////////////////////////////////////////////////////////////////////////////////////
 
-Après chaque exécution sans bug, un fichier log nommé "VOS_INITIALES_NOM_FICHIER_DATA.log.txt" doit apparaitre dans le dossier "output". 
+POUR IMPORTER LES RESULTATS DE LA SIMULATION (après avoir choisi "4-Fin programme" dans la fenêtre XTERMINAL)
+
+/////////////////////////////////////////////////////////////////////////////////////
+
+	./script2_GetSimuOutput.sh SUN_SC data4_2_2_n0
+
+Après chaque exécution sans bug de la simulation et après l'import des résultats, un fichier log nommé "VOS_INITIALES_NOM_FICHIER_DATA.log.txt" doit apparaitre dans le dossier "output". 
 Si ce fichier n'existe pas, c'est qu'il y a eu une erreur lors de votre simulation.
 
 
@@ -46,7 +53,7 @@ Le fichier log précédemment généré permet de vérifier la validité de votr
 
 Pour ce faire, depuis la racine du dossier "etu", vous pouvez exécuter:
 
-	./scriptValidation.sh VOS_INITIALES NOM_FICHIER_DATA
+	./script3_Validation.sh VOS_INITIALES NOM_FICHIER_DATA
 
 
 
@@ -58,7 +65,7 @@ POUR GENERER LA DOCUMENTATION ASSOCIEE A VOTRE FICHIER "VOS_INITIALES.main_comma
 
 Pour générer la documentation associée à votre code, depuis la racine du dossier "etu", exécuter:
 
-	./scriptDocumentation.sh VOS_INITIALES
+	./script4_Documentation.sh VOS_INITIALES
 
 La documentation devrait alors être générée dans le dossier output/docfromcpp
 
@@ -73,9 +80,10 @@ VERIFIER QUE LA SIMULATION COPPELIA FONCTIONNE BIEN (avec le code exemple de Tea
 
 Le fichier TeamSALLAG.main_commande.cpp contenu dans le dossier exemple peut permettre de vérifier le bon fonctionnement de la simulation coppelia:
 
-	./scriptCompileandRun.sh exemple/TeamSALLAG data4_3_2_n0
-	./scriptValidation.sh exemple/TeamSALLAG data4_3_2_n0
-	./scriptDocumentation.sh exemple/TeamSALLAG
+	./script1_CompileandRun.sh exemple/TeamSALLAG data4_3_2_n0
+	./script2_GetSimuOutput.sh exemple/TeamSALLAG data4_3_2_n0
+	./script3_Validation.sh exemple/TeamSALLAG data4_3_2_n0
+	./script4_Documentation.sh exemple/TeamSALLAG
 
 Toutes les sorties associées doivent se trouver dans le dossier exemple/output
 
