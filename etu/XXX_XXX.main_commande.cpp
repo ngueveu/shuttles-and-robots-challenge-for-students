@@ -183,7 +183,7 @@ int main(int argc, char **argv)
             * \b nom_transition:  transition_test vide a supprimer ou modifier
             * \arg  courte description
             * \arg \b Precondition: M[0] && M[PlaceAmontBis] && CONDITIONS_debut
-            * \arg \b Postcondition: M[PlaceAval]++; M[PlaceAvalBis]
+            * \arg \b Postcondition: M[PlaceAval]++; M[PlaceAvalBis]++
             */
             M[0] --;
 

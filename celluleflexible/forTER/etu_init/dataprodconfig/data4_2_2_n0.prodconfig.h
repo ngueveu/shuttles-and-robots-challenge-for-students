@@ -48,14 +48,13 @@
 const vector<int> Prod_type{ 2,
                              6 };
 
-const vector<int> Prod_qte{ 2,
-                            1 };
-
 const vector<vector<int>> Prod_seqdeposte{ { POSTE_1, POSTE_4 },
                                            { POSTE_7, POSTE_6, POSTE_5 } };
 
 const vector<vector<int>> Prod_dureeparposte{  { 4, 5 },
                                                { 3, 6, 3 } };
 
+const vector<int> Prod_qte{ 2,
+                            1 };
 
 
