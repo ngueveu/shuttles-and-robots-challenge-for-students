@@ -127,7 +127,7 @@ for ligne in contenu : # on travail ligne par ligne, donc produit par produit
                 espace = 1
         taille_dest = len(tache_var)
         for i in range(taille_dest):
-            tache_var[i] = int(tache_var[i]) 
+            tache_var[i] = int(tache_var[i])
         # Fin de la partie pour séparer les destinations entre elles --> elle sera également utilisé pour séparer les durées => utilité de cette partie est donc de laisser plus de liberté à l'utilisateur dans la définition du .config et d'enlever les sources d'erreurs inutile
 
         # Recherche et affichage d'erreur de déclaration
@@ -296,7 +296,9 @@ if erreur_config == 0: # On lit le contenu du fichier log SEULEMENT SI il n'y a 
             P_list = list(info[1])
             taille_info = len(info)
             for i in range(taille_info-3):
-                D_list.append(info[2+i])
+                #D_list.append(info[2+i]) #SUN
+                if info[2+i] != '0': #SUN
+                    D_list.append(info[2+i])
             time = float(info[taille_info-1].strip('\n'))
             P = int(P_list[0])
             if P != 0:
@@ -329,7 +331,8 @@ if erreur_config == 0: # On lit le contenu du fichier log SEULEMENT SI il n'y a 
                     if P_type != 4:
                         test = 0
                         print("ERREUR: la base de l'instance {} du produit {} n'est pas définie comme un produit".format(nb_produit_log[P-1],P))
-                    for i in range(taille_D-1):
+                    #for i in range(taille_D-1): #SUN
+                    for i in range(taille_D): #SUN
                         if D[i][1] == 2:
                             print("ERREUR: la tâche {} de l'instance {} du produit {} n'est pas terminée lors de la sortie du produit".format(i+1,nb_produit_log[P-1],P))
                         if D[i][1] != 2 and D[i][1] != 3:
