@@ -14,3 +14,7 @@ Z = nombre maximum d'unités pour chaque type de produit (si chaque type de prod
 
 T = numéro de référence de l'instance parmi celles de type X_Y_Z (0 pour la première instance de type X_Y_Z, 1 pour la deuxième, ...)
 
+
+
+
+Attention ! Pour le moment, le checker et certains éléments semblent bloqués à 3 opérations max par produit, donc pour l'instant éviter des produits à plus de 3 tâches
