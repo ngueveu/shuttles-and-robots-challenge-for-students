@@ -185,7 +185,7 @@ int main(int argc, char **argv)
             * \arg \b Precondition: M[0] && M[PlaceAmontBis] && CONDITIONS_debut
             * \arg \b Postcondition: M[PlaceAval]++; M[PlaceAvalBis]++
             */
-            M[0] --;
+            M[0]--;
 
             //ACTION….
 
