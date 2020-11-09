@@ -28,9 +28,11 @@ Petit guide pour installer le projet sur votre machine s'il n'y existe pas encor
 
 - 6) S'assurer que les différents scripts sont bien executables:
     
-          chmod +x scriptCompileandRun.sh
-          chmod +x scriptValidation.txt
-          chmod +x scriptDocumentation.txt
+          chmod +x script0_Compile.sh
+          chmod +x script1_Run.sh
+          chmod +x script2_GetSimuOutput.txt
+          chmod +x script3_Validation.txt
+          chmod +x script4_Documentation.txt
 
-A présent vous êtes prêt à commencer le TER, se repérer aux fichiers dans le dossier etu pour la suite.
+A présent vous êtes prêt à commencer le TER, se référer aux fichiers dans le dossier etu pour la suite.
 
