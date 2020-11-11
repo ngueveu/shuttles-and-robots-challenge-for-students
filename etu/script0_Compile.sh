@@ -25,7 +25,7 @@ fi
 
 cp $1.main_commande.cpp ../celluleflexible/ros_ws/src/commande/src/main_commande.cpp
 cp dataprodconfig/$2.prodconfig.h ../celluleflexible/ros_ws/src/commande/src/prodconfig/productconfig.h
-source /opt/ros/melodic/setup.bash
+#source /opt/ros/melodic/setup.bash
 cd ../celluleflexible/ros_ws
 source devel/setup.bash
 catkin_make

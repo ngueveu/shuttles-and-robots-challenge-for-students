@@ -16,18 +16,35 @@ Renommer le fichier principal XXX_XXX.main_commande.cpp en y mettant vos initial
 
 /////////////////////////////////////////////////////////////////////////////////////
 
-POUR COMPILER ET LANCER LA SIMULATION GENEREE PAR VOTRE FICHIER "VOS_INITIALES.main_commande.cpp" 
+POUR COMPILER LA SIMULATION GENEREE PAR VOTRE FICHIER "VOS_INITIALES.main_commande.cpp" 
 
 /////////////////////////////////////////////////////////////////////////////////////
 
 
-Pour compiler et exécuter votre fichier "VOS_INITIALES.main_commande.cpp" en considérant en données de production le fichier NOM_FICHIER_DATA.prodconfig.h contenu dans le dossier dataprodconfig, il suffit de faire:
+Pour compiler "VOS_INITIALES.main_commande.cpp" en considérant en données de production le fichier NOM_FICHIER_DATA.prodconfig.h contenu dans le dossier dataprodconfig, il suffit de faire:
 
-	./script1_CompileandRun.sh VOS_INITIALES NOM_FICHIER_DATA
+	./script0_Compile.sh VOS_INITIALES NOM_FICHIER_DATA
 
-Par exemple, si vos initiales sont SUN_SC (et donc le fichier commande associé est SUN_SC.main_commande.cpp), et que le fichier data à considérer est data4_2_2_n0.prodconfig.h, alors l'instruction pour compiler et exécuter sera : 
+Par exemple, si vos initiales sont SUN_SC (et donc le fichier commande associé est SUN_SC.main_commande.cpp), et que le fichier data à considérer est data4_2_2_n0.prodconfig.h, alors l'instruction pour compiler sera : 
 
-	./script1_CompileandRun.sh SUN_SC data4_2_2_n0
+	./script0_Compile.sh SUN_SC data4_2_2_n0
+
+
+/////////////////////////////////////////////////////////////////////////////////////
+
+POUR LANCER LA SIMULATION GENEREE PAR VOTRE FICHIER "VOS_INITIALES.main_commande.cpp" 
+
+/////////////////////////////////////////////////////////////////////////////////////
+
+APRES avoir vérifié qu'aucune erreur de compilation ne s'est précédemment produite:
+Pour exécuter votre fichier "VOS_INITIALES.main_commande.cpp" en considérant en données de production le fichier NOM_FICHIER_DATA.prodconfig.h contenu dans le dossier dataprodconfig, il suffit de faire:
+
+	./script1_Run.sh VOS_INITIALES NOM_FICHIER_DATA
+
+Par exemple, si vos initiales sont SUN_SC (et donc le fichier commande associé est SUN_SC.main_commande.cpp), et que le fichier data à considérer est data4_2_2_n0.prodconfig.h, alors l'instruction pour exécuter sera : 
+
+	./script1_Run.sh SUN_SC data4_2_2_n0
+
 
 
 /////////////////////////////////////////////////////////////////////////////////////
