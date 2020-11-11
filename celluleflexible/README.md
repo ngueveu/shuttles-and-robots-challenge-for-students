@@ -32,8 +32,8 @@ En résumé (pour copier/coller dans un terminal):
 
           git clone https://gitlab.enseeiht.fr/sandra/TERcelluleflexible.git
           cd ros_ws
-          catkin_make
           source devel/setup.bash
+          catkin_make
           cd ..
           ./launch.sh
  

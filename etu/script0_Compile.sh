@@ -25,10 +25,11 @@ fi
 
 cp $1.main_commande.cpp ../celluleflexible/ros_ws/src/commande/src/main_commande.cpp
 cp dataprodconfig/$2.prodconfig.h ../celluleflexible/ros_ws/src/commande/src/prodconfig/productconfig.h
-cd ../celluleflexible/ros_ws
-source devel/setup.bash
+source /opt/ros/melodic/setup.bash
+#cd ../celluleflexible/ros_ws commented because no need to go to that folder
+#source devel/setup.bash commented because now we source directly from the opt file
 catkin_make
-cd ../../etu
+#cd ../../etu
 #../celluleflexible/./launch.sh commented to avoid execution
 
 
