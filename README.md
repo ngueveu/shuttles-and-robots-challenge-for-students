@@ -46,7 +46,9 @@ A présent vous êtes prêt à commencer le TER, se référer aux fichiers dans 
 
 
 Quelques erreurs lors de l'installation la première fois
-s'
-assure que xterm est installé: sudo apt install xterm
+s'assurer d'avoir fait dans le terminal: source /opt/ros/melodic/setup.bash
+s'assurer que xterm est installé: sudo apt install xterm
+recupérer coppelia sim ubuntu18 et écraser/fusionner avec le dossier actuel
+depuis le dossier ros_ws faire source devel/setup.bash
 
 
