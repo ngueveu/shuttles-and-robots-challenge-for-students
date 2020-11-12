@@ -13,6 +13,20 @@ Renommer le fichier principal XXX_XXX.main_commande.cpp en y mettant vos initial
 
 
 
+///////////////////////////////////////////////////////////////////
+
+A FAIRE A CHAQUE NOUVELLE OUVERTURE D'UN NOUVEAU TERMINAL (ou en cas de fermeture incorrecte d'une simulation)
+
+///////////////////////////////////////////////////////////////////
+
+
+Taper les instructions suivantes directement dans le terminal (ces instructions sont aussi contenues dans le fichier Initialisation.sh, l'exécution de ce fichier ne semble pas se réaliser les fonctions souhaitées): 
+
+	source /opt/ros/melodic/setup.bash
+	cd ../celluleflexible/ros_ws
+	catkin_make
+	source devel/setup.bash
+
 
 /////////////////////////////////////////////////////////////////////////////////////
 
