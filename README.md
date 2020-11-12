@@ -1,6 +1,6 @@
 # TER atelier flexible ou cellule flexible
 
-Petit guide pour installer le projet sur votre machine s'il n'y existe pas encore : (Ubuntu 16, ROS Kinetic)
+Petit guide pour installer le projet sur votre machine s'il n'y existe pas encore : (Ubuntu 18, ROS Melodic)
 
 - 0) Il est toujours bon de faire un 
 
