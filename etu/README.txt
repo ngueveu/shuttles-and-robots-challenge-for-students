@@ -51,14 +51,9 @@ POUR LANCER LA SIMULATION GENEREE PAR VOTRE FICHIER "VOS_INITIALES.main_commande
 /////////////////////////////////////////////////////////////////////////////////////
 
 APRES avoir vérifié qu'aucune erreur de compilation ne s'est précédemment produite:
-Pour exécuter votre fichier "VOS_INITIALES.main_commande.cpp" en considérant en données de production le fichier NOM_FICHIER_DATA.prodconfig.h contenu dans le dossier dataprodconfig, il suffit de faire:
+Pour lancer la simulation résultante, exécuter:
 
-	./script1_Run.sh VOS_INITIALES NOM_FICHIER_DATA
-
-Par exemple, si vos initiales sont SUN_SC (et donc le fichier commande associé est SUN_SC.main_commande.cpp), et que le fichier data à considérer est data4_2_2_n0.prodconfig.h, alors l'instruction pour exécuter sera : 
-
-	./script1_Run.sh SUN_SC data4_2_2_n0
-
+	./script1_Run.sh 
 
 
 /////////////////////////////////////////////////////////////////////////////////////
@@ -67,10 +62,14 @@ POUR IMPORTER LES RESULTATS DE LA SIMULATION (après avoir choisi "4-Fin program
 
 /////////////////////////////////////////////////////////////////////////////////////
 
-	./script2_GetSimuOutput.sh SUN_SC data4_2_2_n0
+	./script2_GetSimuOutput.sh VOS_INITIALES NOM_FICHIER_DATA
 
-Après chaque exécution sans bug de la simulation et après l'import des résultats, un fichier log nommé "VOS_INITIALES_NOM_FICHIER_DATA.log.txt" doit apparaitre dans le dossier "output". 
+Après chaque exécution sans bug de la simulation et après l'import des résultats avec le script2, un fichier log nommé "VOS_INITIALES_NOM_FICHIER_DATA.log.txt" doit apparaitre dans le dossier "output". 
 Si ce fichier n'existe pas, c'est qu'il y a eu une erreur lors de votre simulation.
+
+Par exemple, si vos initiales sont SUN_SC (et donc le fichier commande associé est SUN_SC.main_commande.cpp), et que le fichier data à considérer est data4_2_2_n0.prodconfig.h, alors l'instruction pour compiler sera : 
+
+	./script2_GetSimuOutput.sh SUN_SC data4_2_2_n0
 
 
 
@@ -112,7 +111,8 @@ VERIFIER QUE LA SIMULATION COPPELIA FONCTIONNE BIEN (avec le code exemple de Tea
 Le fichier TeamSALLAG.main_commande.cpp contenu dans le dossier exemple peut permettre de vérifier le bon fonctionnement de la simulation coppelia :
 
 	cp exemple/TeamSALLAG.main_commande.cpp .
-	./script1_CompileandRun.sh TeamSALLAG data4_3_2_n0
+	./script0_Compile.sh TeamSALLAG data4_3_2_n0
+	./script1_Run.sh
 	./script2_GetSimuOutput.sh TeamSALLAG data4_3_2_n0
 	./script3_Validation.sh TeamSALLAG data4_3_2_n0
 	./script4_Documentation.sh TeamSALLAG
