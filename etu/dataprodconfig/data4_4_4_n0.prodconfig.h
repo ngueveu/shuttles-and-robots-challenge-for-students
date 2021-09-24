@@ -39,10 +39,10 @@
 
 // Start
 
-// 1 : 1 3 2 : 7 10 5 : 4
-// 2 : 4 2 3 : 1 8 2 : 2
-// 3 : 1 4  : 3 6 : 3
-// 4 : 2 4  : 4 2 : 4
+// 1 : 1 6 2 3 : 7 10 5 3 : 4
+// 2 : 4 2 6 3 : 1 8 2 4 : 2
+// 3 : 1 4 7 : 3 6 5 : 3
+// 4 : 2 4 6 : 4 2 7 : 4
 
 // End
 
@@ -53,16 +53,16 @@ const vector<int> Prod_type{ 1,
                             4
 };
 
-const vector<vector<int>> Prod_seqdeposte{  { POSTE_1, POSTE_3, POSTE_2 },
-                                            { POSTE_4, POSTE_2, POSTE_3},
-                                            { POSTE_1, POSTE_4},
-                                        { POSTE_2, POSTE_4}
+const vector<vector<int>> Prod_seqdeposte{  { POSTE_1, POSTE_6, POSTE_2, POSTE_3 },
+                                            { POSTE_4, POSTE_2, POSTE_6, POSTE_3},
+                                            { POSTE_1, POSTE_4, POSTE_7},
+                                        { POSTE_2, POSTE_4, POSTE_6}
 };
 
-const vector<vector<int>> Prod_dureeparposte{   { 7, 10, 5 },
-                                                { 1, 8, 2 },
-                                                { 3, 6 },
-                                                { 4, 2 }
+const vector<vector<int>> Prod_dureeparposte{   { 7, 10, 5, 3 },
+                                                { 1, 8, 2, 4 },
+                                                { 3, 6, 5 },
+                                                { 4, 2, 7 }
 };
 
 const vector<int> Prod_qte{ 4,
