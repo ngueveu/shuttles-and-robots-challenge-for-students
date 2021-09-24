@@ -52,7 +52,7 @@ const vector<int> Prod_type{ 1,
 };
 
 const vector<vector<int>> Prod_seqdeposte{  { POSTE_1, POSTE_3, POSTE_2 },
-                                            { POSTE_4, POSTE_2, POSTE3},
+                                            { POSTE_4, POSTE_2, POSTE_3},
                                             { POSTE_1, POSTE_4}
 };
 
