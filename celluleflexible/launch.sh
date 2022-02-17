@@ -2,7 +2,7 @@
 #
 # Final launcher of the simulation
 # Projet Long 2017 
-# Authors: J.B. Blanc / C. Delage / E. Maldonado / M. Maurin / C. Tomé
+# Authors: J.B. Blanc / C. Delage / E. Maldonado / M. Maurin / C. Tomé / Y. OUIS
 # Original code author: Koen Lekkerkerker
 # Thu 24 Apr 2014 
 
@@ -45,6 +45,7 @@ echo "${bold}--------------------------------------------------------------"
    else
    	echo "        The simulation file chosen is $1.ttt"
 	roslaunch launcher launch_alpha.launch nbRobot:=$1 &
+    
    fi
 echo "--------------------------------------------------------------${normal}"
 
@@ -55,9 +56,14 @@ echo "--------------------------------------------------------------${normal}"
 	shift
 
     # Wait... (10 seconds)
-    	#sleep 10
 
     # Launch of the other nodes
 	echo "Launching the other nodes " 
 	#roslaunch launcher launch_beta.launch 
+    sleep 10
+    roslaunch schneider roslaunch_cellule.launch & 
+    sleep 10
+    roslaunch schneider_104 roslaunch_cellule_104.launch & 
+    sleep 10
+    roslaunch schneider_103 roslaunch_cellule_103.launch & 
 fi

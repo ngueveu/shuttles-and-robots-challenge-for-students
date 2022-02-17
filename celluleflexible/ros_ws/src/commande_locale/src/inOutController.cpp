@@ -6,28 +6,40 @@ inOutController::inOutController(vrepController* vrepSA)
 	vrepServiceAcces = vrepSA;
 }
 
+void inOutController::TypeMode(const commande_locale::Msg_ChoixMode::ConstPtr& msg1)
+{
+	mode = msg1->mode;
+}
+
 // Fonction Callback pour les capteurs sur les rails
 void inOutController::SensorCallbackRail(const std_msgs::Int32::ConstPtr& msg)
 {
-	for(int i=1;i<=10;i++) SensorState.CP[i] = (msg->data & (int32_t)pow(2,i-1)) > 0;
-	planifRailSensorState.publish(SensorState);
+	if (mode==0){
+		for(int i=1;i<=10;i++) SensorState.CP[i] = (msg->data & (int32_t)pow(2,i-1)) > 0;
+		planifRailSensorState.publish(SensorState);
+	}
 }
 
 // Fonction Callback pour les capteurs des stops
 void inOutController::SensorCallbackStop(const std_msgs::Int32::ConstPtr& msg)
 {
-	for(int i=1;i<=24;i++) SensorState.PS[i] = (msg->data & (int32_t)pow(2,i-1)) > 0;
-	planifRailSensorState.publish(SensorState);
+	if (mode==0){
+		for(int i=1;i<=24;i++) SensorState.PS[i] = (msg->data & (int32_t)pow(2,i-1)) > 0;
+		planifRailSensorState.publish(SensorState);
+	}
 }
 
 // Fonction Callback pour les capteurs sur les aiguillages
 void inOutController::SensorCallbackSwitch(const std_msgs::Int32::ConstPtr& msg)
 {
-	for(int i=1;i<=12;i++){
-		SensorState.DD[i] = (msg->data & (int32_t)pow(2,2*i-2)) > 0;
-		SensorState.DG[i] = (msg->data & (int32_t)pow(2,2*i-1)) > 0;
+	if (mode==0){
+
+		for(int i=1;i<=12;i++){
+			SensorState.DD[i] = (msg->data & (int32_t)pow(2,2*i-2)) > 0;
+			SensorState.DG[i] = (msg->data & (int32_t)pow(2,2*i-1)) > 0;
+		}
+		planifRailSensorState.publish(SensorState);
 	}
-	planifRailSensorState.publish(SensorState);
 }
 
 // Fonction Callback pour les actionneurs sur les aiguillages
@@ -113,6 +125,7 @@ void inOutController::init(ros::NodeHandle nh)
 	planifSubSwitchState = nh.subscribe("/commande/Simulation/Actionneurs_aiguillages", 100, &inOutController::StateSwitchCallBack, this);
 	planifSubStopState = nh.subscribe("/commande/Simulation/Actionneurs_stops", 100, &inOutController::StateStopCallBack, this);
 	planifSubPinState = nh.subscribe("/commande/Simulation/Actionneurs_pins", 100, &inOutController::StatePinCallBack, this);
+	choixMode = nh.subscribe("/commande_locale/ChoixMode", 10,&inOutController::TypeMode,this);
 
 	// Publishers
 	VREPSwitchControllerRight = nh.advertise<std_msgs::Int32>("/sim_ros_interface/SwitchControllerRight", 100);

@@ -19,6 +19,7 @@
 #include "commande_locale/Msg_StopControl.h"
 #include "commande_locale/Msg_PinControl.h"
 #include "aiguillages/Msg_SensorState.h"
+#include <commande_locale/Msg_ChoixMode.h>
 #include <std_msgs/Int32.h>
 #include <unistd.h>
 
@@ -40,14 +41,17 @@ private:
 	ros::Subscriber planifSubSwitchState;
 	ros::Subscriber planifSubStopState;
 	ros::Subscriber planifSubPinState;
+	ros::Subscriber choixMode;
 
 	commande_locale::Msg_StopControl StopControl;
 	commande_locale::Msg_PinControl PinControl;
 	commande_locale::Msg_SwitchControl SwitchControl;
 	aiguillages::Msg_SensorState SensorState;
+	int mode;
 public:
 	inOutController(vrepController* vrepSA);
 	void init(ros::NodeHandle nh);
+	void TypeMode(const commande_locale::Msg_ChoixMode::ConstPtr& msg1);
 	// Sensors
 	void SensorCallbackRail(const std_msgs::Int32::ConstPtr& msg);
 	void SensorCallbackStop(const std_msgs::Int32::ConstPtr& msg);

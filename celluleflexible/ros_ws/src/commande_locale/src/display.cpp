@@ -46,7 +46,7 @@ int main(int argc, char **argv)
 	ros::init(argc, argv, "display_node");
 	ros::NodeHandle nh;
 
-	cv::namedWindow("Display window",CV_WINDOW_AUTOSIZE | CV_GUI_NORMAL);
+	cv::namedWindow("Display window",WINDOW_AUTOSIZE | CV_NORMAL);
 
 	image_transport::Subscriber subImage;	// Subscriber pour recuperer l'image depuis la simu V-rep
 	image_transport::ImageTransport it(nh);

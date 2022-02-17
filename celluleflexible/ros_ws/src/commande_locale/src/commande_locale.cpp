@@ -3,6 +3,7 @@
 #include "inOutController.h"
 #include "commande_locale/SrvAddProduct.h"
 #include "commande_locale/Msg_AddProduct.h"
+#include "commande_locale/Msg_ChoixMode.h"
 #include "commande_locale/SrvFinInit.h"
 #include "commande_locale/SrvAddProductPushBack.h"
 #include <unistd.h>
@@ -15,6 +16,7 @@ using namespace std;
 
 vrepController VREPController;
 commande_locale::Msg_AddProduct msg0;
+commande_locale::Msg_ChoixMode msg1;
 bool initEnCours(true);
 bool initCoppeliaEnCours(true);
 
@@ -66,6 +68,7 @@ int main(int argc, char **argv)
 	ros::NodeHandle nh;
 
 	ros::Publisher pubProductAdd= nh.advertise<commande_locale::Msg_AddProduct>("/commande_locale/AddProduct",10);
+	ros::Publisher pubModeType= nh.advertise<commande_locale::Msg_ChoixMode>("/commande_locale/ChoixMode",10);
 	ros::Subscriber sub_spawnShuttles = nh.subscribe("/commande_locale/nbNavettes",10,SpawnShuttlesCallback);
 
 	ros::ServiceServer service = nh.advertiseService("srv_add_product", AddProduct);
@@ -124,6 +127,7 @@ int main(int argc, char **argv)
 	string choix;
 	int choixProduit=0;
 	int choixPoste=0;
+	int choixMode=0;
 	while(ros::ok())
 	{
 		cout << endl << endl << endl;
@@ -131,7 +135,8 @@ int main(int argc, char **argv)
 			"	1- Ajouter un produit" << endl <<
 			"	2- Pause simu" 	<< endl <<
 			"	3- Play simu" 	<< endl<<
-			"	4- Fin programme" 	<< endl;
+			"	4- Fin programme" 	<< endl <<
+			"	5- Simu ou Atelier ?"	<< endl;
 		cout << "Choix : ";
 		cin >> choix;
 		if(choix=="hhbbgd")
@@ -200,7 +205,19 @@ int main(int argc, char **argv)
 					pub_shutdown.publish(msg_shutdown);
 					ros::Duration(1).sleep();
 					break;
-
+				case 5:
+					cout << "Mode : Simu (0) ou Atelier (1)?"<<endl;
+					cin >> choixMode;
+					if(cin.fail() || choixMode<0 || choixMode>1)
+					{
+						cout << endl << " [Erreur mauvais choix ..]" << endl;
+						cin.clear();
+						cin.ignore(256,'\n');
+						break;
+					}
+					msg1.mode = choixMode;
+					pubModeType.publish(msg1);
+					break;
 				default:
 					cout << endl << " [Erreur mauvais choix ..]" << endl;
 					break;

@@ -42,6 +42,7 @@ add_message_files(
 	DeplacerPieceMsg.msg
 	Actionneurs.msg
 	Capteurs.msg
+	Msg_ChoixMode.msg
 )
 generate_messages( DEPENDENCIES std_msgs)
 catkin_package( CATKIN_DEPENDS message_runtime)

@@ -2,6 +2,7 @@
 #include <ros/ros.h>
 #include "actionneurs.h"
 #include "capteurs.h"
+//#include "capteurs.h"
 #include <commande_locale/Msg_StopControl.h>
 #include "commande_locale/Msg_SwitchControl.h"
 #include "commande_locale/Msg_PinControl.h"
