@@ -1,8 +1,9 @@
-if (sim_call_type==sim.childscriptcall_initialization) then
-    model=sim.getObjectAssociatedWithScript(sim.handle_self)
-    version=sim.getInt32Parameter(sim.intparam_program_version)
+simBWF=require('simBWF')
+function sysCall_init()
+    model=sim.getObject('.')
+    version=sim.getInt32Param(sim.intparam_program_version)
     local data=sim.unpackTable(sim.readCustomDataBlock(model,simBWF.modelTags.OLDOVERRIDE))
-    if sim.boolAnd32(data['bitCoded'],8)>0 then
+    if (data['bitCoded']&8)>0 then
         if version>30303 then
             -- Check if some models are coincident
             -- We check only models with tags that start with 'XYZ_' or tags that are simBWF.modelTags.RAGNAR or simBWF.modelTags.CONVEYOR
@@ -11,7 +12,7 @@ if (sim_call_type==sim.childscriptcall_initialization) then
             for i=1,#objects,1 do
                 local h=objects[i]
                 local p=sim.getModelProperty(h)
-                if sim.boolAnd32(p,sim.modelproperty_not_model)==0 then
+                if (p&sim.modelproperty_not_model)==0 then
                     local tags=sim.readCustomDataBlockTags(h)
                     if tags then
                         for j=1,#tags,1 do
@@ -55,7 +56,7 @@ if (sim_call_type==sim.childscriptcall_initialization) then
                 end
             end
             if hh1>=0 then
-                local msg="Detected at least two coincident models: '"..sim.getObjectName(hh1).."' and '"..sim.getObjectName(hh2).."'. Simulation might not run as expected."
+                local msg="Detected at least two coincident models: '"..sim.getObjectAlias(hh1,1).."' and '"..sim.getObjectAlias(hh2,1).."'. Simulation might not run as expected."
                 sim.msgBox(sim.msgbox_type_warning,sim.msgbox_buttons_ok,"Coincident Models",msg)
             end
         end

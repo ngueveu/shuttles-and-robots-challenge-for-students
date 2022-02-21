@@ -2,7 +2,7 @@ model.ext={}
 
 function model.ext.isPickWithoutTargetOverridden()
     local c=model.readInfo()
-    return sim.boolAnd32(c['bitCoded'],2048)>0
+    return (c['bitCoded']&2048)>0
 end
 
 function model.ext.getItemData_pricing()
@@ -230,12 +230,12 @@ end
 
 function model.ext.getSerializationData()
     local data={}
-    data.objectName=sim.getObjectName(model.handle)
-    data.objectAltName=sim.getObjectName(model.handle+sim.handleflag_altname)
+    data.objectName=sim.getObjectAlias(model.handle,1)
+    data.objectAltName=sim.getObjectAlias(model.handle)
     data.matrix=sim.getObjectMatrix(model.handle,-1)
     local parentHandle=sim.getObjectParent(model.handle)
     if parentHandle>=0 then
-        data.parentName=sim.getObjectName(parentHandle)
+        data.parentName=sim.getObjectAlias(parentHandle,1)
     end
     data.embeddedData=model.readInfo()
     

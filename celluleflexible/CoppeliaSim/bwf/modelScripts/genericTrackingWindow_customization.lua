@@ -1,3 +1,4 @@
+simBWF=require('simBWF')
 function removeFromPluginRepresentation()
 
 end
@@ -8,16 +9,16 @@ end
 
 function ext_getItemData_pricing()
     local obj={}
-    obj.name=sim.getObjectName(model)
+    obj.name=sim.getObjectAlias(model,1)
     obj.type='trackingWindow'
     obj.windowType='pickOrPlace'
     obj.brVersion=0
 
     local dep={}
     local id=simBWF.getReferencedObjectHandle(model,simBWF.OLDTRACKINGWINDOW_INPUT_REF)
-    if id>=0 then dep[#dep+1]=sim.getObjectName(id) end
+    if id>=0 then dep[#dep+1]=sim.getObjectAlias(id,1) end
     local id=simBWF.getReferencedObjectHandle(model,simBWF.OLDTRACKINGWINDOW_CONVEYOR_REF)
-    if id>=0 then dep[#dep+1]=sim.getObjectName(id) end
+    if id>=0 then dep[#dep+1]=sim.getObjectAlias(id,1) end
     if #dep>0 then
         obj.dependencies=dep
     end
@@ -42,14 +43,14 @@ function updatePalletPoints()
 end
 
 function setObjectSize(h,x,y,z)
-    local r,mmin=sim.getObjectFloatParameter(h,sim.objfloatparam_objbbox_min_x)
-    local r,mmax=sim.getObjectFloatParameter(h,sim.objfloatparam_objbbox_max_x)
+    local mmin=sim.getObjectFloatParam(h,sim.objfloatparam_objbbox_min_x)
+    local mmax=sim.getObjectFloatParam(h,sim.objfloatparam_objbbox_max_x)
     local sx=mmax-mmin
-    local r,mmin=sim.getObjectFloatParameter(h,sim.objfloatparam_objbbox_min_y)
-    local r,mmax=sim.getObjectFloatParameter(h,sim.objfloatparam_objbbox_max_y)
+    local mmin=sim.getObjectFloatParam(h,sim.objfloatparam_objbbox_min_y)
+    local mmax=sim.getObjectFloatParam(h,sim.objfloatparam_objbbox_max_y)
     local sy=mmax-mmin
-    local r,mmin=sim.getObjectFloatParameter(h,sim.objfloatparam_objbbox_min_z)
-    local r,mmax=sim.getObjectFloatParameter(h,sim.objfloatparam_objbbox_max_z)
+    local mmin=sim.getObjectFloatParam(h,sim.objfloatparam_objbbox_min_z)
+    local mmax=sim.getObjectFloatParam(h,sim.objfloatparam_objbbox_max_z)
     local sz=mmax-mmin
     sim.scaleObject(h,x/sx,y/sy,z/sz)
 end
@@ -148,7 +149,7 @@ function getAvailableConveyors()
     for i=1,#l,1 do
         local data=sim.readCustomDataBlock(l[i],simBWF.modelTags.CONVEYOR)
         if data then
-            retL[#retL+1]={sim.getObjectName(l[i]),l[i]}
+            retL[#retL+1]={sim.getObjectAlias(l[i],1),l[i]}
         end
     end
     return retL
@@ -162,7 +163,7 @@ function getAvailableDetectionOrTrackingWindows()
             local data1=sim.readCustomDataBlock(l[i],simBWF.modelTags.TRACKINGWINDOW)
             local data2=sim.readCustomDataBlock(l[i],'XYZ_DETECTIONWINDOW_INFO')
             if data1 or data2 then
-                retL[#retL+1]={sim.getObjectName(l[i]),l[i]}
+                retL[#retL+1]={sim.getObjectAlias(l[i],1),l[i]}
             end
         end
     end
@@ -182,12 +183,12 @@ function setSizes()
     local ts=c['transferStart']
     local tl=c['transferLength']
     local h=c['height']
-    local slEnabled=sim.boolAnd32(c['bitCoded'],16)>0
+    local slEnabled=(c['bitCoded']&16)>0
     if slEnabled then
-        local r,lay=sim.getObjectInt32Parameter(trackBox,sim.objintparam_visibility_layer)
-        sim.setObjectInt32Parameter(stopLineBox,sim.objintparam_visibility_layer,lay)
+        local lay=sim.getObjectInt32Param(trackBox,sim.objintparam_visibility_layer)
+        sim.setObjectInt32Param(stopLineBox,sim.objintparam_visibility_layer,lay)
     else
-        sim.setObjectInt32Parameter(stopLineBox,sim.objintparam_visibility_layer,0)
+        sim.setObjectInt32Param(stopLineBox,sim.objintparam_visibility_layer,0)
     end
     setObjectSize(trackBox,w,l,h)
     sim.setObjectPosition(trackBox,model,{0,0,h*0.5})
@@ -200,8 +201,8 @@ end
 function updateEnabledDisabledItemsDlg()
     if ui then
         local config=readInfo()
-        local overridePallet=sim.boolAnd32(config['bitCoded'],8)~=0
-        local stopLine=sim.boolAnd32(config['bitCoded'],16)~=0
+        local overridePallet=(config['bitCoded']&8)~=0
+        local stopLine=(config['bitCoded']&16)~=0
         local enabled=sim.getSimulationState()==sim.simulation_stopped
         simUI.setEnabled(ui,20,enabled,true)
         simUI.setEnabled(ui,21,enabled,true)
@@ -227,15 +228,15 @@ function setDlgItemContent()
         simUI.setEditValue(ui,20,simBWF.format("%.0f",config['width']/0.001),true)
         simUI.setEditValue(ui,21,simBWF.format("%.0f",config['length']/0.001),true)
         simUI.setEditValue(ui,22,simBWF.format("%.0f",config['height']/0.001),true)
-        simUI.setCheckboxValue(ui,50,simBWF.getCheckboxValFromBool(sim.boolAnd32(config['bitCoded'],16)~=0),true)
+        simUI.setCheckboxValue(ui,50,simBWF.getCheckboxValFromBool((config['bitCoded']&16)~=0),true)
         simUI.setEditValue(ui,51,simBWF.format("%.0f",config['stopLinePos']/0.001),true)
         simUI.setEditValue(ui,52,simBWF.format("%.0f",config['stopLineProcessingStage']),true)
         simUI.setEditValue(ui,24,simBWF.format("%.0f",config['transferStart']/0.001),true)
         simUI.setEditValue(ui,23,simBWF.format("%.0f",config['transferLength']/0.001),true)
-        simUI.setCheckboxValue(ui,3,simBWF.getCheckboxValFromBool(sim.boolAnd32(config['bitCoded'],1)~=0),true)
-        simUI.setCheckboxValue(ui,4,simBWF.getCheckboxValFromBool(sim.boolAnd32(config['bitCoded'],2)~=0),true)
-        simUI.setCheckboxValue(ui,5,simBWF.getCheckboxValFromBool(sim.boolAnd32(config['bitCoded'],4)~=0),true)
-        simUI.setCheckboxValue(ui,19,simBWF.getCheckboxValFromBool(sim.boolAnd32(config['bitCoded'],8)~=0),true)
+        simUI.setCheckboxValue(ui,3,simBWF.getCheckboxValFromBool((config['bitCoded']&1)~=0),true)
+        simUI.setCheckboxValue(ui,4,simBWF.getCheckboxValFromBool((config['bitCoded']&2)~=0),true)
+        simUI.setCheckboxValue(ui,5,simBWF.getCheckboxValFromBool((config['bitCoded']&4)~=0),true)
+        simUI.setCheckboxValue(ui,19,simBWF.getCheckboxValFromBool((config['bitCoded']&8)~=0),true)
         updateEnabledDisabledItemsDlg()
         simBWF.setSelectedEditWidget(ui,sel)
     end
@@ -294,7 +295,7 @@ end
 
 function hidden_callback(ui,id,newVal)
     local c=readInfo()
-    c['bitCoded']=sim.boolOr32(c['bitCoded'],1)
+    c['bitCoded']=(c['bitCoded']|1)
     if newVal==0 then
         c['bitCoded']=c['bitCoded']-1
     end
@@ -305,7 +306,7 @@ end
 
 function console_callback(ui,id,newVal)
     local c=readInfo()
-    c['bitCoded']=sim.boolOr32(c['bitCoded'],2)
+    c['bitCoded']=(c['bitCoded']|2)
     if newVal==0 then
         c['bitCoded']=c['bitCoded']-2
     end
@@ -316,7 +317,7 @@ end
 
 function showPoints_callback(ui,id,newVal)
     local c=readInfo()
-    c['bitCoded']=sim.boolOr32(c['bitCoded'],4)
+    c['bitCoded']=(c['bitCoded']|4)
     if newVal==0 then
         c['bitCoded']=c['bitCoded']-4
     end
@@ -327,7 +328,7 @@ end
 
 function palletOverride_callback(ui,id,newVal)
     local c=readInfo()
-    c['bitCoded']=sim.boolOr32(c['bitCoded'],8)
+    c['bitCoded']=(c['bitCoded']|8)
     if newVal==0 then
         c['bitCoded']=c['bitCoded']-8
     end
@@ -376,7 +377,7 @@ end
 
 function stopLine_callback(ui,id,newVal)
     local c=readInfo()
-    c['bitCoded']=sim.boolOr32(c['bitCoded'],16)
+    c['bitCoded']=(c['bitCoded']|16)
     if newVal==0 then
         c['bitCoded']=c['bitCoded']-16
     end
@@ -1108,8 +1109,8 @@ function removeDlg()
     end
 end
 
-if (sim_call_type==sim.customizationscriptcall_initialization) then
-    model=sim.getObjectAssociatedWithScript(sim.handle_self)
+function sysCall_init()
+    model=sim.getObject('.')
     _MODELVERSION_=0
     _CODEVERSION_=0
     local _info=readInfo()
@@ -1125,10 +1126,10 @@ if (sim_call_type==sim.customizationscriptcall_initialization) then
     end
     ----------------------------------------
     writeInfo(_info)
-    trackBox=sim.getObjectHandle('genericTrackingWindow_track')
-    stopLineBox=sim.getObjectHandle('genericTrackingWindow_stopLine')
-    transferBox=sim.getObjectHandle('genericTrackingWindow_transfer')
-    sim.setScriptAttribute(sim.handle_self,sim.customizationscriptattribute_activeduringsimulation,false)
+    trackBox=sim.getObject('./genericTrackingWindow_track')
+    stopLineBox=sim.getObject('./genericTrackingWindow_stopLine')
+    transferBox=sim.getObject('./genericTrackingWindow_transfer')
+    
     -- Following for backward compatibility:
     createPalletPointsIfNeeded()
     updatePluginRepresentation()
@@ -1144,11 +1145,11 @@ showOrHideUiIfNeeded=function()
     end
 end
 
-if (sim_call_type==sim.customizationscriptcall_nonsimulation) then
+function sysCall_nonSimulation()
     showOrHideUiIfNeeded()
 end
 
-if (sim_call_type==sim.customizationscriptcall_firstaftersimulation) then
+function sysCall_afterSimulation()
     setSizes() -- reset the box's shift bias
     local c=readInfo()
     c['transferItems']={}
@@ -1164,25 +1165,25 @@ if (sim_call_type==sim.customizationscriptcall_firstaftersimulation) then
     showOrHideUiIfNeeded()
 end
 
-if (sim_call_type==sim.customizationscriptcall_lastbeforesimulation) then
+function sysCall_beforeSimulation()
     removeDlg()
     local c=readInfo()
-    local show=simBWF.modifyAuxVisualizationItems(sim.boolAnd32(c['bitCoded'],1)==0)
+    local show=simBWF.modifyAuxVisualizationItems((c['bitCoded']&1)==0)
     if not show then
         sim.setModelProperty(model,sim.modelproperty_not_visible)
     end
 end
 
-if (sim_call_type==sim.customizationscriptcall_lastbeforeinstanceswitch) then
+function sysCall_beforeInstanceSwitch()
     removeDlg()
     removeFromPluginRepresentation()
 end
 
-if (sim_call_type==sim.customizationscriptcall_firstafterinstanceswitch) then
+function sysCall_afterInstanceSwitch()
     updatePluginRepresentation()
 end
 
-if (sim_call_type==sim.customizationscriptcall_cleanup) then
+function sysCall_cleanup()
     removeDlg()
     removeFromPluginRepresentation()
     simBWF.writeSessionPersistentObjectData(model,"dlgPosAndSize",previousDlgPos,algoDlgSize,algoDlgPos,distributionDlgSize,distributionDlgPos,previousDlg1Pos)

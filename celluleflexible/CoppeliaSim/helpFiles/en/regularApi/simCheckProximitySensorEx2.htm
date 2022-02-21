@@ -15,8 +15,8 @@
   <td >
 <p><a href="../../index.html" TARGET="_top"><img src="../images/homeImg.png"></a></p>
 
-<h1><a href="../apiOverview.htm">Regular API</a> function</h1>
-<h3 class=subsectionBar><a name="simCheckProximitySensorEx2" id="simCheckProximitySensorEx2"></a>simCheckProximitySensorEx2 / sim.checkProximitySensorEx2 </h3>
+<h1>Regular API function</h1>
+<p class=subsectionBar><a name="simCheckProximitySensorEx2" id="simCheckProximitySensorEx2"></a>simCheckProximitySensorEx2 / sim.checkProximitySensorEx2 </p>
 <table class=apiTable>
 <tr class=apiTableTr> 
 <td class=apiTableLeftDescr>
@@ -26,12 +26,12 @@ Description
 </tr> 
 <tr class=apiTableTr> 
 <td class=apiTableLeftCSyn>
-C synopsis
+C/C++<br>synopsis
 </td> 
 <td class=apiTableRightCSyn>simInt simCheckProximitySensorEx2(simInt sensorHandle,simFloat* vertexPointer,simInt itemType,simInt itemCount,simInt detectionMode,simFloat detectionThreshold,simFloat maxAngle,simFloat* detectedPoint,simFloat* normalVector)<br></td> 
 </tr> 
 <tr class=apiTableTr> 
-<td class=apiTableLeftCParam>C parameters</td> 
+<td class=apiTableLeftCParam>C/C++<br>parameters</td> 
 <td class=apiTableRightCParam>
 <div><strong>sensorHandle</strong>: handle of the proximity sensor object</div>
 <div><strong>vertexPointer</strong>: a pointer to vertices</div>
@@ -44,7 +44,7 @@ C synopsis
 </tr> 
 <tr class=apiTableTr> 
 <td class=apiTableLeftCRet>
-C return value
+C/C++<br>return value
 </td> 
 <td class=apiTableRightCRet>
 <div>-1 if operation was not successful, otherwise 0 (no detection) or 1 (detection)<br>
@@ -55,18 +55,17 @@ C return value
 <td class=apiTableLeftLSyn>
 Lua synopsis
 </td> 
-<td class=apiTableRightLSyn>number result,number distance,table_3 detectedPoint,table_3 normalVector=sim.checkProximitySensorEx2(number sensorHandle,table vertices,number itemType,number itemCount,number mode,number threshold,number maxAngle)<br></td> 
+<td class=apiTableRightLSyn>int result,float distance,float[3] detectedPoint,float[3] normalVector=sim.checkProximitySensorEx2(int sensorHandle,float[] vertices,int itemType,int itemCount,int mode,float threshold,float maxAngle)<br></td> 
 </tr> 
 <tr class=apiTableTr> 
 <td class=apiTableLeftLParam>Lua parameters</td> 
 <td class=apiTableRightLParam>
-<div></div>
 <div><strong>sensorHandle</strong>: handle of the proximity sensor object</div>
 <div><strong>vertices</strong>: a table containing vertices</div>
 <div><strong>itemType</strong>: 0 for points, 1 for segments and 2 for triangles</div>
 <div><strong>itemCount</strong>: the number of items that the 'vertices' table contains</div>
 <br>
-<div>For the other parameters, see the description in <a href="simCheckProximitySensorEx.htm">sim.checkProximitySensorEx</a>. (sim.checkProximitySensorEx2 doesn't support occlusion checking)<br>
+<div>For the other parameters, see the description in <a href="simCheckProximitySensorEx.htm">sim.checkProximitySensorEx</a>. (sim.checkProximitySensorEx2 doesn't support occlusion checking)
 </div>
 </td> 
 </tr> 
@@ -75,18 +74,21 @@ Lua synopsis
 Lua return values
 </td> 
 <td class=apiTableRightLRet>
-<div></div>
-<div><strong>result</strong>: -1 (error), 0 (not detected) or 1 (detected)</div>
+<div><strong>result</strong>: 0 (not detected) or 1 (detected)</div>
 <br>
-<div>For the other return values, see the description in <a href="simCheckProximitySensorEx.htm">sim.checkProximitySensorEx</a>.<br>
+<div>For the other return values, see the description in <a href="simCheckProximitySensorEx.htm">sim.checkProximitySensorEx</a>.
 </div>
 </td> 
 </tr> 
+
+
+<tr class=apiTableTr>
+<td class=apiTableLeftPSyn>Python synopsis</td>
+<td class=apiTableRightPSyn>int result,float distance,list detectedPoint,list normalVector=sim.checkProximitySensorEx2(int sensorHandle,list vertices,int itemType,int itemCount,int mode,float threshold,float maxAngle)</td>
+</tr>
+
 </table> 
 
-<br>
-<p><a href="../apiFunctions.htm">All regular API functions on one page</a></p>
-<br>
 <br>
 </td>
 </tr>

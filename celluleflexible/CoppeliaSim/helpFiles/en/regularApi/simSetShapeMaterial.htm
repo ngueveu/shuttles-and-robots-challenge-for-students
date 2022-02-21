@@ -15,8 +15,8 @@
   <td >
 <p><a href="../../index.html" TARGET="_top"><img src="../images/homeImg.png"></a></p>
 
-<h1><a href="../apiOverview.htm">Regular API</a> function</h1>
-<h3 class=subsectionBar><a name="simSetShapeMaterial" id="simSetShapeMaterial"></a>simSetShapeMaterial / sim.setShapeMaterial </h3>
+<h1>Regular API function</h1>
+<p class=subsectionBar><a name="simSetShapeMaterial" id="simSetShapeMaterial"></a>simSetShapeMaterial / sim.setShapeMaterial </p>
 <table class=apiTable>
 <tr class=apiTableTr> 
 <td class=apiTableLeftDescr>
@@ -26,20 +26,20 @@ Description
 </tr> 
 <tr class=apiTableTr> 
 <td class=apiTableLeftCSyn>
-C synopsis
+C/C++<br>synopsis
 </td> 
 <td class=apiTableRightCSyn>simInt simSetShapeMaterial(simInt shapeHandle,simInt materialIdOrShapeHandle)<br></td> 
 </tr> 
 <tr class=apiTableTr> 
-<td class=apiTableLeftCParam>C parameters</td> 
+<td class=apiTableLeftCParam>C/C++<br>parameters</td> 
 <td class=apiTableRightCParam>
-<div><strong>shapeHandle</strong>: the handle of the shape. See also <a href="simGetObjectHandle.htm">simGetObjectHandle</a>.</div>
+<div><strong>shapeHandle</strong>: the handle of the shape. See also <a href="simGetObject.htm">sim.getObject</a>.</div>
 <div><strong>materialIdOrShapeHandle</strong>: a <a href="../apiConstants.htm#dynMatTypes">predefined dynamic material ID</a>, or the handle of another shape you wish to copy the material properties from.</div>
 </td> 
 </tr> 
 <tr class=apiTableTr> 
 <td class=apiTableLeftCRet>
-C return value
+C/C++<br>return value
 </td> 
 <td class=apiTableRightCRet>
 <div>-1 in case of an error. <br>
@@ -50,27 +50,30 @@ C return value
 <td class=apiTableLeftLSyn>
 Lua synopsis
 </td> 
-<td class=apiTableRightLSyn>number result=sim.setShapeMaterial(number shapeHandle,number materialIdOrShapeHandle)<br></td> 
+<td class=apiTableRightLSyn>sim.setShapeMaterial(int shapeHandle,int materialIdOrShapeHandle)<br></td> 
 </tr> 
 <tr class=apiTableTr> 
 <td class=apiTableLeftLParam>Lua parameters</td> 
 <td class=apiTableRightLParam>
-<div>Same as C-function</div>
-<div></div></td> 
+<div>Similar to the C-function counterpart</div>
+</td> 
 </tr> 
 <tr class=apiTableTr> 
 <td class=apiTableLeftLRet>
 Lua return values
 </td> 
 <td class=apiTableRightLRet>
-<div>Same as C-function</div>
 <div></div></td> 
 </tr> 
+
+
+<tr class=apiTableTr>
+<td class=apiTableLeftPSyn>Python synopsis</td>
+<td class=apiTableRightPSyn>sim.setShapeMaterial(int shapeHandle,int materialIdOrShapeHandle)</td>
+</tr>
+
 </table> 
 
-<br>
-<p><a href="../apiFunctions.htm">All regular API functions on one page</a></p>
-<br>
 <br>
 </td>
 </tr>

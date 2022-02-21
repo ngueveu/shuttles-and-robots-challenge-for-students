@@ -15,33 +15,33 @@
   <td >
 <p><a href="../../index.html" TARGET="_top"><img src="../images/homeImg.png"></a></p>
 
-<h1><a href="../apiOverview.htm">Regular API</a> function</h1>
-<h3 class=subsectionBar><a name="simEndDialog" id="simEndDialog"></a>simEndDialog / sim.endDialog</h3>
+<h1>Regular API function</h1>
+<p class=subsectionBar><a name="simEndDialog" id="simEndDialog"></a>simEndDialog / sim.endDialog</p>
 <table class=apiTable>
 <tr class=apiTableTr> 
 <td class=apiTableLeftDescr>
 Description 
 </td> 
-<td class=apiTableRightDescr>Closes and releases resource from a previous call to <a href="simDisplayDialog.htm">sim.displayDialog</a>. Even if the dialog is not visible anymore, you should release resources by using this function (however at the end of a simulation, all dialog resources allocated from a <a href="../mainScript.htm">main script</a> or a <a href="../childScripts.htm">child script</a> are automatically released).<br></td>
+<td class=apiTableRightDescr>Deprecated. See <a href="../simUI.htm#msgBox">simUI.msgBox</a> or <a href="../simUI.htm#inputDialog">simUI.inputDialog</a> instead.</td>
 </tr> 
 <tr class=apiTableTr> 
 <td class=apiTableLeftCSyn>
-C synopsis
+C/C++<br>synopsis
 </td> 
 <td class=apiTableRightCSyn>simInt simEndDialog(simInt genericDialogHandle)<br></td> 
 </tr> 
 <tr class=apiTableTr> 
-<td class=apiTableLeftCParam>C parameters</td> 
+<td class=apiTableLeftCParam>C/C++<br>parameters</td> 
 <td class=apiTableRightCParam>
 <div><strong>genericDialogHandle</strong>: handle of generic dialog (return value of simDisplayDialog)</div>
 <div></div></td> 
 </tr> 
 <tr class=apiTableTr> 
 <td class=apiTableLeftCRet>
-C return value
+C/C++<br>return value
 </td> 
 <td class=apiTableRightCRet>
-<div>-1 if operation was not successful. In a future release, a more differentiated return value might be available<br>
+<div>-1 if operation was not successful<br>
 </div>
 </td> 
 </tr> 
@@ -49,12 +49,12 @@ C return value
 <td class=apiTableLeftLSyn>
 Lua synopsis
 </td> 
-<td class=apiTableRightLSyn>number result=sim.endDialog(number genericDialogHandle)<br></td> 
+<td class=apiTableRightLSyn>sim.endDialog(int genericDialogHandle)<br></td> 
 </tr> 
 <tr class=apiTableTr> 
 <td class=apiTableLeftLParam>Lua parameters</td> 
 <td class=apiTableRightLParam>
-<div>Same as C-function</div>
+<div>Similar to the C-function counterpart</div>
 <div></div></td> 
 </tr> 
 <tr class=apiTableTr> 
@@ -62,28 +62,17 @@ Lua synopsis
 Lua return values
 </td> 
 <td class=apiTableRightLRet>
-<div>Same as C-function</div>
 <div></div></td> 
 </tr> 
 
-<tr class=apiTableTr> 
-<td class=remApiTableLeftCParam>
-Remote API equiv.
-</td> 
-<td class=remApiTableRightCParam>
-<div>B0-based remote API: <a href="../b0RemoteApi-cpp.htm#simxEndDialog">simxEndDialog</a></div>
-<div>Legacy remote API: <a href="../remoteApiFunctions.htm#simxEndDialog">simxEndDialog</a></div>
-</td> 
-</tr> 
+ 
 
 </table> 
 
-<br>
-<p><a href="../apiFunctions.htm">All regular API functions on one page</a></p>
-<br>
+
 <br>
 </td>
-</tr>
+
 </table>
 </div>
 </body>

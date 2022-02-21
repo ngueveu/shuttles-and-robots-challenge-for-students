@@ -1,3 +1,4 @@
+simBWF=require('simBWF')
 function removeFromPluginRepresentation()
 
 end
@@ -8,7 +9,7 @@ end
 
 function ext_getItemData_pricing()
     local obj={}
-    obj.name=sim.getObjectName(model)
+    obj.name=sim.getObjectAlias(model,1)
     obj.type='locationFrame'
     obj.frameType='pickOrPlace'
     obj.brVersion=0
@@ -78,7 +79,7 @@ function setDlgItemContent()
         local config=readInfo()
         local sel=simBWF.getSelectedEditWidget(ui)
         simUI.setEditValue(ui,1,config['name'],true)
-        simUI.setCheckboxValue(ui,3,simBWF.getCheckboxValFromBool(sim.boolAnd32(config['bitCoded'],1)~=0),true)
+        simUI.setCheckboxValue(ui,3,simBWF.getCheckboxValFromBool((config['bitCoded']&1)~=0),true)
         local red,green,blue,spec=getColor()
         simUI.setSliderValue(ui,11,red*100,true)
         simUI.setSliderValue(ui,12,green*100,true)
@@ -118,7 +119,7 @@ end
 
 function hidden_callback(ui,id,newVal)
     local c=readInfo()
-    c['bitCoded']=sim.boolOr32(c['bitCoded'],1)
+    c['bitCoded']=(c['bitCoded']|1)
     if newVal==0 then
         c['bitCoded']=c['bitCoded']-1
     end
@@ -197,14 +198,14 @@ function removeDlg()
     end
 end
 
-if (sim_call_type==sim.customizationscriptcall_initialization) then
-    model=sim.getObjectAssociatedWithScript(sim.handle_self)
+function sysCall_init()
+    model=sim.getObject('.')
     _MODELVERSION_=0
     _CODEVERSION_=0
     local _info=readInfo()
     simBWF.checkIfCodeAndModelMatch(model,_CODEVERSION_,_info['version'])
     writeInfo(_info)
-    sim.setScriptAttribute(sim.handle_self,sim.customizationscriptattribute_activeduringsimulation,true)
+    
     updatePluginRepresentation()
     previousDlgPos,algoDlgSize,algoDlgPos,distributionDlgSize,distributionDlgPos,previousDlg1Pos=simBWF.readSessionPersistentObjectData(model,"dlgPosAndSize")
 end
@@ -218,11 +219,11 @@ showOrHideUiIfNeeded=function()
     end
 end
 
-if (sim_call_type==sim.customizationscriptcall_nonsimulation) then
+function sysCall_nonSimulation()
     showOrHideUiIfNeeded()
 end
 
-if (sim_call_type==sim.customizationscriptcall_simulationsensing) then
+function sysCall_sensing()
     if simJustStarted then
         updateEnabledDisabledItemsDlg()
     end
@@ -232,11 +233,11 @@ if (sim_call_type==sim.customizationscriptcall_simulationsensing) then
 end
 
 
-if (sim_call_type==sim.customizationscriptcall_simulationpause) then
+function sysCall_suspend()
     showOrHideUiIfNeeded()
 end
 
-if (sim_call_type==sim.customizationscriptcall_firstaftersimulation) then
+function sysCall_afterSimulation()
     local c=readInfo()
     c['status']='free'
     writeInfo(c)
@@ -246,24 +247,24 @@ if (sim_call_type==sim.customizationscriptcall_firstaftersimulation) then
     showOrHideUiIfNeeded()
 end
 
-if (sim_call_type==sim.customizationscriptcall_lastbeforesimulation) then
+function sysCall_beforeSimulation()
     simJustStarted=true
     local c=readInfo()
-    if sim.boolAnd32(c['bitCoded'],1)~=0 then
+    if (c['bitCoded']&1)~=0 then
         sim.setModelProperty(model,sim.modelproperty_not_visible)
     end
 end
 
-if (sim_call_type==sim.customizationscriptcall_lastbeforeinstanceswitch) then
+function sysCall_beforeInstanceSwitch()
     removeDlg()
     removeFromPluginRepresentation()
 end
 
-if (sim_call_type==sim.customizationscriptcall_firstafterinstanceswitch) then
+function sysCall_afterInstanceSwitch()
     updatePluginRepresentation()
 end
 
-if (sim_call_type==sim.customizationscriptcall_cleanup) then
+function sysCall_cleanup()
     removeDlg()
     removeFromPluginRepresentation()
     simBWF.writeSessionPersistentObjectData(model,"dlgPosAndSize",previousDlgPos,algoDlgSize,algoDlgPos,distributionDlgSize,distributionDlgPos,previousDlg1Pos)

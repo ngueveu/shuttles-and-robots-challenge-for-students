@@ -27,9 +27,9 @@
 
 <br>
 <br>
-<table class=subsectionTable><tr class=subsectionTd><td class=subsectionTd>
+<h2>
 <a name="bullet"></a>Bullet properties
-</td></tr></table> 
+</h2>
 
 <p>Properties related to the <a href="dynamicsModule.htm#bullet">Bullet physics library</a>. Make sure to also refer to the <a href="http://www.bulletphysics.org/">Bullet user manual</a> for details.</p>
 <li><strong>Normal CFM</strong>: a<em> constraint force mixing</em> parameter used when away from limits.</li>
@@ -39,9 +39,9 @@
 
 <br>
 <br>
-<table class=subsectionTable><tr class=subsectionTd><td class=subsectionTd>
+<h2>
 <a name="ode"></a>ODE properties
-</td></tr></table> 
+</h2>
 
 <p>Properties related to the <a href="dynamicsModule.htm#ode">Open Dynamics Engine</a>. Make sure to also refer to the <a href="http://www.ode.org">ODE user manual</a> for details.</p>
 <li><strong>Normal CFM</strong>: a<em> constraint force mixing</em> parameter used when away from limits.</li>
@@ -52,9 +52,9 @@
 
 <br>
 <br>
-<table class=subsectionTable><tr class=subsectionTd><td class=subsectionTd>
+<h2>
 <a name="vortex"></a>Vortex properties
-</td></tr></table> 
+</h2>
 
 <p>Properties related to the <a href="dynamicsModule.htm#vortex">Vortex Studio engine</a>. Make sure to also refer to the <a href="https://www.cm-labs.com/vortex-studio/">Vortex user manual</a> for details.</p>
 <li><strong>Joint axis friction</strong>: allows to define internal friction along or    around a constraint axis. </li>
@@ -97,29 +97,15 @@
 
 <br>
 <br>
-<table class=subsectionTable><tr class=subsectionTd><td class=subsectionTd>
+<h2>
 <a name="newton"></a>Newton properties
-</td></tr></table> 
+</h2>
 
 <p>Properties related to the <a href="dynamicsModule.htm#newton">Newton Dynamics Engine</a>. Make sure to also refer to the <a href="http://www.newtondynamics.com">Newton user manual</a> for details.</p>
 <li><strong>Joint dependency</strong>: properties allowing to dynamically link two dynamically enabled joints. Two linked joints will share/exchange their respective loads (i.e. a force/torque applied to one will be transmitted to the other one, and vice-versa).</li>
 <li class=tabTab><strong>Dependent joint</strong>: the joint that is linked to this one. This property doesn't appear as reflective (i.e. the dependency won't display for the dependent joint), in order to be able to link the dependent joint to other joints for complex dependency set-ups. All dependent joints must share a same parent shape for proper operation.</li>
 <li class=tabTab><strong>Multiplication factor</strong>: the multiplication factor that links the dependent joints. A factor or 1 will let two linked revolute joints rotate in the same direction, at the same rate.</li>
 <li class=tabTab><strong>Offset</strong>: not yet used. Keep at 0.</li>
-
-
-
-
-<br>
-<br>
-<h3 class=recommendedTopics>Recommended topics</h3>
-<li><a href="apiFunctionListCategory.htm#engineParameters">Engine properties setter and getter API functions</a></li>
-<li><a href="jointDynamicsProperties.htm">Joint dynamics properties</a></li>
-<li><a href="dynamicsEngineDialog.htm">Dynamics engines general properties</a></li>
-<li><a href="dynamicsModule.htm#bullet">Bullet physics library</a></li>
-<li><a href="dynamicsModule.htm#ode">Open Dynamics Engine</a></li>
-<li><a href="dynamicsModule.htm#vortex">Vortex Studio</a></li>
-<li><a href="dynamicsModule.htm#newton">Newton Dynamics</a></li>
 
 <br>
 <br>

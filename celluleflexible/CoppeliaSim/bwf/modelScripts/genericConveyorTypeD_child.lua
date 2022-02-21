@@ -1,3 +1,4 @@
+simBWF=require('simBWF')
 function getTriggerType()
     if stopTriggerSensor~=-1 then
         local data=sim.readCustomDataBlock(stopTriggerSensor,'XYZ_BINARYSENSOR_INFO')
@@ -63,26 +64,26 @@ function getMasterDeltaShiftIfApplicable()
     end
 end
 
-if (sim_call_type==sim.childscriptcall_initialization) then
-    model=sim.getObjectAssociatedWithScript(sim.handle_self)
+function sysCall_init()
+    model=sim.getObject('.')
     local data=sim.readCustomDataBlock(model,simBWF.modelTags.CONVEYOR)
     data=sim.unpackTable(data)
     stopTriggerSensor=simBWF.getReferencedObjectHandle(model,1)
     startTriggerSensor=simBWF.getReferencedObjectHandle(model,2)
     masterConveyor=simBWF.getReferencedObjectHandle(model,3)
     getTriggerType()
-    path=sim.getObjectHandle('genericConveyorTypeD_path')
+    path=sim.getObject('./genericConveyorTypeD_path')
     lastT=sim.getSimulationTime()
     beltVelocity=0
     totShift=0
 end 
 
-if (sim_call_type==sim.childscriptcall_actuation) then
+function sysCall_actuation()
     local data=sim.readCustomDataBlock(model,simBWF.modelTags.CONVEYOR)
     data=sim.unpackTable(data)
     maxVel=data['velocity']
     accel=data['acceleration']
-    enabled=sim.boolAnd32(data['bitCoded'],64)>0
+    enabled=(data['bitCoded']&64)>0
     if not enabled then
         maxVel=0
     end

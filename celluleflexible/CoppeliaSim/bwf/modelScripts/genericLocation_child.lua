@@ -1,3 +1,4 @@
+simBWF=require('simBWF')
 function readInfo()
     local data=sim.readCustomDataBlock(model,simBWF.modelTags.OLDLOCATION)
     if data then
@@ -62,13 +63,13 @@ function isATransporterWithinRange()
     return false
 end
 
-if (sim_call_type==sim.childscriptcall_initialization) then
-    model=sim.getObjectAssociatedWithScript(sim.handle_self)
+function sysCall_init()
+    model=sim.getObject('.')
     buckets=getAvailableBuckets()
     transporters=getAvailableTransporters()
 end
 
-if (sim_call_type==sim.childscriptcall_sensing) then
+function sysCall_sensing()
     local data=readInfo()
     if isABucketWithinRange() or isATransporterWithinRange() then
         data['status']='occupied'
@@ -81,7 +82,7 @@ if (sim_call_type==sim.childscriptcall_sensing) then
 end
 
 
-if (sim_call_type==sim.childscriptcall_cleanup) then
+function sysCall_cleanup()
 
 	-- Put some restoration code here
 

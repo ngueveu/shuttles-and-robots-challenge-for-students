@@ -15,8 +15,8 @@
   <td >
 <p><a href="../../index.html" TARGET="_top"><img src="../images/homeImg.png"></a></p>
 
-<h1><a href="../apiOverview.htm">Regular API</a> function</h1>
-<h3 class=subsectionBar><a name="simGetSimulationState" id="simGetSimulationState"></a>simGetSimulationState / sim.getSimulationState </h3>
+<h1>Regular API function</h1>
+<p class=subsectionBar><a name="simGetSimulationState" id="simGetSimulationState"></a>simGetSimulationState / sim.getSimulationState </p>
 <table class=apiTable>
 <tr class=apiTableTr> 
 <td class=apiTableLeftDescr>
@@ -26,19 +26,19 @@ Description
 </tr> 
 <tr class=apiTableTr> 
 <td class=apiTableLeftCSyn>
-C synopsis
+C/C++<br>synopsis
 </td> 
 <td class=apiTableRightCSyn>simInt simGetSimulationState()</td> 
 </tr> 
 <tr class=apiTableTr> 
-<td class=apiTableLeftCParam>C parameters</td> 
+<td class=apiTableLeftCParam>C/C++<br>parameters</td> 
 <td class=apiTableRightCParam>
-<div>None</div>
+<div></div>
 </td> 
 </tr> 
 <tr class=apiTableTr> 
 <td class=apiTableLeftCRet>
-C return value
+C/C++<br>return value
 </td> 
 <td class=apiTableRightCRet>
 <div>The current state of the simulation (sim_simulation_stopped, sim_simulation_paused, etc. (see the <a href="../apiConstants.htm#simulationStatus">simulation state values</a>)), or -1 in case of an error<br>
@@ -49,12 +49,12 @@ C return value
 <td class=apiTableLeftLSyn>
 Lua synopsis
 </td> 
-<td class=apiTableRightLSyn>number simulationState=sim.getSimulationState()</td> 
+<td class=apiTableRightLSyn>int simulationState=sim.getSimulationState()</td> 
 </tr> 
 <tr class=apiTableTr> 
 <td class=apiTableLeftLParam>Lua parameters</td> 
 <td class=apiTableRightLParam>
-<div>Same as C-function</div>
+<div>Similar to the C-function counterpart</div>
 <div></div></td> 
 </tr> 
 <tr class=apiTableTr> 
@@ -62,28 +62,24 @@ Lua synopsis
 Lua return values
 </td> 
 <td class=apiTableRightLRet>
-<div>Same as C-function</div>
+<div>Similar to the C-function counterpart</div>
 <div></div></td> 
 </tr> 
 
-<tr class=apiTableTr> 
-<td class=remApiTableLeftCParam>
-Remote API equiv.
-</td> 
-<td class=remApiTableRightCParam>
-<div>B0-based remote API: <a href="../b0RemoteApi-cpp.htm#simxGetSimulationState">simxGetSimulationState</a></div>
-<div>Legacy remote API: -</div>
-</td> 
-</tr> 
+ 
+
+
+
+<tr class=apiTableTr>
+<td class=apiTableLeftPSyn>Python synopsis</td>
+<td class=apiTableRightPSyn>int simulationState=sim.getSimulationState()</td>
+</tr>
 
 </table> 
 
 <br>
-<p><a href="../apiFunctions.htm">All regular API functions on one page</a></p>
-<br>
-<br>
 </td>
-</tr>
+
 </table>
 </div>
 </body>

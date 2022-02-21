@@ -1,3 +1,4 @@
+simBWF=require('simBWF')
 function removeFromPluginRepresentation()
 
 end
@@ -7,14 +8,14 @@ function updatePluginRepresentation()
 end
 
 function setObjectSize(h,x,y,z)
-    local r,mmin=sim.getObjectFloatParameter(h,sim.objfloatparam_objbbox_min_x)
-    local r,mmax=sim.getObjectFloatParameter(h,sim.objfloatparam_objbbox_max_x)
+    local mmin=sim.getObjectFloatParam(h,sim.objfloatparam_objbbox_min_x)
+    local mmax=sim.getObjectFloatParam(h,sim.objfloatparam_objbbox_max_x)
     local sx=mmax-mmin
-    local r,mmin=sim.getObjectFloatParameter(h,sim.objfloatparam_objbbox_min_y)
-    local r,mmax=sim.getObjectFloatParameter(h,sim.objfloatparam_objbbox_max_y)
+    local mmin=sim.getObjectFloatParam(h,sim.objfloatparam_objbbox_min_y)
+    local mmax=sim.getObjectFloatParam(h,sim.objfloatparam_objbbox_max_y)
     local sy=mmax-mmin
-    local r,mmin=sim.getObjectFloatParameter(h,sim.objfloatparam_objbbox_min_z)
-    local r,mmax=sim.getObjectFloatParameter(h,sim.objfloatparam_objbbox_max_z)
+    local mmin=sim.getObjectFloatParam(h,sim.objfloatparam_objbbox_min_z)
+    local mmax=sim.getObjectFloatParam(h,sim.objfloatparam_objbbox_max_z)
     local sz=mmax-mmin
     sim.scaleObject(h,x/sx,y/sy,z/sz)
 end
@@ -100,7 +101,7 @@ function getAvailableConveyors()
     for i=1,#l,1 do
         local data=sim.readCustomDataBlock(l[i],simBWF.modelTags.CONVEYOR)
         if data then
-            retL[#retL+1]={sim.getObjectName(l[i]),l[i]}
+            retL[#retL+1]={sim.getObjectAlias(l[i],1),l[i]}
         end
     end
     return retL
@@ -134,9 +135,9 @@ function setDlgItemContent()
         simUI.setEditValue(ui,20,simBWF.format("%.0f",config['width']/0.001),true)
         simUI.setEditValue(ui,21,simBWF.format("%.0f",config['length']/0.001),true)
         simUI.setEditValue(ui,22,simBWF.format("%.0f",config['height']/0.001),true)
-        simUI.setCheckboxValue(ui,3,simBWF.getCheckboxValFromBool(sim.boolAnd32(config['bitCoded'],1)~=0),true)
-        simUI.setCheckboxValue(ui,4,simBWF.getCheckboxValFromBool(sim.boolAnd32(config['bitCoded'],2)~=0),true)
-        simUI.setCheckboxValue(ui,5,simBWF.getCheckboxValFromBool(sim.boolAnd32(config['bitCoded'],4)~=0),true)
+        simUI.setCheckboxValue(ui,3,simBWF.getCheckboxValFromBool((config['bitCoded']&1)~=0),true)
+        simUI.setCheckboxValue(ui,4,simBWF.getCheckboxValFromBool((config['bitCoded']&2)~=0),true)
+        simUI.setCheckboxValue(ui,5,simBWF.getCheckboxValFromBool((config['bitCoded']&4)~=0),true)
         updateEnabledDisabledItemsDlg()
         simBWF.setSelectedEditWidget(ui,sel)
     end
@@ -192,7 +193,7 @@ end
 
 function hidden_callback(ui,id,newVal)
     local c=readInfo()
-    c['bitCoded']=sim.boolOr32(c['bitCoded'],1)
+    c['bitCoded']=(c['bitCoded']|1)
     if newVal==0 then
         c['bitCoded']=c['bitCoded']-1
     end
@@ -203,7 +204,7 @@ end
 
 function enabled_callback(ui,id,newVal)
     local c=readInfo()
-    c['bitCoded']=sim.boolOr32(c['bitCoded'],2)
+    c['bitCoded']=(c['bitCoded']|2)
     if newVal==0 then
         c['bitCoded']=c['bitCoded']-2
     end
@@ -214,7 +215,7 @@ end
 
 function showPoints_callback(ui,id,newVal)
     local c=readInfo()
-    c['bitCoded']=sim.boolOr32(c['bitCoded'],4)
+    c['bitCoded']=(c['bitCoded']|4)
     if newVal==0 then
         c['bitCoded']=c['bitCoded']-4
     end
@@ -871,8 +872,8 @@ function removeDlg()
     end
 end
 
-if (sim_call_type==sim.customizationscriptcall_initialization) then
-    model=sim.getObjectAssociatedWithScript(sim.handle_self)
+function sysCall_init()
+    model=sim.getObject('.')
     _MODELVERSION_=0
     _CODEVERSION_=0
     local _info=readInfo()
@@ -883,8 +884,8 @@ if (sim_call_type==sim.customizationscriptcall_initialization) then
         _info['conveyor']=nil
     end
     writeInfo(_info)
-    box=sim.getObjectHandle('genericPartPalletizer_box')
-    sim.setScriptAttribute(sim.handle_self,sim.customizationscriptattribute_activeduringsimulation,false)
+    box=sim.getObject('./genericPartPalletizer_box')
+    
     -- Following for backward compatibility:
     createPalletPointsIfNeeded()
     updatePluginRepresentation()
@@ -900,35 +901,35 @@ showOrHideUiIfNeeded=function()
     end
 end
 
-if (sim_call_type==sim.customizationscriptcall_nonsimulation) then
+function sysCall_nonSimulation()
     showOrHideUiIfNeeded()
 end
 
-if (sim_call_type==sim.customizationscriptcall_firstaftersimulation) then
+function sysCall_afterSimulation()
     sim.setModelProperty(model,0)
     updateEnabledDisabledItemsDlg()
     showOrHideUiIfNeeded()
 end
 
-if (sim_call_type==sim.customizationscriptcall_lastbeforesimulation) then
+function sysCall_beforeSimulation()
     removeDlg()
     local c=readInfo()
-    local show=simBWF.modifyAuxVisualizationItems(sim.boolAnd32(c['bitCoded'],1)==0)
+    local show=simBWF.modifyAuxVisualizationItems((c['bitCoded']&1)==0)
     if not show then
         sim.setModelProperty(model,sim.modelproperty_not_visible)
     end
 end
 
-if (sim_call_type==sim.customizationscriptcall_lastbeforeinstanceswitch) then
+function sysCall_beforeInstanceSwitch()
     removeDlg()
     removeFromPluginRepresentation()
 end
 
-if (sim_call_type==sim.customizationscriptcall_firstafterinstanceswitch) then
+function sysCall_afterInstanceSwitch()
     updatePluginRepresentation()
 end
 
-if (sim_call_type==sim.customizationscriptcall_cleanup) then
+function sysCall_cleanup()
     removeDlg()
     removeFromPluginRepresentation()
     simBWF.writeSessionPersistentObjectData(model,"dlgPosAndSize",previousDlgPos,algoDlgSize,algoDlgPos,distributionDlgSize,distributionDlgPos,previousDlg1Pos)

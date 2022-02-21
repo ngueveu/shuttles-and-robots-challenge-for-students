@@ -1,3 +1,4 @@
+simBWF=require('simBWF')
 function removeFromPluginRepresentation()
 
 end
@@ -88,14 +89,14 @@ showOrHideUiIfNeeded=function()
     end
 end
 
-if (sim_call_type==sim.customizationscriptcall_initialization) then
-    model=sim.getObjectAssociatedWithScript(sim.handle_self)
+function sysCall_init()
+    model=sim.getObject('.')
     _MODELVERSION_=0
     _CODEVERSION_=0
     local _info=readInfo()
     simBWF.checkIfCodeAndModelMatch(model,_CODEVERSION_,_info['version'])
     writeInfo(_info)
-    sim.setScriptAttribute(sim.handle_self,sim.customizationscriptattribute_activeduringsimulation,false)
+    
     local objs=sim.getObjectsWithTag('XYZ_PRICING_INFO',true)
     previousDlgPos,algoDlgSize,algoDlgPos,distributionDlgSize,distributionDlgPos,previousDlg1Pos=simBWF.readSessionPersistentObjectData(model,"dlgPosAndSize")
     if #objs>1 then
@@ -108,32 +109,32 @@ if (sim_call_type==sim.customizationscriptcall_initialization) then
     end
 end
 
-if (sim_call_type==sim.customizationscriptcall_nonsimulation) then
+function sysCall_nonSimulation()
     showOrHideUiIfNeeded()
 end
 
-if (sim_call_type==sim.customizationscriptcall_firstaftersimulation) then
-    sim.setObjectInt32Parameter(model,sim.objintparam_visibility_layer,1)
+function sysCall_afterSimulation()
+    sim.setObjectInt32Param(model,sim.objintparam_visibility_layer,1)
 end
 
-if (sim_call_type==sim.customizationscriptcall_lastbeforesimulation) then
-    sim.setObjectInt32Parameter(model,sim.objintparam_visibility_layer,0)
+function sysCall_beforeSimulation()
+    sim.setObjectInt32Param(model,sim.objintparam_visibility_layer,0)
     removeDlg()
 end
 
-if (sim_call_type==sim.customizationscriptcall_lastbeforeinstanceswitch) then
+function sysCall_beforeInstanceSwitch()
     removeDlg()
     removeFromPluginRepresentation()
 end
 
-if (sim_call_type==sim.customizationscriptcall_firstafterinstanceswitch) then
+function sysCall_afterInstanceSwitch()
     updatePluginRepresentation()
 end
 
-if (sim_call_type==sim.customizationscriptcall_cleanup) then
+function sysCall_cleanup()
     removeDlg()
     removeFromPluginRepresentation()
-    if sim.isHandleValid(model)==1 then
+    if sim.isHandle(model) then
         -- the associated object might already have been destroyed
         simBWF.writeSessionPersistentObjectData(model,"dlgPosAndSize",previousDlgPos,algoDlgSize,algoDlgPos,distributionDlgSize,distributionDlgPos,previousDlg1Pos)
     end

@@ -15,8 +15,8 @@
   <td >
 <p><a href="../../index.html" TARGET="_top"><img src="../images/homeImg.png"></a></p>
 
-<h1><a href="../apiOverview.htm">Regular API</a> function</h1>
-<h3 class=subsectionBar><a name="simGetObjectParent" id="simGetObjectParent"></a>simGetObjectParent / sim.getObjectParent</h3>
+<h1>Regular API function</h1>
+<p class=subsectionBar><a name="simGetObjectParent" id="simGetObjectParent"></a>simGetObjectParent / sim.getObjectParent</p>
 <table class=apiTable>
 <tr class=apiTableTr> 
 <td class=apiTableLeftDescr>
@@ -26,19 +26,19 @@ Description
 </tr> 
 <tr class=apiTableTr> 
 <td class=apiTableLeftCSyn>
-C synopsis
+C/C++<br>synopsis
 </td> 
 <td class=apiTableRightCSyn>simInt simGetObjectParent(simInt objectHandle)<br></td> 
 </tr> 
 <tr class=apiTableTr> 
-<td class=apiTableLeftCParam>C parameters</td> 
+<td class=apiTableLeftCParam>C/C++<br>parameters</td> 
 <td class=apiTableRightCParam>
 <div><strong>objectHandle</strong>: handle of the object</div>
 <div></div></td> 
 </tr> 
 <tr class=apiTableTr> 
 <td class=apiTableLeftCRet>
-C return value
+C/C++<br>return value
 </td> 
 <td class=apiTableRightCRet>
 <div>handle of parent or -1 if the parent doesn't exist or in case of an error<br>
@@ -49,12 +49,12 @@ C return value
 <td class=apiTableLeftLSyn>
 Lua synopsis
 </td> 
-<td class=apiTableRightLSyn>number parentHandle=sim.getObjectParent(number objectHandle)<br></td> 
+<td class=apiTableRightLSyn>int parentHandle=sim.getObjectParent(int objectHandle)<br></td> 
 </tr> 
 <tr class=apiTableTr> 
 <td class=apiTableLeftLParam>Lua parameters</td> 
 <td class=apiTableRightLParam>
-<div>Same as C-function</div>
+<div>Similar to the C-function counterpart</div>
 <div></div></td> 
 </tr> 
 <tr class=apiTableTr> 
@@ -62,28 +62,24 @@ Lua synopsis
 Lua return values
 </td> 
 <td class=apiTableRightLRet>
-<div>Same as C-function</div>
+<div>Similar to the C-function counterpart</div>
 <div></div></td> 
 </tr> 
 
-<tr class=apiTableTr> 
-<td class=remApiTableLeftCParam>
-Remote API equiv.
-</td> 
-<td class=remApiTableRightCParam>
-<div>B0-based remote API: <a href="../b0RemoteApi-cpp.htm#simxGetObjectParent">simxGetObjectParent</a></div>
-<div>Legacy remote API: <a href="../remoteApiFunctions.htm#simxGetObjectParent">simxGetObjectParent</a></div>
-</td> 
-</tr> 
+ 
+
+
+
+<tr class=apiTableTr>
+<td class=apiTableLeftPSyn>Python synopsis</td>
+<td class=apiTableRightPSyn>int parentHandle=sim.getObjectParent(int objectHandle)</td>
+</tr>
 
 </table> 
 
 <br>
-<p><a href="../apiFunctions.htm">All regular API functions on one page</a></p>
-<br>
-<br>
 </td>
-</tr>
+
 </table>
 </div>
 </body>

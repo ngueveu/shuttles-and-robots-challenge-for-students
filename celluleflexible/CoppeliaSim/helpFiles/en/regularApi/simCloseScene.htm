@@ -15,8 +15,8 @@
   <td >
 <p><a href="../../index.html" TARGET="_top"><img src="../images/homeImg.png"></a></p>
 
-<h1><a href="../apiOverview.htm">Regular API</a> function</h1>
-<h3 class=subsectionBar><a name="simCloseScene" id="simCloseScene"></a>simCloseScene</h3>
+<h1>Regular API function</h1>
+<p class=subsectionBar><a name="simCloseScene" id="simCloseScene"></a>simCloseScene / sim.closeScene</p>
 <table class=apiTable>
 <tr class=apiTableTr> 
 <td class=apiTableLeftDescr>
@@ -26,19 +26,19 @@ Description
 </tr> 
 <tr class=apiTableTr> 
 <td class=apiTableLeftCSyn>
-C synopsis
+C/C++<br>synopsis
 </td> 
 <td class=apiTableRightCSyn>simInt simCloseScene()</td> 
 </tr> 
 <tr class=apiTableTr> 
-<td class=apiTableLeftCParam>C parameters</td> 
+<td class=apiTableLeftCParam>C/C++<br>parameters</td> 
 <td class=apiTableRightCParam>
-<div>none</div>
+<div></div>
 <div></div></td> 
 </tr> 
 <tr class=apiTableTr> 
 <td class=apiTableLeftCRet>
-C return value
+C/C++<br>return value
 </td> 
 <td class=apiTableRightCRet>
 <div>-1 if operation was not successful, otherwise the current scene index.<br>
@@ -49,12 +49,12 @@ C return value
 <td class=apiTableLeftLSyn>
 Lua synopsis
 </td> 
-<td class=apiTableRightLSyn>number result=sim.closeScene()</td> 
+<td class=apiTableRightLSyn>int result=sim.closeScene()</td> 
 </tr> 
 <tr class=apiTableTr> 
 <td class=apiTableLeftLParam>Lua parameters</td> 
 <td class=apiTableRightLParam>
-<div>-</div>
+<div></div>
 <div></div></td> 
 </tr> 
 <tr class=apiTableTr> 
@@ -62,28 +62,24 @@ Lua synopsis
 Lua return values
 </td> 
 <td class=apiTableRightLRet>
-<div>same as C-function</div>
+<div>Similar to the C-function counterpart</div>
 <div></div></td> 
 </tr> 
 
-<tr class=apiTableTr> 
-<td class=remApiTableLeftCParam>
-Remote API equiv.
-</td> 
-<td class=remApiTableRightCParam>
-<div>B0-based remote API: <a href="../b0RemoteApi-cpp.htm#simxCloseScene">simxCloseScene</a></div>
-<div>Legacy remote API: <a href="../remoteApiFunctions.htm#simxCloseScene">simxCloseScene</a></div>
-</td> 
-</tr> 
+ 
+
+
+
+<tr class=apiTableTr>
+<td class=apiTableLeftPSyn>Python synopsis</td>
+<td class=apiTableRightPSyn>int result=sim.closeScene()</td>
+</tr>
 
 </table> 
 
 <br>
-<p><a href="../apiFunctions.htm">All regular API functions on one page</a></p>
-<br>
-<br>
 </td>
-</tr>
+
 </table>
 </div>
 </body>

@@ -50,7 +50,7 @@ function model.updatePluginRepresentation_template(partHandle)
     for i=simBWF.PART_DESTINATIONFIRST_REF,simBWF.PART_DESTINATIONLAST_REF,1 do
         local h=simBWF.getReferencedObjectHandle(partHandle,i)
         if h>=0 then
-            --print(h,sim.getObjectName(h+sim.handleflag_altname))
+            --print(h,sim.getObjectAlias(h))
             dest[#dest+1]=h
         end
     end
@@ -81,29 +81,29 @@ function model.handleJobConsistency(removeJobsExceptCurrent)
     -- Make sure stored jobs are consistent with current scene:
 
 
-    model.currentJob=sim.getStringParameter(sim.stringparam_job)
+    model.currentJob='default' --=sim.getStringParam(sim.stringparam_job)
 end
 
 function model.createNewJob()
     -- Create new job menu bar cmd
     local oldJob=model.currentJob
-    model.currentJob=sim.getStringParameter(sim.stringparam_job)
+    model.currentJob='default' --=sim.getStringParam(sim.stringparam_job)
 end
 
 function model.deleteJob()
     -- Delete current job menu bar cmd
     local oldJob=model.currentJob
-    model.currentJob=sim.getStringParameter(sim.stringparam_job)
+    model.currentJob='default' --=sim.getStringParam(sim.stringparam_job)
 end
 
 function model.renameJob()
     -- Rename job menu bar cmd
     local oldJob=model.currentJob
-    model.currentJob=sim.getStringParameter(sim.stringparam_job)
+    model.currentJob='default' --=sim.getStringParam(sim.stringparam_job)
 end
 
 function model.switchJob()
     -- Switch job menu bar cmd
     local oldJob=model.currentJob
-    model.currentJob=sim.getStringParameter(sim.stringparam_job)
+    model.currentJob='default' --=sim.getStringParam(sim.stringparam_job)
 end

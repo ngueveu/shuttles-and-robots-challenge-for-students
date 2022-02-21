@@ -1,16 +1,17 @@
 // Debugging
 // =================================================
 alwaysShowConsole = false
-debugInternalFunctionAccess = false // will also heavily slow down CoppeliaSim
-debugCApiAccess = false // will also drastically slow down CoppeliaSim
-debugLuaApiAccess = false // will also slow down CoppeliaSim
-sendDebugInformationToFile = false // if true, debug info is sent to debugLog.txt
+verbosity = default // to override console verbosity setting, use any of: default (do not override), none, errors, warnings, loadinfos, scripterrors, scriptwarnings, msgs, infos, debug, trace, tracelua or traceall
+statusbarVerbosity = default // to override statusbar verbosity setting, use any of: default (do not override), none, errors, warnings, loadinfos, scripterrors, scriptwarnings, msgs, infos, debug, trace, tracelua or traceall
+logFilter =  // leave empty for no filter. Filter format: txta1&txta2&...&txtaN|txtb1&txtb2&...&txtbN|...
+dialogVerbosity = default // to override dialog verbosity setting, use any of: default (do not override), none, errors, warnings, questions or infos
+undecoratedStatusbarMessages = false
+consoleMsgsToFile = false // if true, console messages are sent to debugLog.txt
 
 
 // Rendering
 // =================================================
 idleFps = 8
-threadedRenderingDuringSimulation = 0 // recommended to keep 0 (-1=disabled, 0=pre-enabled, 1=enabled).
 desiredOpenGlMajor = -1 // recommended to keep -1.
 desiredOpenGlMinor = -1 // recommended to keep -1.
 offscreenContextType = -1 // recommended to keep -1 (-1=default, 0=Qt offscreen, 1=QGLWidget/QOpenGLWidget visible, 2=QGLWidget/QOpenGLWidget invisible).
@@ -26,7 +27,7 @@ useGlFinish_visionSensors = false // recommended to keep false. Graphic card dep
 vsync = 0 // recommended to keep at 0. Graphic card dependent.
 debugOpenGl = false
 stereoDist = 0 // 0=no stereo, otherwise the intra occular distance (0.0635 for the human eyes).
-highResDisplay = -1 // -1=automatic, 0=disabled, 1=enabled.
+highResDisplay = -1 // -1=none, 2=enabled, 1=special.
 noEdgesWhenMouseDownInCameraView = false // if true, rendering is faster during mouse/view interaction
 noTexturesWhenMouseDownInCameraView = false // if true, rendering is faster during mouse/view interaction
 noCustomUisWhenMouseDownInCameraView = true // if true, rendering is faster during mouse/view interaction
@@ -35,6 +36,7 @@ hierarchyRefreshCnt = 3
 
 // Visual
 // =================================================
+darkMode = false
 renderingSurfaceVShift = 0
 renderingSurfaceVResize = 0
 displayWorldRef = true
@@ -44,14 +46,13 @@ guiFontSize_Win = 13 // -1=default
 guiFontSize_Mac = -1 // -1=default
 guiFontSize_Linux = 13 // -1=default
 statusbarInitiallyVisible = true
-modelBrowserInitiallyVisible = false
-sceneHierarchyInitiallyVisible = false
+modelBrowserInitiallyVisible = true
+sceneHierarchyInitiallyVisible = true
 sceneHierarchyHiddenDuringSimulation = false
 scriptEditorFont =  // empty=default.
+scriptEditorBoldFont = false
 scriptEditorFontSize = -1 // -1=default.
-auxConsoleFont =  // empty=default
-auxConsoleFontSize = -1 // -1=default.
-mainScriptColor_background = 190,175,175
+mainScriptColor_background = 205,195,195
 mainScriptColor_selection = 128,128,255
 mainScriptColor_comment = 0,140,0
 mainScriptColor_number = 220,0,220
@@ -64,7 +65,7 @@ mainScriptColor_word = 0,0,255
 mainScriptColor_word2 = 152,0,0
 mainScriptColor_word3 = 220,80,20
 mainScriptColor_word4 = 152,64,0
-nonThreadedChildScriptColor_background = 190,190,190
+nonThreadedChildScriptColor_background = 205,205,205
 nonThreadedChildScriptColor_selection = 128,128,255
 nonThreadedChildScriptColor_comment = 0,140,0
 nonThreadedChildScriptColor_number = 220,0,220
@@ -77,7 +78,7 @@ nonThreadedChildScriptColor_word = 0,0,255
 nonThreadedChildScriptColor_word2 = 152,0,0
 nonThreadedChildScriptColor_word3 = 220,80,20
 nonThreadedChildScriptColor_word4 = 152,64,0
-threadedChildScriptColor_background = 180,190,190
+threadedChildScriptColor_background = 210,220,220
 threadedChildScriptColor_selection = 128,128,255
 threadedChildScriptColor_comment = 0,140,0
 threadedChildScriptColor_number = 220,0,220
@@ -90,12 +91,12 @@ threadedChildScriptColor_word = 0,0,255
 threadedChildScriptColor_word2 = 152,0,0
 threadedChildScriptColor_word3 = 220,80,20
 threadedChildScriptColor_word4 = 152,64,0
-customizationScriptColor_background = 150,150,150
+customizationScriptColor_background = 180,180,180
 customizationScriptColor_selection = 128,128,255
 customizationScriptColor_comment = 0,120,0
 customizationScriptColor_number = 220,0,220
-customizationScriptColor_string = 205,205,0
-customizationScriptColor_character = 205,205,0
+customizationScriptColor_string = 255,255,0
+customizationScriptColor_character = 255,255,0
 customizationScriptColor_operator = 0,0,0
 customizationScriptColor_preprocessor = 0,128,128
 customizationScriptColor_identifier = 70,70,70
@@ -109,10 +110,8 @@ customizationScriptColor_word4 = 152,64,0
 // =================================================
 defaultDirectoryForScenes =  // absolute path, e.g. d:/myScenes (or leave empty for default path)
 defaultDirectoryForModels =  // absolute path, e.g. d:/myModels (or leave empty for default path)
-defaultDirectoryForCadFiles =  // absolute path, e.g. d:/myCadFiles (or leave empty for default path)
+defaultDirectoryForImportExport =  // absolute path, e.g. d:/myCadFiles (or leave empty for default path)
 defaultDirectoryForMiscFiles =  // absolute path, e.g. d:/myMiscFiles (or leave empty for default path)
-defaultDirectoryForExternalScriptEditor =  // absolute path, e.g. d:/myScriptTempFiles (or leave empty for default path)
-defaultDirectoryForRemoteApiFiles =  // absolute path, e.g. d:/myRemoteApiTransfers (or leave empty for default path)
 
 
 // Serialization
@@ -139,11 +138,9 @@ timeInMsForUndoRedoTooLongWarning = 200
 // =================================================
 doNotShowCrashRecoveryMessage = false
 doNotShowUpdateCheckMessage = false
-doNotShowSceneSelectionThumbnails = false
 doNotShowProgressBars = false
 doNotShowAcknowledgmentMessages = false
 doNotShowVideoCompressionLibraryLoadError = false
-redirectStatusbarMsgToConsoleInHeadlessMode = false
 suppressStartupDialogs = false
 suppressXmlOverwriteMsg = false
 
@@ -154,13 +151,13 @@ middleMouseButtonSwitchesModes = false // has only an effect if navigationBackwa
 navigationBackwardCompatibility = false // recommended to keep false.
 colorAdjust_backCompatibility = 1 // recommended to keep 1.0
 specificGpuTweak = false
-enableOldCalcModuleGuis = false
 useAlternateSerialPortRoutines = false
-enableOpenGlBasedCustomUiEditor = false
-changeScriptCodeForNewApiNotation = 1 // 1=enabled, 0=disabled.
-supportOldApiNotation = true
-enableOldMillObjects = false
+disableOpenGlBasedCustomUi = false
+showOldDlgs = false
+enableOldRenderableBehaviour = false
+keepOldThreadedScripts = false
 enableOldMirrorObjects = false
+threadedScriptsStoppingGraceTime = 0
 
 
 // Various
@@ -180,10 +177,11 @@ removeIdenticalTriangles = true
 triangleWindingCheck = true
 runCustomizationScripts = true
 test1 = false // recommended to keep false.
-orderHierarchyAlphabetically = false
 macChildDialogType = -1 // -1=default.
-useExternalLuaLibrary = false // if true, will call all Lua functions via the simLua library ('simLua.dll', 'libsimLua.so' or 'libsimLua.dylib')
 additionalLuaPath =  // e.g. d:/myLuaRoutines
+additionalPythonPath =  // e.g. d:/myPythonRoutines
+defaultPython =  // e.g. c:/Python38/python.exe
+executeUnsafe = false // recommended to keep false.
 desktopRecordingIndex = 0
 desktopRecordingWidth = -1 // -1=default.
 externalScriptEditor = 

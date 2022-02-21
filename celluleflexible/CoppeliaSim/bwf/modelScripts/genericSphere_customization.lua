@@ -1,3 +1,4 @@
+simBWF=require('simBWF')
 function removeFromPluginRepresentation()
 
 end
@@ -7,14 +8,14 @@ function updatePluginRepresentation()
 end
 
 function setSphereSize(h,diameter)
-    local r,mmin=sim.getObjectFloatParameter(h,sim.objfloatparam_objbbox_min_x)
-    local r,mmax=sim.getObjectFloatParameter(h,sim.objfloatparam_objbbox_max_x)
+    local mmin=sim.getObjectFloatParam(h,sim.objfloatparam_objbbox_min_x)
+    local mmax=sim.getObjectFloatParam(h,sim.objfloatparam_objbbox_max_x)
     local sx=mmax-mmin
-    local r,mmin=sim.getObjectFloatParameter(h,sim.objfloatparam_objbbox_min_y)
-    local r,mmax=sim.getObjectFloatParameter(h,sim.objfloatparam_objbbox_max_y)
+    local mmin=sim.getObjectFloatParam(h,sim.objfloatparam_objbbox_min_y)
+    local mmax=sim.getObjectFloatParam(h,sim.objfloatparam_objbbox_max_y)
     local sy=mmax-mmin
-    local r,mmin=sim.getObjectFloatParameter(h,sim.objfloatparam_objbbox_min_z)
-    local r,mmax=sim.getObjectFloatParameter(h,sim.objfloatparam_objbbox_max_z)
+    local mmin=sim.getObjectFloatParam(h,sim.objfloatparam_objbbox_min_z)
+    local mmax=sim.getObjectFloatParam(h,sim.objfloatparam_objbbox_max_z)
     local sz=mmax-mmin
     sim.scaleObject(h,diameter/sx,diameter/sy,diameter/sz)
 end
@@ -287,9 +288,9 @@ function removeDlg()
     end
 end
 
-if (sim_call_type==sim.customizationscriptcall_initialization) then
+function sysCall_init()
     dlgMainTabIndex=0
-    model=sim.getObjectAssociatedWithScript(sim.handle_self)
+    model=sim.getObject('.')
     _MODELVERSION_=0
     _CODEVERSION_=0
     local _info=readInfo()
@@ -297,14 +298,14 @@ if (sim_call_type==sim.customizationscriptcall_initialization) then
     writeInfo(_info)
     auxSpheres={}
     for i=1,3,1 do
-        auxSpheres[i]=sim.getObjectHandle('genericSphere_auxSphere'..i)
+        auxSpheres[i]=sim.getObject('./genericSphere_auxSphere'..i)
     end
     local data=readPartInfo()
     if data['name']=='<partName>' then
         data['name']='SPHERE'
     end
     writePartInfo(data)
-    sim.setScriptAttribute(sim.handle_self,sim.customizationscriptattribute_activeduringsimulation,false)
+    
     updatePluginRepresentation()
     previousDlgPos,algoDlgSize,algoDlgPos,distributionDlgSize,distributionDlgPos,previousDlg1Pos=simBWF.readSessionPersistentObjectData(model,"dlgPosAndSize")
 end
@@ -318,29 +319,29 @@ showOrHideUiIfNeeded=function()
     end
 end
 
-if (sim_call_type==sim.customizationscriptcall_nonsimulation) then
+function sysCall_nonSimulation()
     showOrHideUiIfNeeded()
 end
 
 
-if (sim_call_type==sim.customizationscriptcall_firstaftersimulation) then
+function sysCall_afterSimulation()
     showOrHideUiIfNeeded()
 end
 
-if (sim_call_type==sim.customizationscriptcall_lastbeforesimulation) then
+function sysCall_beforeSimulation()
     removeDlg()
 end
 
-if (sim_call_type==sim.customizationscriptcall_lastbeforeinstanceswitch) then
+function sysCall_beforeInstanceSwitch()
     removeDlg()
     removeFromPluginRepresentation()
 end
 
-if (sim_call_type==sim.customizationscriptcall_firstafterinstanceswitch) then
+function sysCall_afterInstanceSwitch()
     updatePluginRepresentation()
 end
 
-if (sim_call_type==sim.customizationscriptcall_cleanup) then
+function sysCall_cleanup()
     removeDlg()
     removeFromPluginRepresentation()
     local repo,modelHolder=simBWF.getPartRepositoryHandles()

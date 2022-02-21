@@ -1,9 +1,10 @@
+simBWF=require('simBWF')
 displayTargets=function(targets)
     for i=1,4,1 do
         sim.addDrawingObjectItem(decorationContainers[i],nil)
     end
     for key,value in pairs(targets) do
-        local stage=sim.boolAnd32(value['processingStage'],1+2)
+        local stage=(value['processingStage']&1+2)
         local p=sim.getObjectPosition(key,-1)
         sim.addDrawingObjectItem(decorationContainers[stage+1],{p[1],p[2],p[3],0,0,1})
     end
@@ -17,14 +18,14 @@ displayGreyTargets=function(targets)
     end
 end
 
-if (sim_call_type==sim.childscriptcall_initialization) then
-    model=sim.getObjectHandle('genericPingPongPacker')
-    trackingWindowModel=sim.getObjectAssociatedWithScript(sim.handle_self)
+function sysCall_init()
+    model=sim.getObject('./genericPingPongPacker')
+    trackingWindowModel=sim.getObject('.')
     local modelData=sim.readCustomDataBlock(model,simBWF.modelTags.CONVEYOR)
     modelData=sim.unpackTable(modelData)
     locationName=modelData['locationName']
 
-    showPoints=simBWF.modifyAuxVisualizationItems(sim.boolAnd32(modelData['bitCoded'],128)>0)
+    showPoints=simBWF.modifyAuxVisualizationItems((modelData['bitCoded']&128)>0)
 
     decorationContainers={}
     decorationContainers[1]=sim.addDrawingObject(sim.drawing_spherepoints,0.015,0,-1,9999,{1,0,1})
@@ -37,7 +38,7 @@ if (sim_call_type==sim.childscriptcall_initialization) then
     currentCartridgeIndex=1
 end
 
-if (sim_call_type==sim.childscriptcall_sensing) then
+function sysCall_sensing()
     trackedLocations=allTrackedLocations[currentCartridgeIndex]
     local data=sim.readCustomDataBlock(trackingWindowModel,simBWF.modelTags.TRACKINGWINDOW)
     data=sim.unpackTable(data)

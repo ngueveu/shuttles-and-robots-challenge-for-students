@@ -15,23 +15,23 @@
   <td >
 <p><a href="../../index.html" TARGET="_top"><img src="../images/homeImg.png"></a></p>
 
-<h1><a href="../apiOverview.htm">Regular API</a> function</h1>
-<h3 class=subsectionBar><a name="simModifyGhost" id="simModifyGhost"></a>simModifyGhost / sim.modifyGhost </h3>
+<h1>Regular API function</h1>
+<p class=subsectionBar><a name="simModifyGhost" id="simModifyGhost"></a>simModifyGhost / sim.modifyGhost </p>
 <table class=apiTable>
 <tr class=apiTableTr> 
 <td class=apiTableLeftDescr>
 Description 
 </td> 
-<td class=apiTableRightDescr>Modifies or removes a ghost object previously added with <a href="simAddGhost.htm">sim.addGhost</a>.</td>
+<td class=apiTableRightDescr>DEPRECATED.</td>
 </tr> 
 <tr class=apiTableTr> 
 <td class=apiTableLeftCSyn>
-C synopsis
+C/C++<br>synopsis
 </td> 
 <td class=apiTableRightCSyn>simInt simModifyGhost(simInt ghostGroup,simInt ghostId,simInt operation,simFloat floatValue,simInt options,simInt optionsMask,const simFloat* colorOrTransformation)<br></td> 
 </tr> 
 <tr class=apiTableTr> 
-<td class=apiTableLeftCParam>C parameters</td> 
+<td class=apiTableLeftCParam>C/C++<br>parameters</td> 
 <td class=apiTableRightCParam>
 <div><strong>ghostGroup</strong>: an identifier that allows, together with <strong>ghostId</strong>, identifying which ghosts to modify.</div>
 <div><strong>ghostId</strong>: an identifier that allows, together with <strong>ghostGroup</strong>, identifying which ghosts to modify. If -1, then all ghosts that match <strong>ghostGroup</strong> will be modified.</div>
@@ -62,12 +62,12 @@ C synopsis
 <div class=tab><strong>bit5</strong> set (32)=backface culling for the ghost (only when using custom colors)</div>
 
 <div><strong>optionsMask</strong>: a mask allowing to select options to set.</div>
-<div><strong>colorOrTransformation</strong>: a pointer to 7 or 12 float values: when <strong>operation</strong> is 11 or 12, 7 values indicating a transformation should be provided (x,y,z,qx,qy,qz,qw). when <strong>operation</strong> is 13, 12 values indicating a color should be provided (ambient_diffuse RGB, 3 reserved values (set to zero), specular RGB and emissive RGB). Can be NULL when operation is different from 11, 12 or 13.</div>
+<div><strong>colorOrTransformation</strong>: a pointer to 7 or 12 float values: when <strong>operation</strong> is 11 or 12, 7 values indicating a transformation should be provided (x,y,z,qx,qy,qz,qw). when <strong>operation</strong> is 13, 12 values indicating a color should be provided (ambient_diffuse RGB, 3 reserved values (set to zero), specular RGB and emissive RGB). Can be nullptr when operation is different from 11, 12 or 13.</div>
 </td> 
 </tr> 
 <tr class=apiTableTr> 
 <td class=apiTableLeftCRet>
-C return value
+C/C++<br>return value
 </td> 
 <td class=apiTableRightCRet>
 <div>-1 if operation was not successful, otherwise a value depending on the <strong>operation</strong> performed.</div>
@@ -77,12 +77,12 @@ C return value
 <td class=apiTableLeftLSyn>
 Lua synopsis
 </td> 
-<td class=apiTableRightLSyn>number result=sim.modifyGhost(number ghostGroup,number ghostId,number operation,number floatValue,number options=nil,number optionsMask=nil,table colorOrTransformation=nil)</td> 
+<td class=apiTableRightLSyn>int result=sim.modifyGhost(int ghostGroup,int ghostId,int operation,float floatValue,int options=nil,int optionsMask=nil,float[] colorOrTransformation=nil)</td> 
 </tr> 
 <tr class=apiTableTr> 
 <td class=apiTableLeftLParam>Lua parameters</td> 
 <td class=apiTableRightLParam>
-<div>Same as C-function</div>
+<div>Similar to the C-function counterpart</div>
 <div></div>
 </td> 
 </tr> 
@@ -91,14 +91,12 @@ Lua synopsis
 Lua return values
 </td> 
 <td class=apiTableRightLRet>
-<div>Same as C-function</div>
+<div>Similar to the C-function counterpart</div>
 <div></div></td> 
 </tr> 
 </table> 
 
-<br>
-<p><a href="../apiFunctions.htm">All regular API functions on one page</a></p>
-<br>
+
 <br>
 </td>
 </tr>

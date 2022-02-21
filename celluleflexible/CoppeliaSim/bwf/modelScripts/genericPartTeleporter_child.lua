@@ -1,11 +1,12 @@
+simBWF=require('simBWF')
 function sim.getObjectHandle_noErrorNoSuffixAdjustment(name)
-    local err=sim.getInt32Parameter(sim.intparam_error_report_mode)
-    sim.setInt32Parameter(sim.intparam_error_report_mode,0)
+    local err=sim.getInt32Param(sim.intparam_error_report_mode)
+    sim.setInt32Param(sim.intparam_error_report_mode,0)
     local suff=sim.getNameSuffix(nil)
     sim.setNameSuffix(-1)
     retVal=sim.getObjectHandle(name)
     sim.setNameSuffix(suff)
-    sim.setInt32Parameter(sim.intparam_error_report_mode,err)
+    sim.setInt32Param(sim.intparam_error_report_mode,err)
     return retVal
 end
 
@@ -29,7 +30,7 @@ end
 isEnabled=function()
     local data=sim.readCustomDataBlock(model,'XYZ_PARTTELEPORTER_INFO')
     data=sim.unpackTable(data)
-    return sim.boolAnd32(data['bitCoded'],1)>0
+    return (data['bitCoded']&1)>0
 end
 
 getSensorPart=function()
@@ -42,11 +43,11 @@ getSensorPart=function()
     return -1
 end
 
-if (sim_call_type==sim.childscriptcall_initialization) then
-    model=sim.getObjectAssociatedWithScript(sim.handle_self)
+function sysCall_init()
+    model=sim.getObject('.')
     local data=sim.readCustomDataBlock(model,'XYZ_PARTTELEPORTER_INFO')
     data=sim.unpackTable(data)
-    isSource=sim.boolAnd32(data['bitCoded'],2)>0
+    isSource=(data['bitCoded']&2)>0
     xSize=data['width']
     ySize=data['length']
     zSize=data['height']
@@ -55,7 +56,7 @@ if (sim_call_type==sim.childscriptcall_initialization) then
         local dataD=sim.readCustomDataBlock(destinationPod,'XYZ_PARTTELEPORTER_INFO')
         if dataD then
             dataD=sim.unpackTable(dataD)
-            if sim.boolAnd32(dataD['bitCoded'],2)==0 then
+            if (dataD['bitCoded']&2)==0 then
                 xSizeD=dataD['width']
                 ySizeD=dataD['length']
                 zSizeD=dataD['height']
@@ -68,7 +69,7 @@ if (sim_call_type==sim.childscriptcall_initialization) then
     end
 end
 
-if (sim_call_type==sim.childscriptcall_actuation) then
+function sysCall_actuation()
     if isSource and destinationPod>=0 and isEnabled() then
         local part=getSensorPart()
         if part>=0 then
@@ -78,7 +79,7 @@ if (sim_call_type==sim.childscriptcall_actuation) then
             m[12]=zSizeD*m[12]/zSize
             sim.setObjectMatrix(part,destinationPod,m)
             local p=sim.getModelProperty(part)
-            if sim.boolAnd32(p,sim.modelproperty_not_model)==0 then
+            if (p&sim.modelproperty_not_model)==0 then
                 -- We have a model
                 local l=sim.getObjectsInTree(part)
                 for i=1,#l,1 do

@@ -15,8 +15,8 @@
   <td >
 <p><a href="../../index.html" TARGET="_top"><img src="../images/homeImg.png"></a></p>
 
-<h1><a href="../apiOverview.htm">Regular API</a> function</h1>
-<h3 class=subsectionBar><a name="simGetModelProperty" id="simGetModelProperty"></a>simGetModelProperty / sim.getModelProperty</h3>
+<h1>Regular API function</h1>
+<p class=subsectionBar><a name="simGetModelProperty" id="simGetModelProperty"></a>simGetModelProperty / sim.getModelProperty</p>
 <table class=apiTable>
 <tr class=apiTableTr> 
 <td class=apiTableLeftDescr>
@@ -26,19 +26,19 @@ Description
 </tr> 
 <tr class=apiTableTr> 
 <td class=apiTableLeftCSyn>
-C synopsis
+C/C++<br>synopsis
 </td> 
 <td class=apiTableRightCSyn>simInt simGetModelProperty(simInt objectHandle)<br></td> 
 </tr> 
 <tr class=apiTableTr> 
-<td class=apiTableLeftCParam>C parameters</td> 
+<td class=apiTableLeftCParam>C/C++<br>parameters</td> 
 <td class=apiTableRightCParam>
 <div><strong>objectHandle</strong>: handle of the object that serves as the model base</div>
 <div></div></td> 
 </tr> 
 <tr class=apiTableTr> 
 <td class=apiTableLeftCRet>
-C return value
+C/C++<br>return value
 </td> 
 <td class=apiTableRightCRet>
 <div><a href="../apiConstants.htm#modelProperties">model property values</a>, or -1 if operation was not successful<br>
@@ -49,12 +49,12 @@ C return value
 <td class=apiTableLeftLSyn>
 Lua synopsis
 </td> 
-<td class=apiTableRightLSyn>number property=sim.getModelProperty(number objectHandle)<br></td> 
+<td class=apiTableRightLSyn>int property=sim.getModelProperty(int objectHandle)<br></td> 
 </tr> 
 <tr class=apiTableTr> 
 <td class=apiTableLeftLParam>Lua parameters</td> 
 <td class=apiTableRightLParam>
-<div>Same as C-function<br>
+<div>Similar to the C-function counterpart<br>
 </div>
 <div></div></td> 
 </tr> 
@@ -63,28 +63,24 @@ Lua synopsis
 Lua return values
 </td> 
 <td class=apiTableRightLRet>
-<div>Same as C-function.  See also the <a href="../apiFunctionListCategory.htm#luaBool">boolean operators in Lua</a>.<br>
+<div>Similar to the C-function counterpart. <br>
 </div></td> 
 </tr> 
 
-<tr class=apiTableTr> 
-<td class=remApiTableLeftCParam>
-Remote API equiv.
-</td> 
-<td class=remApiTableRightCParam>
-<div>B0-based remote API: -</div>
-<div>Legacy remote API: <a href="../remoteApiFunctions.htm#simxGetModelProperty">simxGetModelProperty</a></div>
-</td> 
-</tr> 
+ 
+
+
+
+<tr class=apiTableTr>
+<td class=apiTableLeftPSyn>Python synopsis</td>
+<td class=apiTableRightPSyn>int property=sim.getModelProperty(int objectHandle)</td>
+</tr>
 
 </table> 
 
 <br>
-<p><a href="../apiFunctions.htm">All regular API functions on one page</a></p>
-<br>
-<br>
 </td>
-</tr>
+
 </table>
 </div>
 </body>

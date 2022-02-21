@@ -24,7 +24,7 @@ function model.ext.outputBrSetupMessages()
         msg="WARNING (set-up): Not associated with any RagnarVision object"..nm
     else
         local c=model.readInfo()
-        if sim.boolAnd32(c.bitCoded,1)>0 then
+        if (c.bitCoded&1)>0 then
             msg="WARNING (set-up): Operating in fake detection mode"..nm
         end
     end
@@ -83,12 +83,12 @@ end
 
 function model.ext.getSerializationData()
     local data={}
-    data.objectName=sim.getObjectName(model.handle)
-    data.objectAltName=sim.getObjectName(model.handle+sim.handleflag_altname)
+    data.objectName=sim.getObjectAlias(model.handle,1)
+    data.objectAltName=sim.getObjectAlias(model.handle)
     data.matrix=sim.getObjectMatrix(model.handle,-1)
     local parentHandle=sim.getObjectParent(model.handle)
     if parentHandle>=0 then
-        data.parentName=sim.getObjectName(parentHandle)
+        data.parentName=sim.getObjectAlias(parentHandle,1)
     end
     data.embeddedData=model.readInfo()
 

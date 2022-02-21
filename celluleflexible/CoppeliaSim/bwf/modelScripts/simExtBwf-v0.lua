@@ -1,3 +1,4 @@
+simBWF=require('simBWF')
 function simBWF.createOpenBox(size,baseThickness,wallThickness,density,inertiaCorrectionFact,static,respondable,color)
     local parts={}
     local dim={size[1],size[2],baseThickness}
@@ -26,14 +27,14 @@ function simBWF.createOpenBox(size,baseThickness,wallThickness,density,inertiaCo
         sim.setShapeMassAndInertia(shape,m0,i0,com0,transf)
     end
     if static then
-        sim.setObjectInt32Parameter(shape,sim.shapeintparam_static,1)
+        sim.setObjectInt32Param(shape,sim.shapeintparam_static,1)
     else
-        sim.setObjectInt32Parameter(shape,sim.shapeintparam_static,0)
+        sim.setObjectInt32Param(shape,sim.shapeintparam_static,0)
     end
     if respondable then
-        sim.setObjectInt32Parameter(shape,sim.shapeintparam_respondable,1)
+        sim.setObjectInt32Param(shape,sim.shapeintparam_respondable,1)
     else
-        sim.setObjectInt32Parameter(shape,sim.shapeintparam_respondable,0)
+        sim.setObjectInt32Param(shape,sim.shapeintparam_respondable,0)
     end
     sim.reorientShapeBoundingBox(shape,-1)
     return shape
@@ -306,7 +307,7 @@ end
 
 function simBWF.checkIfCodeAndModelMatch(modelHandle,codeVersion,modelVersion)
     if codeVersion~=modelVersion then
-        sim.msgBox(sim.msgbox_type_warning,sim.msgbox_buttons_ok,"Code and Model Version Mismatch","There is a mismatch between the code version and model version for:\n\nModel name: "..sim.getObjectName(modelHandle).."\nModel version: "..modelVersion.."\nCode version: "..codeVersion)
+        sim.msgBox(sim.msgbox_type_warning,sim.msgbox_buttons_ok,"Code and Model Version Mismatch","There is a mismatch between the code version and model version for:\n\nModel name: "..sim.getObjectAlias(modelHandle,1).."\nModel version: "..modelVersion.."\nCode version: "..codeVersion)
     end
 end
 
@@ -319,15 +320,15 @@ function simBWF.getAllPossibleTriggerableFeeders(except)
             local data=sim.readCustomDataBlock(h,simBWF.modelTags.PARTFEEDER)
             if data then
                 data=sim.unpackTable(data)
-                if sim.boolAnd32(data['bitCoded'],4+8+16)==16 then
-                    allFeeders[#allFeeders+1]={sim.getObjectName(h),h}
+                if (data['bitCoded']&4+8+16)==16 then
+                    allFeeders[#allFeeders+1]={sim.getObjectAlias(h,1),h}
                 end
             else
                 data=sim.readCustomDataBlock(h,simBWF.modelTags.MULTIFEEDER)
                 if data then
                     data=sim.unpackTable(data)
-                    if sim.boolAnd32(data['bitCoded'],4+8+16)==16 then
-                        allFeeders[#allFeeders+1]={sim.getObjectName(h),h}
+                    if (data['bitCoded']&4+8+16)==16 then
+                        allFeeders[#allFeeders+1]={sim.getObjectAlias(h,1),h}
                     end
                 end
             end

@@ -15,39 +15,39 @@
   <td >
 <p><a href="../../index.html" TARGET="_top"><img src="../images/homeImg.png"></a></p>
 
-<h1><a href="../apiOverview.htm">Regular API</a> function</h1>
-<h3 class=subsectionBar><a name="simRMLMoveToPosition" id="simRMLMoveToPosition"></a>simRMLMoveToPosition / sim.rmlMoveToPosition 
-</h3>
+<h1>Regular API function</h1>
+<p class=subsectionBar><a name="simRMLMoveToPosition" id="simRMLMoveToPosition"></a>simRMLMoveToPosition / sim.rmlMoveToPosition 
+</p>
 <table class=apiTable>
 <tr class=apiTableTr> 
 <td class=apiTableLeftDescr>
 Description 
 </td> 
-<td class=apiTableRightDescr>Moves an object to a given position and/or orientation using the <a href="http://www.reflexxes.com">Reflexxes Motion Library type II or IV</a>. This function   can only be called from <a href="../childScripts.htm">child scripts</a> running in a thread (since this is   a blocking operation) and is not available from the C-API.  See also <a href="simRMLMoveToJointPositions.htm">sim.rmlMoveToJointPositions</a>, <a href="simRMLPos.htm">sim.rmlPos</a>, <a href="simMoveToObject.htm">sim.moveToObject</a> and <a href="simFollowPath.htm">sim.followPath</a>.</td>
+<td class=apiTableRightDescr>DEPRECATED. See <a href="simMoveToPose.htm">sim.moveToPose</a> instead.</td>
 </tr> 
 <tr class=apiTableTr> 
 <td class=apiTableLeftCSyn>
-C synopsis
+C/C++<br>synopsis
 </td> 
-<td class=apiTableRightCSyn>-</td> 
+<td class=apiTableRightCSyn><div></div></td> 
 </tr> 
 <tr class=apiTableTr> 
-<td class=apiTableLeftCParam>C parameters</td> 
-<td class=apiTableRightCParam>-</td> 
+<td class=apiTableLeftCParam>C/C++<br>parameters</td> 
+<td class=apiTableRightCParam><div></div></td> 
 </tr> 
 <tr class=apiTableTr> 
 <td class=apiTableLeftCRet>
-C return value
+C/C++<br>return value
 </td> 
 <td class=apiTableRightCRet>
--
+<div></div>
 </td> 
 </tr> 
 <tr class=apiTableTr> 
 <td class=apiTableLeftLSyn>
 Lua synopsis
 </td> 
-<td class=apiTableRightLSyn>number result,table_3 newPos,table_4 newQuaternion,table_4 newVel,table_4 newAccel,number timeLeft=sim.rmlMoveToPosition(number objectHandle,number relativeToObjectHandle,number flags,table_4 currentVel,table_4 currentAccel,table_4 maxVel,table_4 maxAccel,table_4 maxJerk,table_3 targetPosition,table_4 targetQuaternion,table_4 targetVel)
+<td class=apiTableRightLSyn>int result,float[3] newPos,float[4] newQuaternion,float[4] newVel,float[4] newAccel,float timeLeft=sim.rmlMoveToPosition(int objectHandle,int relativeToObjectHandle,int flags,float[4] currentVel,float[4] currentAccel,float[4] maxVel,float[4] maxAccel,float[4] maxJerk,float[3] targetPosition,float[4] targetQuaternion,float[4] targetVel)
 
 </td> 
 </tr> 
@@ -82,9 +82,7 @@ Lua return values
 </tr> 
 </table> 
 
-<br>
-<p><a href="../apiFunctions.htm">All regular API functions on one page</a></p>
-<br>
+
 <br>
 </td>
 </tr>

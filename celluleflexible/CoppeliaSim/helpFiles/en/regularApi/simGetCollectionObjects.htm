@@ -3,7 +3,7 @@
 
 <head>
 <meta http-equiv="Content-Language" content="en-us">
-<title>simGetCollectionObjects</title>
+<title>sim.getCollectionObjects</title>
 <link rel="stylesheet" type="text/css" href="../../style.css">
 </head>
 
@@ -15,23 +15,23 @@
   <td >
 <p><a href="../../index.html" TARGET="_top"><img src="../images/homeImg.png"></a></p>
 
-<h1><a href="../apiOverview.htm">Regular API</a> function</h1>
-<h3 class=subsectionBar><a name="simGetCollectionObjects" id="simGetCollectionObjects"></a>simGetCollectionObjects / sim.getCollectionObjects </h3>
+<h1>Regular API function</h1>
+<p class=subsectionBar><a name="simGetCollectionObjects" id="simGetCollectionObjects"></a>simGetCollectionObjects / sim.getCollectionObjects </p>
 <table class=apiTable>
 <tr class=apiTableTr> 
 <td class=apiTableLeftDescr>
 Description 
 </td> 
-<td class=apiTableRightDescr>Retrieves the object handles that compose a given <a href="../collections.htm">collection</a>.</td>
+<td class=apiTableRightDescr>Retrieves the object handles that compose a <a href="../collections.htm">collection</a>. See also the <a href="../apiFunctions.htm#collections">other functions related to collections</a>.</td>
 </tr> 
 <tr class=apiTableTr> 
 <td class=apiTableLeftCSyn>
-C synopsis
+C/C++<br>synopsis
 </td> 
 <td class=apiTableRightCSyn>simInt* simGetCollectionObjects(simInt collectionHandle,simInt* objectCount)</td> 
 </tr> 
 <tr class=apiTableTr> 
-<td class=apiTableLeftCParam>C parameters</td> 
+<td class=apiTableLeftCParam>C/C++<br>parameters</td> 
 <td class=apiTableRightCParam>
 <div><strong>collectionHandle</strong>: handle of the collection</div>
 <div><strong>objectCount</strong>: pointer to a value receiving the number of returned object handles</div>
@@ -39,22 +39,22 @@ C synopsis
 </tr> 
 <tr class=apiTableTr> 
 <td class=apiTableLeftCRet>
-C return value
+C/C++<br>return value
 </td> 
 <td class=apiTableRightCRet>
-<div>pointer to n object handles, or NULL if an error occurred. The user is in charge of destroying the returned buffer with <a href="simReleaseBuffer.htm">simReleaseBuffer</a></div>
+<div>pointer to n object handles, or nullptr if an error occurred. The user is in charge of destroying the returned buffer with <a href="simReleaseBuffer.htm">simReleaseBuffer</a></div>
 </td> 
 </tr> 
 <tr class=apiTableTr> 
 <td class=apiTableLeftLSyn>
 Lua synopsis
 </td> 
-<td class=apiTableRightLSyn>table objectHandles=sim.getCollectionObjects(number collectionHandle)</td> 
+<td class=apiTableRightLSyn>int[] objectHandles=sim.getCollectionObjects(int collectionHandle)</td> 
 </tr> 
 <tr class=apiTableTr> 
 <td class=apiTableLeftLParam>Lua parameters</td> 
 <td class=apiTableRightLParam>
-<div>Same as C-function</div>
+<div>Similar to the C-function counterpart</div>
 </td> 
 </tr> 
 <tr class=apiTableTr> 
@@ -62,14 +62,18 @@ Lua synopsis
 Lua return values
 </td> 
 <td class=apiTableRightLRet>
-<div>Same as C-function (but nil instead of NULL, and <a href="simReleaseBuffer.htm">simReleaseBuffer</a> does not need to be called)</div>
-<div></div></td> 
+<div>Similar to the C-function counterpart</div>
+</td> 
 </tr> 
+
+
+<tr class=apiTableTr>
+<td class=apiTableLeftPSyn>Python synopsis</td>
+<td class=apiTableRightPSyn>list objectHandles=sim.getCollectionObjects(int collectionHandle)</td>
+</tr>
+
 </table> 
 
-<br>
-<p><a href="../apiFunctions.htm">All regular API functions on one page</a></p>
-<br>
 <br>
 </td>
 </tr>

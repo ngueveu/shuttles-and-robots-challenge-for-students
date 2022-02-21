@@ -1,3 +1,4 @@
+simBWF=require('simBWF')
 function removeFromPluginRepresentation()
 
 end
@@ -142,14 +143,14 @@ print("dwellT, travelT",dt,tt)
 end
 
 function setObjectSize(h,x,y,z)
-    local r,mmin=sim.getObjectFloatParameter(h,sim.objfloatparam_objbbox_min_x)
-    local r,mmax=sim.getObjectFloatParameter(h,sim.objfloatparam_objbbox_max_x)
+    local mmin=sim.getObjectFloatParam(h,sim.objfloatparam_objbbox_min_x)
+    local mmax=sim.getObjectFloatParam(h,sim.objfloatparam_objbbox_max_x)
     local sx=mmax-mmin
-    local r,mmin=sim.getObjectFloatParameter(h,sim.objfloatparam_objbbox_min_y)
-    local r,mmax=sim.getObjectFloatParameter(h,sim.objfloatparam_objbbox_max_y)
+    local mmin=sim.getObjectFloatParam(h,sim.objfloatparam_objbbox_min_y)
+    local mmax=sim.getObjectFloatParam(h,sim.objfloatparam_objbbox_max_y)
     local sy=mmax-mmin
-    local r,mmin=sim.getObjectFloatParameter(h,sim.objfloatparam_objbbox_min_z)
-    local r,mmax=sim.getObjectFloatParameter(h,sim.objfloatparam_objbbox_max_z)
+    local mmin=sim.getObjectFloatParam(h,sim.objfloatparam_objbbox_min_z)
+    local mmax=sim.getObjectFloatParam(h,sim.objfloatparam_objbbox_max_z)
     local sz=mmax-mmin
     sim.scaleObject(h,x/sx,y/sy,z/sz)
 end
@@ -160,7 +161,7 @@ function getAvailableSensors()
     for i=1,#l,1 do
         local data=sim.readCustomDataBlock(l[i],'XYZ_BINARYSENSOR_INFO')
         if data then
-            retL[#retL+1]={sim.getObjectName(l[i]),l[i]}
+            retL[#retL+1]={sim.getObjectAlias(l[i],1),l[i]}
         end
     end
     return retL
@@ -201,11 +202,11 @@ showSamplesAndPallets=function(show)
     end
     local samples=sim.getObjectsInTree(sampleHolder,sim.handle_all,1)
     for i=1,#samples,1 do
-        sim.setObjectInt32Parameter(samples[i],sim.objintparam_visibility_layer,lay)
+        sim.setObjectInt32Param(samples[i],sim.objintparam_visibility_layer,lay)
     end
     local pallets=sim.getObjectsInTree(palletHolder,sim.handle_all,1)
     for i=1,#pallets,1 do
-        sim.setObjectInt32Parameter(pallets[i],sim.objintparam_visibility_layer,lay)
+        sim.setObjectInt32Param(pallets[i],sim.objintparam_visibility_layer,lay)
     end
 end
 
@@ -242,8 +243,8 @@ function updateThermoformer()
             local boxModel=simBWF.createOpenBox({extrusionWidth+wt*2,extrusionLength+wt*2,extrusionDepth+wt},wt,wt,200,1,true,false,conf['color'])
             sim.setObjectSpecialProperty(boxModel,0)
             local p=sim.getObjectProperty(boxModel)
-            p=sim.boolOr32(p,sim.objectproperty_selectmodelbaseinstead)
-            p=sim.boolOr32(p,sim.objectproperty_dontshowasinsidemodel)
+            p=(p|sim.objectproperty_selectmodelbaseinstead)
+            p=(p|sim.objectproperty_dontshowasinsidemodel)
             sim.setObjectProperty(boxModel,p)
             sim.setObjectPosition(boxModel,sampleHolder,objRelPos)
             sim.setObjectParent(boxModel,sampleHolder,true)
@@ -591,7 +592,7 @@ end
 
 function enabledClicked(ui,id,newVal)
     local c=readInfo()
-    c['bitCoded']=sim.boolOr32(c['bitCoded'],64)
+    c['bitCoded']=(c['bitCoded']|64)
     if newVal==0 then
         c['bitCoded']=c['bitCoded']-64
     end
@@ -657,7 +658,7 @@ function setDlgItemContent()
     if ui then
         local config=readInfo()
         local sel=simBWF.getSelectedEditWidget(ui)
-        simUI.setCheckboxValue(ui,15,(sim.boolAnd32(config['bitCoded'],64)~=0) and 2 or 0,true)
+        simUI.setCheckboxValue(ui,15,((config['bitCoded']&64)~=0) and 2 or 0,true)
         simUI.setEditValue(ui,11,simBWF.format("%.0f",config['velocity']/0.001),true)
         simUI.setEditValue(ui,12,simBWF.format("%.0f",config['acceleration']/0.001),true)
         simUI.setEditValue(ui,9,simBWF.format("%.0f",config['pullLength']/0.001),true)
@@ -800,9 +801,9 @@ function removeDlg()
     end
 end
 
-if (sim_call_type==sim.customizationscriptcall_initialization) then
+function sysCall_init()
     dlgMainTabIndex=0
-    model=sim.getObjectAssociatedWithScript(sim.handle_self)
+    model=sim.getObject('.')
     _MODELVERSION_=0
     _CODEVERSION_=0
     local _info=readInfo()
@@ -818,11 +819,11 @@ if (sim_call_type==sim.customizationscriptcall_initialization) then
     end
     ----------------------------------------
     writeInfo(_info)
-    baseShape=sim.getObjectHandle('genericThermoformer_base')
-    sampleHolder=sim.getObjectHandle('genericThermoformer_sampleHolder')
-    palletHolder=sim.getObjectHandle('genericThermoformer_palletHolder')
-    sensor=sim.getObjectHandle('genericThermoformer_sensor')
-	sim.setScriptAttribute(sim.handle_self,sim.customizationscriptattribute_activeduringsimulation,true)
+    baseShape=sim.getObject('./genericThermoformer_base')
+    sampleHolder=sim.getObject('./genericThermoformer_sampleHolder')
+    palletHolder=sim.getObject('./genericThermoformer_palletHolder')
+    sensor=sim.getObject('./genericThermoformer_sensor')
+	
 
     -- For backward compatibility:
     local parts=sim.getObjectsInTree(sampleHolder,sim.handle_all,1+2)
@@ -842,11 +843,11 @@ showOrHideUiIfNeeded=function()
     end
 end
 
-if (sim_call_type==sim.customizationscriptcall_nonsimulation) then
+function sysCall_nonSimulation()
     showOrHideUiIfNeeded()
 end
 
-if (sim_call_type==sim.customizationscriptcall_simulationsensing) then
+function sysCall_sensing()
     if simJustStarted then
         updateEnabledDisabledItemsDlg()
     end
@@ -854,11 +855,11 @@ if (sim_call_type==sim.customizationscriptcall_simulationsensing) then
     showOrHideUiIfNeeded()
 end
 
-if (sim_call_type==sim.customizationscriptcall_simulationpause) then
+function sysCall_suspend()
     showOrHideUiIfNeeded()
 end
 
-if (sim_call_type==sim.customizationscriptcall_firstaftersimulation) then
+function sysCall_afterSimulation()
     updateEnabledDisabledItemsDlg()
 --    showOrHideUiIfNeeded()
     showSamplesAndPallets(true)
@@ -868,21 +869,21 @@ if (sim_call_type==sim.customizationscriptcall_firstaftersimulation) then
     writeInfo(conf)
 end
 
-if (sim_call_type==sim.customizationscriptcall_lastbeforesimulation) then
+function sysCall_beforeSimulation()
     simJustStarted=true
     showSamplesAndPallets(false)
 end
 
-if (sim_call_type==sim.customizationscriptcall_lastbeforeinstanceswitch) then
+function sysCall_beforeInstanceSwitch()
     removeDlg()
     removeFromPluginRepresentation()
 end
 
-if (sim_call_type==sim.customizationscriptcall_firstafterinstanceswitch) then
+function sysCall_afterInstanceSwitch()
     updatePluginRepresentation()
 end
 
-if (sim_call_type==sim.customizationscriptcall_cleanup) then
+function sysCall_cleanup()
     removeDlg()
     removeFromPluginRepresentation()
     simBWF.writeSessionPersistentObjectData(model,"dlgPosAndSize",previousDlgPos,algoDlgSize,algoDlgPos,distributionDlgSize,distributionDlgPos,previousDlg1Pos)

@@ -15,24 +15,24 @@
   <td >
 <p><a href="../../index.html" TARGET="_top"><img src="../images/homeImg.png"></a></p>
 
-<h1><a href="../apiOverview.htm">Regular API</a> function</h1>
-<h3 class=subsectionBar><a name="simAddObjectToCollection" id="simAddObjectToCollection"></a>simAddObjectToCollection / sim.addObjectToCollection </h3>
+<h1>Regular API function</h1>
+<p class=subsectionBar><a name="simAddObjectToCollection" id="simAddObjectToCollection"></a>simAddObjectToCollection / sim.addObjectToCollection </p>
 <table class=apiTable>
 <tr class=apiTableTr> 
 <td class=apiTableLeftDescr>
 Description 
 </td> 
 <td class=apiTableRightDescr>
-Adds an object (or a group of objects) to a <a href="../collections.htm">collection</a>. See also <a href="simEmptyCollection.htm">sim.emptyCollection</a>, <a href="simRemoveCollection.htm">sim.removeCollection</a>, <a href="simGetCollectionHandle.htm">sim.getCollectionHandle</a>, <a href="simGetObjectHandle.htm">sim.getObjectHandle</a>, <a href="simGetCollectionObjects.htm">sim.getCollectionObjects</a> and <a href="simCreateCollection.htm">sim.createCollection</a>. </td>
+DEPRECATED. See <a href="simAddItemToCollection.htm">sim.addItemToCollection</a> instead. </td>
 </tr> 
 <tr class=apiTableTr> 
 <td class=apiTableLeftCSyn>
-C synopsis
+C/C++<br>synopsis
 </td> 
 <td class=apiTableRightCSyn>simInt simAddObjectToCollection(simInt collectionHandle,simInt objectHandle,simInt what,simInt options)</td> 
 </tr> 
 <tr class=apiTableTr> 
-<td class=apiTableLeftCParam>C parameters</td> 
+<td class=apiTableLeftCParam>C/C++<br>parameters</td> 
 <td class=apiTableRightCParam>
 <div><strong>collectionHandle</strong>: the handle of a collection.</div>
 <div><strong>objectHandle</strong>: the handle of an object.</div>
@@ -44,7 +44,7 @@ C synopsis
 </tr> 
 <tr class=apiTableTr> 
 <td class=apiTableLeftCRet>
-C return value
+C/C++<br>return value
 </td> 
 <td class=apiTableRightCRet>
 <div>-1 if operation was not successful.</div>
@@ -54,12 +54,12 @@ C return value
 <td class=apiTableLeftLSyn>
 Lua synopsis
 </td> 
-<td class=apiTableRightLSyn>number result=sim.addObjectToCollection(number collectionHandle,number objectHandle,number what,number options)</td> 
+<td class=apiTableRightLSyn>sim.addObjectToCollection(int collectionHandle,int objectHandle,int what,int options)</td> 
 </tr> 
 <tr class=apiTableTr> 
 <td class=apiTableLeftLParam>Lua parameters</td> 
 <td class=apiTableRightLParam>
-<div>Same as C-function</div>
+<div>Similar to the C-function counterpart</div>
 </td> 
 </tr> 
 <tr class=apiTableTr> 
@@ -67,14 +67,12 @@ Lua synopsis
 Lua return values
 </td> 
 <td class=apiTableRightLRet>
-<div>Same as C-function</div>
+<div></div>
 </td> 
 </tr> 
 </table> 
 
-<br>
-<p><a href="../apiFunctions.htm">All regular API functions on one page</a></p>
-<br>
+
 <br>
 </td>
 </tr>

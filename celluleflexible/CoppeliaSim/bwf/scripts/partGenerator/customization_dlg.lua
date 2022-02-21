@@ -20,7 +20,7 @@ function model.dlg.generate_callback()
     if model.selectedObj>=0 then
         -- Mark it as model if needed:
         local p=sim.getModelProperty(model.selectedObj)
-        if sim.boolAnd32(p,sim.modelproperty_not_model)~=0 then
+        if (p&sim.modelproperty_not_model)~=0 then
             sim.setModelProperty(model.selectedObj,p-sim.modelproperty_not_model)
         end
         -- Attach the generic part info struct:
@@ -28,7 +28,7 @@ function model.dlg.generate_callback()
         data.version=1
         sim.writeCustomDataBlock(model.selectedObj,simBWF.modelTags.GENERIC_PART,sim.packTable(data))
         -- Set/attach the correct customization script:
-        local s=sim.getCustomizationScriptAssociatedWithObject(model.selectedObj)
+        local s=sim.getScriptHandle(sim.scripttype_customizationscript,model.selectedObj)
         if s<0 then
             s=sim.addScript(sim.scripttype_customizationscript)
             sim.associateScriptWithObject(s,model.selectedObj)
@@ -109,7 +109,7 @@ function model.dlg.init()
 end
 
 function model.dlg.cleanup()
-    if sim.isHandleValid(model.handle)>0 then
+    if sim.isHandle(model.handle) then
         simBWF.writeSessionPersistentObjectData(model.handle,"dlgPosAndSize",model.dlg.previousDlgPos)
     end
 end

@@ -656,10 +656,10 @@ function model.actions.getSceneScreenShot(fromTop)
     local rgb=nil
     local res= {1280,780} -- {640,480}
     if not fromTop then
-        if sim.getObjectHandle('DefaultCamera@silentError') ~=-1 then
-            camera = sim.getObjectHandle('DefaultCamera@silentError')
+        if sim.getObject('./DefaultCamera@silentError') ~=-1 then
+            camera = sim.getObject('./DefaultCamera@silentError')
         else
-            camera = sim.getObjectHandle('Camera@silentError')
+            camera = sim.getObject('./Camera@silentError')
         end
         local vs=sim.createVisionSensor(1+2+128,{res[1],res[2],0,0},{0.1,50,60*math.pi/180,0.1,0.1,0.1,255,255,255,0,0})
         sim.setObjectOrientation(vs,camera,{0,0,0})
@@ -669,7 +669,7 @@ function model.actions.getSceneScreenShot(fromTop)
         sim.removeObject(vs)
     end
     if fromTop then
-        local fl=sim.getObjectHandle('Floor')
+        local fl=sim.getObject('./Floor')
         local prop=sim.getModelProperty(fl)
         sim.setModelProperty(fl,sim.modelproperty_not_visible)
         local parentless=sim.getObjectsInTree(sim.handle_scene,sim.handle_all,2)
@@ -677,12 +677,12 @@ function model.actions.getSceneScreenShot(fromTop)
         local minMaxY={9999,-9999}
         for po=1,#parentless,1 do
             local p=sim.getModelProperty(parentless[po])
-            local isVisibleModel=sim.boolAnd32(p,sim.modelproperty_not_model+sim.modelproperty_not_visible)==0
+            local isVisibleModel=(p&sim.modelproperty_not_model+sim.modelproperty_not_visible)==0
             if isVisibleModel then
                 local shapes=sim.getObjectsInTree(parentless[po],sim.object_shape_type,0)
                 for sc=1,#shapes,1 do
                     local sp=sim.getObjectSpecialProperty(shapes[sc])
-                    if sim.boolAnd32(sp,sim.objectspecialproperty_renderable)>0 then
+                    if (sp&sim.objectspecialproperty_renderable)>0 then
                         local vertices=sim.getShapeMesh(shapes[sc])
                         local m=sim.getObjectMatrix(shapes[sc],-1)
                         for i=0,#vertices/3-1,1 do
@@ -739,8 +739,8 @@ function model.actions.getSceneContentData()
     objects.sceneConfig={}
     objects.sceneConfig.type='user_input'
     objects.sceneConfig.client_id=remoteRequestUi.userId
-    objects.sceneConfig.projectName=sim.getStringParameter(sim.stringparam_scene_name)
-    objects.sceneConfig.sceneSerializationNo=sim.getStringParameter(sim.stringparam_scene_unique_id)
+    objects.sceneConfig.projectName=sim.getStringParam(sim.stringparam_scene_name)
+    objects.sceneConfig.sceneSerializationNo=sim.getStringParam(sim.stringparam_scene_unique_id)
     objects.sceneConfig.power_supply=remoteRequestUi.power
     objects.sceneConfig.connector_type=remoteRequestUi.connector
     objects.sceneConfig.value_type=remoteRequestUi.valve

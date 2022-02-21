@@ -12,9 +12,9 @@ function sysCall_init()
     model.codeVersion=1
     
     local data=model.readInfo()
-    model.showPoints=sim.boolAnd32(data.bitCoded,16)>0
+    model.showPoints=(data.bitCoded&16)>0
     model.isPick=(data.type==0)
-    model.createParts=model.isPick and (sim.boolAnd32(data.bitCoded,8)>0)
+    model.createParts=model.isPick and ((data.bitCoded&8)>0)
     model.robot=model.getAssociatedRobotHandle()
     model.m=sim.getObjectMatrix(model.handle,-1)
     model.sphereContainer=sim.addDrawingObject(sim.drawing_spherepoints,0.007,0,-1,9999,{1,0,1})
@@ -37,7 +37,7 @@ function sysCall_sensing()
             retData={}
             retData.points={{0,0,0.3}}
             retData.pointIds={1}
-            retData.partIds={sim.getObjectHandle('genericBox#')}
+            retData.partIds={sim.getObject('./genericBox#')}
         end
         if reply=='ok' then
             local pts=retData.points
@@ -50,7 +50,7 @@ function sysCall_sensing()
                         local ptAbs=sim.multiplyVector(model.m,ptRel)
                         sim.addDrawingObjectItem(model.sphereContainer,ptAbs)
                     end
- --                   print(ptIds[i],partIds[i],sim.getObjectName(partIds[i])
+ --                   print(ptIds[i],partIds[i],sim.getObjectAlias(partIds[i],1)
                     -- We create parts that were detected / that exist in the real world:
                     if model.createParts and partIds and partIds[i]>=0 and model.createdPartsInOnlineMode[ptIds[i]]==nil then
                         local partData=simBWF.readPartInfo(partIds[i])

@@ -15,36 +15,36 @@
   <td >
 <p><a href="../../index.html" TARGET="_top"><img src="../images/homeImg.png"></a></p>
 
-<h1><a href="../apiOverview.htm">Regular API</a> function</h1>
-<h3 class=subsectionBar><a name="simSetObjectOrientation" id="simSetObjectOrientation"></a>simSetObjectOrientation / sim.setObjectOrientation</h3>
+<h1>Regular API function</h1>
+<p class=subsectionBar><a name="simSetObjectOrientation" id="simSetObjectOrientation"></a>simSetObjectOrientation / sim.setObjectOrientation</p>
 <table class=apiTable>
 <tr class=apiTableTr> 
 <td class=apiTableLeftDescr>
 Description 
 </td> 
-<td class=apiTableRightDescr>Sets the orientation (<a href="../eulerAngles.htm">Euler angles</a>) of an object. Dynamically simulated objects will implicitely be reset before the command is applied (i.e. similar to calling <a href="simResetDynamicObject.htm">sim.resetDynamicObject</a> just before). See also <a href="simSetObjectQuaternion.htm">sim.setObjectQuaternion</a>, <a href="simGetObjectOrientation.htm">sim.getObjectOrientation</a>, <a href="simSetObjectPosition.htm">sim.setObjectPosition</a>, <a href="simSetObjectMatrix.htm">sim.setObjectMatrix</a> and the other <a href="../apiFunctionListCategory.htm#coordinatesAndTransformations">matrix/transformation functions</a>.</td>
+<td class=apiTableRightDescr>Sets the orientation (<a href="../eulerAngles.htm">Euler angles</a>) of an object. Dynamically simulated objects, together with their hierarchy tree, will be dynamically reset (this however does not apply to static shapes). See also the other <a href="../apiFunctions.htm#coordinatesAndTransformations">matrix/transformation functions</a>.</td>
 </tr> 
 <tr class=apiTableTr> 
 <td class=apiTableLeftCSyn>
-C synopsis
+C/C++<br>synopsis
 </td> 
 <td class=apiTableRightCSyn>simInt simSetObjectOrientation(simInt objectHandle,simInt relativeToObjectHandle,const simFloat* eulerAngles)</td> 
 </tr> 
 <tr class=apiTableTr> 
-<td class=apiTableLeftCParam>C parameters</td> 
+<td class=apiTableLeftCParam>C/C++<br>parameters</td> 
 <td class=apiTableRightCParam>
-<div><strong>objectHandle</strong>: handle of the object</div>
-<div><strong>relativeToObjectHandle</strong>: indicates relative to which reference frame the orientation is specified. Specify -1 to set the absolute orientation, sim_handle_parent to set the orientation relative to the object's parent, or an object handle relative to whose reference frame the orientation is specified.<br>
+<div><strong>objectHandle</strong>: handle of the object. Can be combined with sim.handleflag_reljointbaseframe (see next argument)</div>
+<div><strong>relativeToObjectHandle</strong>: indicates relative to which reference frame the orientation is specified. Specify -1 to set the absolute orientation, sim_handle_parent to set the orientation relative to the object's parent, or an object handle relative to whose reference frame the orientation is specified.  If this handle is the handle of a joint, then the orientation is applied relative to the joint's moving frame (unless <strong>objectHandle</strong> is combined with sim.handleflag_reljointbaseframe, in which case the orientation is applied relative to the joint's base frame).<br>
 </div>
 <div><strong>eulerAngles</strong>: Euler angles (alpha, beta and gamma)</div>
 <div></div></td> 
 </tr> 
 <tr class=apiTableTr> 
 <td class=apiTableLeftCRet>
-C return value
+C/C++<br>return value
 </td> 
 <td class=apiTableRightCRet>
-<div>-1 if operation was not successful. In a future release, a more differentiated return value might be available<br>
+<div>-1 if operation was not successful<br>
 </div>
 </td> 
 </tr> 
@@ -52,12 +52,12 @@ C return value
 <td class=apiTableLeftLSyn>
 Lua synopsis
 </td> 
-<td class=apiTableRightLSyn>number result=sim.setObjectOrientation(number objectHandle,number relativeToObjectHandle,table_3 eulerAngles)<br></td> 
+<td class=apiTableRightLSyn>sim.setObjectOrientation(int objectHandle,int relativeToObjectHandle,float[3] eulerAngles)<br></td> 
 </tr> 
 <tr class=apiTableTr> 
 <td class=apiTableLeftLParam>Lua parameters</td> 
 <td class=apiTableRightLParam>
-<div>Same as C-function</div>
+<div>Similar to the C-function counterpart</div>
 <div></div></td> 
 </tr> 
 <tr class=apiTableTr> 
@@ -65,28 +65,23 @@ Lua synopsis
 Lua return values
 </td> 
 <td class=apiTableRightLRet>
-<div>Same as C-function</div>
 <div></div></td> 
 </tr> 
 
-<tr class=apiTableTr> 
-<td class=remApiTableLeftCParam>
-Remote API equiv.
-</td> 
-<td class=remApiTableRightCParam>
-<div>B0-based remote API: <a href="../b0RemoteApi-cpp.htm#simxSetObjectOrientation">simxSetObjectOrientation</a></div>
-<div>Legacy remote API: <a href="../remoteApiFunctions.htm#simxSetObjectOrientation">simxSetObjectOrientation</a></div>
-</td> 
-</tr> 
+ 
+
+
+
+<tr class=apiTableTr>
+<td class=apiTableLeftPSyn>Python synopsis</td>
+<td class=apiTableRightPSyn>sim.setObjectOrientation(int objectHandle,int relativeToObjectHandle,list eulerAngles)</td>
+</tr>
 
 </table> 
 
 <br>
-<p><a href="../apiFunctions.htm">All regular API functions on one page</a></p>
-<br>
-<br>
 </td>
-</tr>
+
 </table>
 </div>
 </body>

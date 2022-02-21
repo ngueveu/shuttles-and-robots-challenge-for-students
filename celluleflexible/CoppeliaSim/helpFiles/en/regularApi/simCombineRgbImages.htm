@@ -15,8 +15,8 @@
   <td >
 <p><a href="../../index.html" TARGET="_top"><img src="../images/homeImg.png"></a></p>
 
-<h1><a href="../apiOverview.htm">Regular API</a> function</h1>
-<h3 class=subsectionBar><a name="simCombineRgbImages" id="simCombineRgbImages"></a>simCombineRgbImages / sim.combineRgbImages</h3>
+<h1>Regular API function</h1>
+<p class=subsectionBar><a name="simCombineRgbImages" id="simCombineRgbImages"></a>simCombineRgbImages / sim.combineRgbImages</p>
 <table class=apiTable>
 <tr class=apiTableTr> 
 <td class=apiTableLeftDescr>
@@ -26,29 +26,29 @@ Description
 </tr> 
 <tr class=apiTableTr> 
 <td class=apiTableLeftCSyn>
-C synopsis
+C/C++<br>synopsis
 </td> 
-<td class=apiTableRightCSyn>-</td> 
+<td class=apiTableRightCSyn><div></div></td> 
 </tr> 
 <tr class=apiTableTr> 
-<td class=apiTableLeftCParam>C parameters</td> 
+<td class=apiTableLeftCParam>C/C++<br>parameters</td> 
 <td class=apiTableRightCParam>
--
+<div></div>
 </td> 
 </tr> 
 <tr class=apiTableTr> 
 <td class=apiTableLeftCRet>
-C return value
+C/C++<br>return value
 </td> 
 <td class=apiTableRightCRet>
--
+<div></div>
 </td> 
 </tr> 
 <tr class=apiTableTr> 
 <td class=apiTableLeftLSyn>
 Lua synopsis
 </td> 
-<td class=apiTableRightLSyn>string outImg=sim.combineRgbImages(string img1,table_2 img1Res,string img2,table_2 img2Res,number operation)</td> 
+<td class=apiTableRightLSyn>buffer outImg=sim.combineRgbImages(buffer img1,int[2] img1Res,buffer img2,int[2] img2Res,int operation)</td> 
 </tr> 
 <tr class=apiTableTr> 
 <td class=apiTableLeftLParam>Lua parameters</td> 
@@ -65,13 +65,17 @@ Lua synopsis
 Lua return values
 </td> 
 <td class=apiTableRightLRet>
-<div>output image as succession of rgb values, or nil in case of an error.</div></td> 
+<div>output image as succession of rgb values.</div></td> 
 </tr> 
+
+
+<tr class=apiTableTr>
+<td class=apiTableLeftPSyn>Python synopsis</td>
+<td class=apiTableRightPSyn>bytes outImg=sim.combineRgbImages(bytes img1,list img1Res,bytes img2,list img2Res,int operation)</td>
+</tr>
+
 </table> 
 
-<br>
-<p><a href="../apiFunctions.htm">All regular API functions on one page</a></p>
-<br>
 <br>
 </td>
 </tr>

@@ -15,33 +15,33 @@
   <td >
 <p><a href="../../index.html" TARGET="_top"><img src="../images/homeImg.png"></a></p>
 
-<h1><a href="../apiOverview.htm">Regular API</a> function</h1>
-<h3 class=subsectionBar><a name="simHandleChildScripts" id="simHandleChildScripts"></a>sim.handleChildScripts</h3>
+<h1>Regular API function</h1>
+<p class=subsectionBar><a name="simHandleChildScripts" id="simHandleChildScripts"></a>sim.handleChildScripts</p>
 <table class=apiTable>
 <tr class=apiTableTr> 
 <td class=apiTableLeftDescr>
 Description 
 </td> 
-<td class=apiTableRightDescr>Calls a specific function in  <a href="../childScripts.htm#nonThreaded">non-threaded child scripts</a>.  Child scripts will be executed in a <a href="../scriptExecution.htm">precise order</a>. sim.handleChildScripts should only be called from the <a href="../mainScript.htm">main script</a>.<br></td>
+<td class=apiTableRightDescr>Lua only. Calls a specific <a href="../callbackFunctions.htm#systemCallbacks">system callback function</a> in <a href="../childScripts.htm">child scripts</a>.  Child scripts will be executed in a <a href="../scriptExecution.htm">precise order</a>. This function should only be called from the <a href="../mainScript.htm">main script</a>.<br></td>
 </tr> 
 <tr class=apiTableTr> 
 <td class=apiTableLeftCSyn>
-C synopsis
+C/C++<br>synopsis
 </td> 
-<td class=apiTableRightCSyn>-</td> 
+<td class=apiTableRightCSyn><div></div></td> 
 </tr> 
 <tr class=apiTableTr> 
-<td class=apiTableLeftCParam>C parameters</td> 
+<td class=apiTableLeftCParam>C/C++<br>parameters</td> 
 <td class=apiTableRightCParam>
-<div>-</div>
+<div></div>
 </td> 
 </tr> 
 <tr class=apiTableTr> 
 <td class=apiTableLeftCRet>
-C return value
+C/C++<br>return value
 </td> 
 <td class=apiTableRightCRet>
-<div>-</div>
+<div></div>
 </td> 
 </tr> 
 <tr class=apiTableTr> 
@@ -49,7 +49,7 @@ C return value
 Lua synopsis
 </td> 
 <td class=apiTableRightLSyn>
-<div>number scriptCount=sim.handleChildScripts(number callType)</div>
+<div>int scriptCount=sim.handleChildScripts(int callType)</div>
 </td> 
 </tr> 
 <tr class=apiTableTr> 
@@ -63,14 +63,20 @@ Lua synopsis
 Lua return values
 </td> 
 <td class=apiTableRightLRet>
-<div>scriptCount: number of called non-threaded child scripts</div>
+<div>scriptCount: number of called child scripts</div>
 </td> 
 </tr> 
+
+<tr class=apiTableTr> 
+<td class=apiTableLeftPSyn>
+Python synopsis
+</td> 
+<td class=apiTableRightPSyn><div></div></td> 
+</tr> 
+
 </table> 
 
-<br>
-<p><a href="../apiFunctions.htm">All regular API functions on one page</a></p>
-<br>
+
 <br>
 </td>
 </tr>

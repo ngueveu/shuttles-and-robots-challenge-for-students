@@ -3,7 +3,7 @@
 
 <head>
 <meta http-equiv="Content-Language" content="en-us">
-<title>simGetObjectMatrix</title>
+<title>sim.getObjectMatrix</title>
 <link rel="stylesheet" type="text/css" href="../../style.css">
 </head>
 
@@ -15,26 +15,26 @@
   <td >
 <p><a href="../../index.html" TARGET="_top"><img src="../images/homeImg.png"></a></p>
 
-<h1><a href="../apiOverview.htm">Regular API</a> function</h1>
-<h3 class=subsectionBar><a name="simGetObjectMatrix" id="simGetObjectMatrix"></a>simGetObjectMatrix / sim.getObjectMatrix </h3>
+<h1>Regular API function</h1>
+<p class=subsectionBar><a name="simGetObjectMatrix" id="simGetObjectMatrix"></a>simGetObjectMatrix / sim.getObjectMatrix </p>
 <table class=apiTable>
 <tr class=apiTableTr> 
 <td class=apiTableLeftDescr>
 Description 
 </td> 
-<td class=apiTableRightDescr>Retrieves the transformation matrix of an object. See also <a href="simSetObjectMatrix.htm">sim.setObjectMatrix</a>, <a href="simGetObjectPosition.htm">sim.getObjectPosition</a>, <a href="simGetObjectOrientation.htm">sim.getObjectOrientation</a> and the other <a href="../apiFunctionListCategory.htm#coordinatesAndTransformations">matrix/transformation functions</a>.</td>
+<td class=apiTableRightDescr>Retrieves the transformation matrix of an object. See also the other <a href="../apiFunctions.htm#coordinatesAndTransformations">matrix/transformation functions</a>.</td>
 </tr> 
 <tr class=apiTableTr> 
 <td class=apiTableLeftCSyn>
-C synopsis
+C/C++<br>synopsis
 </td> 
 <td class=apiTableRightCSyn>simInt simGetObjectMatrix(simInt objectHandle,simInt relativeToObjectHandle,simFloat* matrix)<br></td> 
 </tr> 
 <tr class=apiTableTr> 
-<td class=apiTableLeftCParam>C parameters</td> 
+<td class=apiTableLeftCParam>C/C++<br>parameters</td> 
 <td class=apiTableRightCParam>
-<div><strong>objectHandle</strong>: handle of the object</div>
-<div><strong>relativeToObjectHandle</strong>: indicates relative to which reference frame we want the matrix. Specify -1 to retrieve the absolute transformation matrix, sim_handle_parent to retrieve the transformation matrix relative to the object's parent, or an object handle relative to whose reference frame we want the transformation matrix.<br>
+<div><strong>objectHandle</strong>: handle of the object. Can be combined with sim_handleflag_reljointbaseframe (see next argument)</div>
+<div><strong>relativeToObjectHandle</strong>: indicates relative to which reference frame we want the matrix. Specify -1 to retrieve the absolute transformation matrix, sim_handle_parent to retrieve the transformation matrix relative to the object's parent, or an object handle relative to whose reference frame we want the transformation matrix. If this handle is the handle of a joint, then the matrix relative to the joint's moving frame will be returned (unless <strong>objectHandle</strong> is combined with sim_handleflag_reljointbaseframe, in which case the matrix relative to the joint's base frame will be returned).<br>
 </div>
 <div><strong>matrix</strong>: pointer to 12 simFloat values (the last row of the 4x4 matrix (0,0,0,1) is not needed)<br>
 </div>
@@ -46,10 +46,10 @@ C synopsis
 </tr> 
 <tr class=apiTableTr> 
 <td class=apiTableLeftCRet>
-C return value
+C/C++<br>return value
 </td> 
 <td class=apiTableRightCRet>
-<div>-1 if operation was not successful. In a future release, a more differentiated return value might be available<br>
+<div>-1 if operation was not successful<br>
 </div>
 </td> 
 </tr> 
@@ -57,45 +57,38 @@ C return value
 <td class=apiTableLeftLSyn>
 Lua synopsis
 </td> 
-<td class=apiTableRightLSyn>table_12 matrix=sim.getObjectMatrix(number objectHandle,number relativeToObjectHandle)<br></td> 
+<td class=apiTableRightLSyn>float[12] matrix=sim.getObjectMatrix(int objectHandle,int relativeToObjectHandle)<br></td> 
 </tr> 
 <tr class=apiTableTr> 
 <td class=apiTableLeftLParam>Lua parameters</td> 
 <td class=apiTableRightLParam>
-<div></div>
-<div><strong>objectHandle</strong>: handle of the object</div>
-<div><strong>relativeToObjectHandle</strong>: indicates relative to which reference frame we want the matrix. Specify -1 to retrieve the absolute transformation matrix, sim.handle_parent to retrieve the transformation matrix relative to the object's parent, or an object handle relative to whose reference frame we want the transformation matrix.<br>
-</div>
-<div></div></td> 
+<div><strong>objectHandle</strong>: handle of the object. Can be combined with sim.handleflag_reljointbaseframe (see next iargument)</div>
+<div><strong>relativeToObjectHandle</strong>: indicates relative to which reference frame we want the matrix. Specify -1 to retrieve the absolute transformation matrix, sim.handle_parent to retrieve the transformation matrix relative to the object's parent, or an object handle relative to whose reference frame we want the transformation matrix.  If this handle is the handle of a joint, then the matrix relative to the joint's moving frame will be returned (unless <strong>objectHandle</strong> is combined with sim.handleflag_reljointbaseframe, in which case the matrix relative to the joint's base frame will be returned).</div>
+</td> 
 </tr> 
 <tr class=apiTableTr> 
 <td class=apiTableLeftLRet>
 Lua return values
 </td> 
 <td class=apiTableRightLRet>
-<div></div>
-<div><strong>matrix</strong>: table of 12 numbers (the last row of the 4x4 matrix (0,0,0,1) is not returned), or nil in case of an error. Table values in Lua are indexed from 1, not 0!</div>
-<div></div></td> 
+<div><strong>matrix</strong>: table of 12 numbers (the last row of the 4x4 matrix (0,0,0,1) is not returned)</div>
+</td> 
 </tr> 
 
-<tr class=apiTableTr> 
-<td class=remApiTableLeftCParam>
-Remote API equiv.
-</td> 
-<td class=remApiTableRightCParam>
-<div>B0-based remote API: <a href="../b0RemoteApi-cpp.htm#simxGetObjectMatrix">simxGetObjectMatrix</a></div>
-<div>Legacy remote API: -</div>
-</td> 
-</tr> 
+ 
+
+
+
+<tr class=apiTableTr>
+<td class=apiTableLeftPSyn>Python synopsis</td>
+<td class=apiTableRightPSyn>list matrix=sim.getObjectMatrix(int objectHandle,int relativeToObjectHandle)</td>
+</tr>
 
 </table> 
 
 <br>
-<p><a href="../apiFunctions.htm">All regular API functions on one page</a></p>
-<br>
-<br>
 </td>
-</tr>
+
 </table>
 </div>
 </body>

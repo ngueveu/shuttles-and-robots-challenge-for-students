@@ -1,3 +1,4 @@
+simBWF=require('simBWF')
 putCartridgeDown=function()
     sim.wait(dwellTimeUp)
     sim.rmlMoveToJointPositions({j},-1,{0},{0},{maxVel},{maxAccel},{9999},{0},{0})
@@ -7,14 +8,14 @@ end
 
 enableStopper=function(enable)
     if enable then
-        sim.setObjectInt32Parameter(stopper,sim.objintparam_visibility_layer,1) -- make it visible
+        sim.setObjectInt32Param(stopper,sim.objintparam_visibility_layer,1) -- make it visible
         sim.setObjectSpecialProperty(stopper,sim.objectspecialproperty_collidable+sim.objectspecialproperty_measurable+sim.objectspecialproperty_detectable_all+sim.objectspecialproperty_renderable) -- make it collidable, measurable, detectable, etc.
-        sim.setObjectInt32Parameter(stopper,sim.shapeintparam_respondable,1) -- make it respondable
+        sim.setObjectInt32Param(stopper,sim.shapeintparam_respondable,1) -- make it respondable
         sim.resetDynamicObject(stopper)
     else
-        sim.setObjectInt32Parameter(stopper,sim.objintparam_visibility_layer,0)
+        sim.setObjectInt32Param(stopper,sim.objintparam_visibility_layer,0)
         sim.setObjectSpecialProperty(stopper,0)
-        sim.setObjectInt32Parameter(stopper,sim.shapeintparam_respondable,0)
+        sim.setObjectInt32Param(stopper,sim.shapeintparam_respondable,0)
         sim.resetDynamicObject(stopper)
     end
 end
@@ -66,19 +67,19 @@ setCartridgeEmpty=function()
     sim.setThreadAutomaticSwitch(true)
 end
 
-objectHandle=sim.getObjectAssociatedWithScript(sim.handle_self)
-model=sim.getObjectHandle('genericPingPongPacker')
+objectHandle=sim.getObject('.')
+model=sim.getObject('./genericPingPongPacker')
 local data=sim.readCustomDataBlock(model,simBWF.modelTags.CONVEYOR)
 data=sim.unpackTable(data)
 maxVel=data['cartridgeVelocity']
 maxAccel=data['cartridgeAcceleration']
 dwellTimeDown=data['cartridgeDwellTimeDown']
 dwellTimeUp=data['cartridgeDwellTimeUp']
-j=sim.getObjectHandle('genericPingPongPacker_cartridge2_upDownJoint')
+j=sim.getObject('./genericPingPongPacker_cartridge2_upDownJoint')
 sens={}
-sens[1]=sim.getObjectHandle('genericPingPongPacker_cartridge2_sensor')
-sens[2]=sim.getObjectHandle('genericPingPongPacker_cartridge2_sensor2')
-stopper=sim.getObjectHandle('genericPingPongPacker_cartridge2_stopper')
+sens[1]=sim.getObject('./genericPingPongPacker_cartridge2_sensor')
+sens[2]=sim.getObject('./genericPingPongPacker_cartridge2_sensor2')
+stopper=sim.getObject('./genericPingPongPacker_cartridge2_stopper')
 
 while sim.getSimulationState()~=sim.simulation_advancing_abouttostop do
     waitForSensor(1,true)

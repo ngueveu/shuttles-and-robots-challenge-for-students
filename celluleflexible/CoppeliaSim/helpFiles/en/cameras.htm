@@ -33,7 +33,7 @@
 <li>A camera has no specific resolution (i.e. it adjusts automatically to the view size). A vision sensor has a fixed resolution.</li>
 <li>A camera's image content is not directly available via the <a href="apisOverview.htm">API</a> (but via a callback mechanism), and image processing not directly supported. A vision sensor's image content can be accessed via the API, and processed via the <a href="visionCallbackFunctions.htm">vision callback functions</a>.</li>
 <li>A camera generally requires less CPU time and operates faster than vision sensors. </li>
-<li>A camera can display all <a href="objects.htm">object types</a>. A vision sensor can only display <a href="renderableObjects.htm">renderable objects</a>.</li>
+<li>A camera can display all <a href="objects.htm">object types</a>. A vision sensor mainly displays <a href="shapes.htm">shapes</a>.</li>
 
 <p>A camera can be added to the scene with [Menu bar --&gt; Add --&gt; Camera]. However adding a camera in this way will add the <a href="objects.htm">object</a> in a default position and orientation. It is a better practice to add cameras by right-clicking on a specific view of a scene and selecting [Popup menu --&gt; Add --&gt; Camera]. This will add the object just in front of the current view. The added camera is automatically selected and you can then <em>look through it</em> with [Popup menu --&gt; View --&gt; Associate view with selected camera]. For this to work you will have to make sure the popup menu is activated on a view. When a view is created but not yet associated with a viewable object, the [Popup menu --&gt; Add --&gt; Camera] command will add a camera and directly associate it with the view (i.e. <em>look through it</em>). A camera can be associated with any number of views.<br>
 </p>
@@ -42,7 +42,7 @@
 </p>
 
 <p align=center><img src="images/cameras4.jpg"></p>
-<p class=imageLabel>[Camera navigation toolbar buttons: pan, rotate, shift, zoom, fit-to-view and fly]</p>
+<p class=imageLabel>[Camera navigation toolbar buttons: pan, rotate, shift, zoom, and fit-to-view]</p>
 <br>
 
 
@@ -61,9 +61,6 @@
 <li><strong>Fit-to-view button</strong>: adjusts the camera of the view that has the focus in order to nicely frame all selected objects, or the entire scene if no object is selected.<br>
 </li>
 
-<li><strong>Fly button</strong>: allows &quot;flying&quot; through a scene. The mouse x and y movements are translated into yaw and pitch movements. Acceleration and deceleration is achieved with the shift- and ctrl-keys respectively. When the shift and ctrl keys are held down at the same time, the mouse x and y movements then perform a translation along the camera's x and y axes. In addition to this, the cursor keys allow orienting the camera into a different direction than the flight direction (during flight).
-</li>
-
 <p>While the left mouse button allows above operations, the wheel of the mouse allows shifting the camera along the view direction (if the camera view is in perspective projection mode) or allows adjusting the view size of the camera view (if the camera view is in orthogonal projection mode). The right button, when clicked without a mouse movement will activate a popup menu, however, if the right button is kept pressed while moving the mouse, a camera rotation about the clicked point can be achieved.<br>
 </p>
 
@@ -77,14 +74,6 @@
 <p>Cameras can automatically track objects (i.e. follow them as they move) by selecting the object to track, then selecting in the appropriate view [Popup menu --&gt; View --&gt; Track selected object]. A tracking camera will keep its position, but automatically adjust its viewing direction in order to always keep the object to track in its view field. This is different from having a camera attached to that object through a parent-child relationship.
 </p>
 
-
-<br>
-<h3 class=recommendedTopics>Recommended topics</h3>
-<li><a href="apiFunctionListCategory.htm#cameraObject">Related API functions</a></li>
-<li><a href="cameraPropertiesDialog.htm">Camera  dialog</a></li>
-<li><a href="viewableObjects.htm">Viewable objects</a></li>
-<li><a href="pagesAndViews.htm">Pages and views</a></li>
-<li><a href="visionSensors.htm">Vision sensors</a></li>
 
 <br>
 <br>

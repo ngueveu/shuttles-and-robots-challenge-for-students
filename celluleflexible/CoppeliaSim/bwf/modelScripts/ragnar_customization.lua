@@ -1,3 +1,4 @@
+simBWF=require('simBWF')
 function removeFromPluginRepresentation()
 --[[
     local data={}
@@ -11,7 +12,7 @@ function updatePluginRepresentation()
     local c=readInfo()
     local data={}
     data.id=model
-    data.name=sim.getObjectName(model)
+    data.name=sim.getObjectAlias(model,1)
     data.pos=sim.getObjectPosition(model,-1)
     data.ypr=sim.getObjectOrientation(model,-1)
     data.primaryArmLength=c.primaryArmLengthInMM/1000
@@ -23,7 +24,7 @@ end
 function ext_getItemData_pricing()
     local c=readInfo()
     local obj={}
-    obj.name=sim.getObjectName(model)
+    obj.name=sim.getObjectAlias(model,1)
     obj.brVersion=0
     obj.type='ragnar'
     obj.ragnarType='default'
@@ -37,28 +38,28 @@ function ext_getItemData_pricing()
     obj.secondary_arms=c.secondaryArmLengthInMM
     local dep={}
     local id=simBWF.getReferencedObjectHandle(model,simBWF.OLDRAGNAR_PARTTRACKING1_REF)
-    if id>=0 then dep[#dep+1]=sim.getObjectName(id) end
+    if id>=0 then dep[#dep+1]=sim.getObjectAlias(id,1) end
     local id=simBWF.getReferencedObjectHandle(model,simBWF.OLDRAGNAR_PARTTRACKING2_REF)
-    if id>=0 then dep[#dep+1]=sim.getObjectName(id) end
+    if id>=0 then dep[#dep+1]=sim.getObjectAlias(id,1) end
     local id=simBWF.getReferencedObjectHandle(model,simBWF.OLDRAGNAR_STATICWINDOW1_REF)
-    if id>=0 then dep[#dep+1]=sim.getObjectName(id) end
+    if id>=0 then dep[#dep+1]=sim.getObjectAlias(id,1) end
     local id=simBWF.getReferencedObjectHandle(model,simBWF.OLDRAGNAR_TARGETTRACKING1_REF)
-    if id>=0 then dep[#dep+1]=sim.getObjectName(id) end
+    if id>=0 then dep[#dep+1]=sim.getObjectAlias(id,1) end
     local id=simBWF.getReferencedObjectHandle(model,simBWF.OLDRAGNAR_TARGETTRACKING2_REF)
-    if id>=0 then dep[#dep+1]=sim.getObjectName(id) end
+    if id>=0 then dep[#dep+1]=sim.getObjectAlias(id,1) end
     local id=simBWF.getReferencedObjectHandle(model,simBWF.OLDRAGNAR_DROPLOCATION1_REF)
-    if id>=0 then dep[#dep+1]=sim.getObjectName(id) end
+    if id>=0 then dep[#dep+1]=sim.getObjectAlias(id,1) end
     local id=simBWF.getReferencedObjectHandle(model,simBWF.OLDRAGNAR_DROPLOCATION2_REF)
-    if id>=0 then dep[#dep+1]=sim.getObjectName(id) end
+    if id>=0 then dep[#dep+1]=sim.getObjectAlias(id,1) end
     local id=simBWF.getReferencedObjectHandle(model,simBWF.OLDRAGNAR_DROPLOCATION3_REF)
-    if id>=0 then dep[#dep+1]=sim.getObjectName(id) end
+    if id>=0 then dep[#dep+1]=sim.getObjectAlias(id,1) end
     local id=simBWF.getReferencedObjectHandle(model,simBWF.OLDRAGNAR_DROPLOCATION4_REF)
-    if id>=0 then dep[#dep+1]=sim.getObjectName(id) end
+    if id>=0 then dep[#dep+1]=sim.getObjectAlias(id,1) end
     local ob=sim.getObjectsInTree(model)
     for i=1,#ob,1 do
         local data=sim.readCustomDataBlock(ob[i],simBWF.modelTags.RAGNARGRIPPER)
         if data then
-            dep[#dep+1]=sim.getObjectName(ob[i])
+            dep[#dep+1]=sim.getObjectAlias(ob[i],1)
             break
         end
     end
@@ -69,13 +70,11 @@ function ext_getItemData_pricing()
 end
 
 setFkMode=function()
-    -- disable the platform positional constraints:
-    sim.setIkElementProperties(ikGroup,ikModeTipDummy,0)
-    -- Set the driving joints into passive mode (not taken into account during IK resolution):
-    sim.setJointMode(fkDrivingJoints[1],sim.jointmode_passive,0)
-    sim.setJointMode(fkDrivingJoints[2],sim.jointmode_passive,0)
-    sim.setJointMode(fkDrivingJoints[3],sim.jointmode_passive,0)
-    sim.setJointMode(fkDrivingJoints[4],sim.jointmode_passive,0)
+    simIK.setIkElementFlags(ikEnv,ikGroup,ikElementPlatform,0)
+    for i=1,#fkDrivingJoints_inIkEnv,1 do
+        simIK.setJointMode(ikEnv,fkDrivingJoints_inIkEnv[i],simIK.jointmode_passive)
+    end
+    sim.switchThread()
 end
 
 function getZPosition()
@@ -106,10 +105,10 @@ function setLowBeamsVisible(visible)
     for i=1,2,1 do
         if not visible then
             sim.setObjectSpecialProperty(frameBeams[i],0)
-            sim.setObjectInt32Parameter(frameBeams[i],sim.objintparam_visibility_layer,0)
+            sim.setObjectInt32Param(frameBeams[i],sim.objintparam_visibility_layer,0)
         else
             sim.setObjectSpecialProperty(frameBeams[i],sim.objectspecialproperty_collidable+sim.objectspecialproperty_detectable_all+sim.objectspecialproperty_measurable+sim.objectspecialproperty_renderable)
-            sim.setObjectInt32Parameter(frameBeams[i],sim.objintparam_visibility_layer,1)
+            sim.setObjectInt32Param(frameBeams[i],sim.objintparam_visibility_layer,1)
         end
     end
 end
@@ -124,7 +123,7 @@ function getAvailableStaticPartWindows()
     for i=1,#l,1 do
         local data=sim.readCustomDataBlock(l[i],'XYZ_STATICPICKWINDOW_INFO')
         if data then
-            retL[#retL+1]={sim.getObjectName(l[i]),l[i]}
+            retL[#retL+1]={sim.getObjectAlias(l[i],1),l[i]}
         end
     end
     return retL
@@ -136,7 +135,7 @@ function getAvailableStaticTargetWindows()
     for i=1,#l,1 do
         local data=sim.readCustomDataBlock(l[i],'XYZ_STATICPLACEWINDOW_INFO')
         if data then
-            retL[#retL+1]={sim.getObjectName(l[i]),l[i]}
+            retL[#retL+1]={sim.getObjectAlias(l[i],1),l[i]}
         end
     end
     return retL
@@ -148,7 +147,7 @@ function getAvailableTrackingWindows()
     for i=1,#l,1 do
         local data=sim.readCustomDataBlock(l[i],simBWF.modelTags.TRACKINGWINDOW)
         if data then
-            retL[#retL+1]={sim.getObjectName(l[i]),l[i]}
+            retL[#retL+1]={sim.getObjectAlias(l[i],1),l[i]}
         end
     end
     return retL
@@ -162,9 +161,9 @@ function getAvailableDropLocations(returnMap)
         local data2=sim.readCustomDataBlock(l[i],'XYZ_BUCKET_INFO')
         if data1 or data2 then
             if returnMap then
-                retL[sim.getObjectName(l[i])]=l[i]
+                retL[sim.getObjectAlias(l[i],1)]=l[i]
             else
-                retL[#retL+1]={sim.getObjectName(l[i]),l[i]}
+                retL[#retL+1]={sim.getObjectAlias(l[i],1),l[i]}
             end
         end
     end
@@ -275,8 +274,8 @@ function getLinkBLength(a,f)
 end
 
 function showHideWorkspace(show)
-    local r,minZ=sim.getObjectFloatParameter(workspace,sim.objfloatparam_objbbox_min_z)
-    local r,maxZ=sim.getObjectFloatParameter(workspace,sim.objfloatparam_objbbox_max_z)
+    local minZ=sim.getObjectFloatParam(workspace,sim.objfloatparam_objbbox_min_z)
+    local maxZ=sim.getObjectFloatParam(workspace,sim.objfloatparam_objbbox_max_z)
     local s=maxZ-minZ
     local inf=readInfo()
     local primaryArmLengthInMM=inf['primaryArmLengthInMM']
@@ -290,15 +289,15 @@ function showHideWorkspace(show)
     sim.setObjectPosition(workspace,sim.handle_parent,p)
 
     if show then
-        sim.setObjectInt32Parameter(workspace,sim.objintparam_visibility_layer,1)
+        sim.setObjectInt32Param(workspace,sim.objintparam_visibility_layer,1)
     else
-        sim.setObjectInt32Parameter(workspace,sim.objintparam_visibility_layer,0)
+        sim.setObjectInt32Param(workspace,sim.objintparam_visibility_layer,0)
     end
 end
 
 function isWorkspaceVisible()
     local c=readInfo()
-    return sim.boolAnd32(c['bitCoded'],256)>0
+    return (c['bitCoded']&256)>0
 end
 
 function adjustRobot()
@@ -342,8 +341,8 @@ function adjustRobot()
 
     for i=1,3,1 do
         local h=middleCoverParts[i]
-        local r,minY=sim.getObjectFloatParameter(h,sim.objfloatparam_objbbox_min_y)
-        local r,maxY=sim.getObjectFloatParameter(h,sim.objfloatparam_objbbox_max_y)
+        local minY=sim.getObjectFloatParam(h,sim.objfloatparam_objbbox_min_y)
+        local maxY=sim.getObjectFloatParam(h,sim.objfloatparam_objbbox_max_y)
         local s=maxY-minY
         local d=0.28+0.0122+ddx*2
         sim.scaleObject(h,1,d/s,1)
@@ -351,8 +350,8 @@ function adjustRobot()
 
     for i=1,2,1 do
         local h=middleCoverParts[3+i]
-        local r,minZ=sim.getObjectFloatParameter(h,sim.objfloatparam_objbbox_min_z)
-        local r,maxZ=sim.getObjectFloatParameter(h,sim.objfloatparam_objbbox_max_z)
+        local minZ=sim.getObjectFloatParam(h,sim.objfloatparam_objbbox_min_z)
+        local maxZ=sim.getObjectFloatParam(h,sim.objfloatparam_objbbox_max_z)
         local s=maxZ-minZ
         local d=0.3391
         if a<0.18 then
@@ -366,8 +365,8 @@ function adjustRobot()
 
     for i=1,4,1 do
         local h=upperLinks[i]
-        local r,minZ=sim.getObjectFloatParameter(h,sim.objfloatparam_objbbox_min_z)
-        local r,maxZ=sim.getObjectFloatParameter(h,sim.objfloatparam_objbbox_max_z)
+        local minZ=sim.getObjectFloatParam(h,sim.objfloatparam_objbbox_min_z)
+        local maxZ=sim.getObjectFloatParam(h,sim.objfloatparam_objbbox_max_z)
         local s=maxZ-minZ
         local d=0.242+upAdjust
         sim.scaleObject(h,1,1,d/s)
@@ -375,11 +374,11 @@ function adjustRobot()
 
     for i=1,8,1 do
         local h=lowerLinks[i]
-        local r,minZ=sim.getObjectFloatParameter(h,sim.objfloatparam_objbbox_min_z)
-        local r,maxZ=sim.getObjectFloatParameter(h,sim.objfloatparam_objbbox_max_z)
+        local minZ=sim.getObjectFloatParam(h,sim.objfloatparam_objbbox_min_z)
+        local maxZ=sim.getObjectFloatParam(h,sim.objfloatparam_objbbox_max_z)
         local s=maxZ-minZ
-        local r,minX=sim.getObjectFloatParameter(h,sim.objfloatparam_objbbox_min_x)
-        local r,maxX=sim.getObjectFloatParameter(h,sim.objfloatparam_objbbox_max_x)
+        local minX=sim.getObjectFloatParam(h,sim.objfloatparam_objbbox_min_x)
+        local maxX=sim.getObjectFloatParam(h,sim.objfloatparam_objbbox_max_x)
         local sx=maxX-minX
         local d=0.5+downAdjust
         local diam=0.01
@@ -395,14 +394,14 @@ function adjustRobot()
 
     sim.setObjectPosition(ikTarget,model,{p[1],p[2],relZPos})
 
-    sim.handleIkGroup(ikGroup)
+    handleKinematics()
 
     -- The frame:
     local nomS={0.9674,0.9674,0.9674,0.411,0.98509,0.98509,0.7094,0.7094}
     for i=1,4,1 do
         local h=frameBeams[i]
-        local r,minY=sim.getObjectFloatParameter(h,sim.objfloatparam_objbbox_min_y)
-        local r,maxY=sim.getObjectFloatParameter(h,sim.objfloatparam_objbbox_max_y)
+        local minY=sim.getObjectFloatParam(h,sim.objfloatparam_objbbox_min_y)
+        local maxY=sim.getObjectFloatParam(h,sim.objfloatparam_objbbox_max_y)
         local s=maxY-minY
         local d=nomS[i]+ddx*2
         sim.scaleObject(h,1,d/s,1)
@@ -417,8 +416,8 @@ function adjustHeight(z)
     local nomS={0.9674,0.9674,0.9674,0.411,0.98509,0.98509,0.7094,0.7094}
     for i=5,8,1 do
         local h=frameBeams[i]
-        local r,minZ=sim.getObjectFloatParameter(h,sim.objfloatparam_objbbox_min_z)
-        local r,maxZ=sim.getObjectFloatParameter(h,sim.objfloatparam_objbbox_max_z)
+        local minZ=sim.getObjectFloatParam(h,sim.objfloatparam_objbbox_min_z)
+        local maxZ=sim.getObjectFloatParam(h,sim.objfloatparam_objbbox_max_z)
         local s=maxZ-minZ
         local d=nomS[i]+dz
         sim.scaleObject(h,1,1,d/s)
@@ -774,7 +773,7 @@ end
 
 function visualizeWorkspaceClick_callback(uiHandle,id,newVal)
     local c=readInfo()
-    c['bitCoded']=sim.boolOr32(c['bitCoded'],256)
+    c['bitCoded']=(c['bitCoded']|256)
     if newVal==0 then
         c['bitCoded']=c['bitCoded']-256
     end
@@ -785,7 +784,7 @@ end
 
 function visualizeWorkspaceSimClick_callback(uiHandle,id,newVal)
     local c=readInfo()
-    c['bitCoded']=sim.boolOr32(c['bitCoded'],512)
+    c['bitCoded']=(c['bitCoded']|512)
     if newVal==0 then
         c['bitCoded']=c['bitCoded']-512
     end
@@ -795,7 +794,7 @@ end
 
 function visualizeTrajectoryClick_callback(ui,id,newVal)
     local c=readInfo()
-    c['bitCoded']=sim.boolOr32(c['bitCoded'],1)
+    c['bitCoded']=(c['bitCoded']|1)
     if newVal==0 then
         c['bitCoded']=c['bitCoded']-1
     end
@@ -805,7 +804,7 @@ end
 
 function openFrameClick_callback(ui,id,newVal)
     local c=readInfo()
-    c['bitCoded']=sim.boolOr32(c['bitCoded'],2)
+    c['bitCoded']=(c['bitCoded']|2)
     if newVal==0 then
         c['bitCoded']=c['bitCoded']-2
     end
@@ -904,7 +903,7 @@ end
 
 function visibleFrameLowBeamsClick_callback(ui,id,newVal)
     local c=readInfo()
-    c['bitCoded']=sim.boolOr32(c['bitCoded'],8)
+    c['bitCoded']=(c['bitCoded']|8)
     if newVal==0 then
         c['bitCoded']=c['bitCoded']-8
     end
@@ -915,7 +914,7 @@ end
 
 function enabledClicked_callback(ui,id,newVal)
     local c=readInfo()
-    c['bitCoded']=sim.boolOr32(c['bitCoded'],64)
+    c['bitCoded']=(c['bitCoded']|64)
     if newVal==0 then
         c['bitCoded']=c['bitCoded']-64
     end
@@ -925,20 +924,20 @@ end
 
 function showStatisticsClick_callback(ui,id,newVal)
     local c=readInfo()
-    c['bitCoded']=sim.boolOr32(c['bitCoded'],128)
+    c['bitCoded']=(c['bitCoded']|128)
     if newVal==0 then
         c['bitCoded']=c['bitCoded']-128
     end
     simBWF.markUndoPoint()
     writeInfo(c)
     if sim.getSimulationState()~=sim.simulation_stopped then
-        sim.callScriptFunction("ext_enableDisableStats_fromCustomizationScript@"..sim.getObjectName(model),sim.scripttype_childscript,newVal~=0)
+        sim.callScriptFunction("ext_enableDisableStats_fromCustomizationScript@"..sim.getObjectAlias(model,1),sim.scripttype_childscript,newVal~=0)
     end
 end
 
 function ragnarIsIdle_callback(ui,id,newVal)
     local c=readInfo()
-    c['bitCoded']=sim.boolOr32(c['bitCoded'],4096)
+    c['bitCoded']=(c['bitCoded']|4096)
     if newVal==0 then
         c['bitCoded']=c['bitCoded']-4096
     end
@@ -948,7 +947,7 @@ end
 
 function attachPartClicked_callback(ui,id,newVal)
     local c=readInfo()
-    c['bitCoded']=sim.boolOr32(c['bitCoded'],1024)
+    c['bitCoded']=(c['bitCoded']|1024)
     if newVal==0 then
         c['bitCoded']=c['bitCoded']-1024
     end
@@ -958,7 +957,7 @@ end
 
 function pickWithoutTargetClicked_callback(ui,id,newVal)
     local c=readInfo()
-    c['bitCoded']=sim.boolOr32(c['bitCoded'],2048)
+    c['bitCoded']=(c['bitCoded']|2048)
     if newVal==0 then
         c['bitCoded']=c['bitCoded']-2048
     end
@@ -1030,7 +1029,7 @@ function pause_callback()
     updateEnabledDisabledItems()
     enableMouseInteractionsOnPlot(true)
     if plotUi then
-        simUI.setTitle(plotUi,sim.getObjectName(model)..' (paused)',true)
+        simUI.setTitle(plotUi,sim.getObjectAlias(model,1)..' (paused)',true)
     end
 end
 
@@ -1039,7 +1038,7 @@ function resume_callback()
     updateEnabledDisabledItems()
     enableMouseInteractionsOnPlot(false)
     if plotUi then
-        simUI.setTitle(plotUi,sim.getObjectName(model)..' (online)',true)
+        simUI.setTitle(plotUi,sim.getObjectAlias(model,1)..' (online)',true)
     end
 end
 
@@ -1071,11 +1070,11 @@ function connect()
     if sim.fastIdleLoop then
         sim.fastIdleLoop(true)
     else
-        sim.setInt32Parameter(sim.intparam_idle_fps,0)
+        sim.setInt32Param(sim.intparam_idle_fps,0)
     end
     local c=readInfo()
 
-    if not plotUi and sim.boolAnd32(c['bitCoded'],8192)>0 then
+    if not plotUi and (c['bitCoded']&8192)>0 then
         local xml=[[<tabs id="77">
                 <tab title="Axes angles">
                 <plot id="1" max-buffer-size="100000" cyclic-buffer="false" background-color="25,25,25" foreground-color="150,150,150"/>
@@ -1093,7 +1092,7 @@ function connect()
         if not previousPlotDlgPos then
             previousPlotDlgPos="bottomRight"
         end
-        plotUi=simBWF.createCustomUi(xml,sim.getObjectName(model)..' (online)',previousPlotDlgPos,true,"closePlot",false,true,false,nil,previousPlotDlgSize)
+        plotUi=simBWF.createCustomUi(xml,sim.getObjectAlias(model,1)..' (online)',previousPlotDlgPos,true,"closePlot",false,true,false,nil,previousPlotDlgSize)
         simUI.setPlotLabels(plotUi,1,"Time (seconds)","degrees")
         if not plotTabIndex then
             plotTabIndex=0
@@ -1150,12 +1149,12 @@ function disconnect()
     data.id=model
     simBWF.query('ragnar_disconnectReal',data)
     if plotUi then
-        simUI.setTitle(plotUi,sim.getObjectName(model),true)
+        simUI.setTitle(plotUi,sim.getObjectAlias(model,1),true)
     end
     if sim.fastIdleLoop then
         sim.fastIdleLoop(false)
     else
-        sim.setInt32Parameter(sim.intparam_idle_fps,8)
+        sim.setInt32Param(sim.intparam_idle_fps,8)
     end
     connected=false
     paused=false
@@ -1165,7 +1164,7 @@ end
 
 function showGraphClick_callback(ui,id,newVal)
     local c=readInfo()
-    c['bitCoded']=sim.boolOr32(c['bitCoded'],8192)
+    c['bitCoded']=(c['bitCoded']|8192)
     if newVal==0 then
         c['bitCoded']=c['bitCoded']-8192
         closePlot()
@@ -1176,7 +1175,7 @@ end
 
 function reflectConfigClick_callback(ui,id,newVal)
     local c=readInfo()
-    c['bitCoded']=sim.boolOr32(c['bitCoded'],16384)
+    c['bitCoded']=(c['bitCoded']|16384)
     if newVal==0 then
         c['bitCoded']=c['bitCoded']-16384
     end
@@ -1232,7 +1231,7 @@ function updatePlotAndRagnarFromRealRagnarIfNeeded()
             end
             --]]
         end
-        if sim.boolAnd32(c['bitCoded'],16384)>0 then
+        if (c['bitCoded']&16384)>0 then
             local desired={0,0,0,0}
             if result=='ok' then
                 if #retData.timeStamps>0 then
@@ -1245,6 +1244,10 @@ function updatePlotAndRagnarFromRealRagnarIfNeeded()
             moveToJointPositions(desired)
         end
     end
+end
+
+handleKinematics=function()
+    simIK.applyIkEnvironmentToScene(ikEnv,ikGroup)
 end
 
 function moveToJointPositions(desired)
@@ -1264,7 +1267,7 @@ function moveToJointPositions(desired)
         for j=1,4,1 do
             sim.setJointPosition(fkDrivingJoints[j],current[j]+i*dx[j]/steps)
         end
-        sim.handleIkGroup(ikGroup)
+        handleKinematics()
     end
 end
 
@@ -1696,24 +1699,24 @@ function createDlg()
         local c=readInfo()
         simUI.setSliderValue(ui,2,(c['primaryArmLengthInMM']-200)/50,true)
         simUI.setSliderValue(ui,92,(c['secondaryArmLengthInMM']-400)/50,true)
-        simUI.setCheckboxValue(ui,3,simBWF.getCheckboxValFromBool(sim.boolAnd32(c['bitCoded'],256)~=0),true)
-        simUI.setCheckboxValue(ui,305,simBWF.getCheckboxValFromBool(sim.boolAnd32(c['bitCoded'],512)~=0),true)
-        simUI.setCheckboxValue(ui,300,simBWF.getCheckboxValFromBool(sim.boolAnd32(c['bitCoded'],1)~=0),true)
-        simUI.setCheckboxValue(ui,301,simBWF.getCheckboxValFromBool(sim.boolAnd32(c['bitCoded'],2)~=0),true)
-        simUI.setCheckboxValue(ui,303,simBWF.getCheckboxValFromBool(sim.boolAnd32(c['bitCoded'],8)~=0),true)
-        simUI.setCheckboxValue(ui,1000,simBWF.getCheckboxValFromBool(sim.boolAnd32(c['bitCoded'],64)~=0),true)
-        simUI.setCheckboxValue(ui,304,simBWF.getCheckboxValFromBool(sim.boolAnd32(c['bitCoded'],128)~=0),true)
-        simUI.setCheckboxValue(ui,306,simBWF.getCheckboxValFromBool(sim.boolAnd32(c['bitCoded'],4096)~=0),true)
-        simUI.setCheckboxValue(ui,2000,simBWF.getCheckboxValFromBool(sim.boolAnd32(c['bitCoded'],1024)~=0),true)
-        simUI.setCheckboxValue(ui,2001,simBWF.getCheckboxValFromBool(sim.boolAnd32(c['bitCoded'],2048)~=0),true)
+        simUI.setCheckboxValue(ui,3,simBWF.getCheckboxValFromBool((c['bitCoded']&256)~=0),true)
+        simUI.setCheckboxValue(ui,305,simBWF.getCheckboxValFromBool((c['bitCoded']&512)~=0),true)
+        simUI.setCheckboxValue(ui,300,simBWF.getCheckboxValFromBool((c['bitCoded']&1)~=0),true)
+        simUI.setCheckboxValue(ui,301,simBWF.getCheckboxValFromBool((c['bitCoded']&2)~=0),true)
+        simUI.setCheckboxValue(ui,303,simBWF.getCheckboxValFromBool((c['bitCoded']&8)~=0),true)
+        simUI.setCheckboxValue(ui,1000,simBWF.getCheckboxValFromBool((c['bitCoded']&64)~=0),true)
+        simUI.setCheckboxValue(ui,304,simBWF.getCheckboxValFromBool((c['bitCoded']&128)~=0),true)
+        simUI.setCheckboxValue(ui,306,simBWF.getCheckboxValFromBool((c['bitCoded']&4096)~=0),true)
+        simUI.setCheckboxValue(ui,2000,simBWF.getCheckboxValFromBool((c['bitCoded']&1024)~=0),true)
+        simUI.setCheckboxValue(ui,2001,simBWF.getCheckboxValFromBool((c['bitCoded']&2048)~=0),true)
         simUI.setEditValue(ui,77,simBWF.format("%.0f",getZPosition()*1000),true)
 
         simUI.setEditValue(ui,1200,c['connectionIp'],true)
         simUI.setEditValue(ui,1201,simBWF.format("%i",c['connectionPort']),true)
         simUI.setEditValue(ui,1202,simBWF.format("%.2f",c['connectionTimeout']),true)
         simUI.setEditValue(ui,1203,simBWF.format("%i",c['connectionBufferSize']),true)
-        simUI.setCheckboxValue(ui,1208,simBWF.getCheckboxValFromBool(sim.boolAnd32(c['bitCoded'],8192)~=0),true)
-        simUI.setCheckboxValue(ui,1209,simBWF.getCheckboxValFromBool(sim.boolAnd32(c['bitCoded'],16384)~=0),true)
+        simUI.setCheckboxValue(ui,1208,simBWF.getCheckboxValFromBool((c['bitCoded']&8192)~=0),true)
+        simUI.setCheckboxValue(ui,1209,simBWF.getCheckboxValFromBool((c['bitCoded']&16384)~=0),true)
 
         updateStaticWindowComboboxes()
         updateStaticTargetWindowComboboxes()
@@ -1747,17 +1750,17 @@ function removeDlg()
     end
 end
 
-if (sim_call_type==sim.customizationscriptcall_initialization) then
+function sysCall_init()
     MAX_VEL_DEFAULT_MOTOR=5
     MAX_ACCEL_DEFAULT_MOTOR=35
 
     MAX_VEL_HIGHPOWER_MOTOR=2.5
     MAX_ACCEL_HIGHPOWER_MOTOR=25
     
-    version=sim.getInt32Parameter(sim.intparam_program_version)
-    revision=sim.getInt32Parameter(sim.intparam_program_revision)
+    version=sim.getInt32Param(sim.intparam_program_version)
+    revision=sim.getInt32Param(sim.intparam_program_revision)
 
-    model=sim.getObjectAssociatedWithScript(sim.handle_self)
+    model=sim.getObject('.')
     _MODELVERSION_=0
     _CODEVERSION_=0
     local _info=readInfo()
@@ -1796,12 +1799,12 @@ if (sim_call_type==sim.customizationscriptcall_initialization) then
         _info['sizeA']=nil
         _info['paramF']=nil
     end
-    if sim.boolAnd32(_info['bitCoded'],4)>0 then
-        _info['bitCoded']=sim.boolOr32(_info['bitCoded'],4)-4
+    if (_info['bitCoded']&4)>0 then
+        _info['bitCoded']=(_info['bitCoded']|4)-4
         _info['frameType']=1 -- industrial
     end
-    if sim.boolAnd32(_info['bitCoded'],16)>0 then
-        _info['bitCoded']=sim.boolOr32(_info['bitCoded'],16)-16
+    if (_info['bitCoded']&16)>0 then
+        _info['bitCoded']=(_info['bitCoded']|16)-16
         _info['exteriorType']=1 -- wash-down
     end
     ----------------------------------------
@@ -1810,14 +1813,13 @@ if (sim_call_type==sim.customizationscriptcall_initialization) then
     connected=false
     paused=false
 
-    ikGroup=sim.getIkGroupHandle('Ragnar')
-    ikTarget=sim.getObjectHandle('Ragnar_InvKinTarget')
-    ikModeTipDummy=sim.getObjectHandle('Ragnar_InvKinTip')
+    ikTarget=sim.getObject('./Ragnar_InvKinTarget')
+    ikModeTipDummy=sim.getObject('./Ragnar_InvKinTip')
     fkDrivingJoints={-1,-1,-1,-1}
-    fkDrivingJoints[1]=sim.getObjectHandle('Ragnar_A1DrivingJoint1')
-    fkDrivingJoints[2]=sim.getObjectHandle('Ragnar_A1DrivingJoint2')
-    fkDrivingJoints[3]=sim.getObjectHandle('Ragnar_A1DrivingJoint3')
-    fkDrivingJoints[4]=sim.getObjectHandle('Ragnar_A1DrivingJoint4')
+    fkDrivingJoints[1]=sim.getObject('./Ragnar_A1DrivingJoint1')
+    fkDrivingJoints[2]=sim.getObject('./Ragnar_A1DrivingJoint2')
+    fkDrivingJoints[3]=sim.getObject('./Ragnar_A1DrivingJoint3')
+    fkDrivingJoints[4]=sim.getObject('./Ragnar_A1DrivingJoint4')
 
 
     dlgMainTabIndex=0
@@ -1831,56 +1833,94 @@ if (sim_call_type==sim.customizationscriptcall_initialization) then
     upperArmLAdjust={}
     lowerArmLAdjust={}
 
-    frontAndRearCoverAdjust={sim.getObjectHandle('Ragnar_frontAdjust'),sim.getObjectHandle('Ragnar_rearAdjust')}
+    frontAndRearCoverAdjust={sim.getObject('./Ragnar_frontAdjust'),sim.getObject('./Ragnar_rearAdjust')}
     middleCoverParts={}
 
     drivingJoints={}
 
     for i=1,4,1 do
-        drivingJoints[#upperLinks+1]=sim.getObjectHandle('Ragnar_A1DrivingJoint'..i)
+        drivingJoints[#upperLinks+1]=sim.getObject('./Ragnar_A1DrivingJoint'..i)
 
-        upperLinks[#upperLinks+1]=sim.getObjectHandle('Ragnar_upperArmLink'..i-1)
-        lowerLinks[#lowerLinks+1]=sim.getObjectHandle('Ragnar_lowerArmLinkA'..i-1)
-        lowerLinks[#lowerLinks+1]=sim.getObjectHandle('Ragnar_lowerArmLinkB'..i-1)
+        upperLinks[#upperLinks+1]=sim.getObject('./Ragnar_upperArmLink'..i-1)
+        lowerLinks[#lowerLinks+1]=sim.getObject('./Ragnar_lowerArmLinkA'..i-1)
+        lowerLinks[#lowerLinks+1]=sim.getObject('./Ragnar_lowerArmLinkB'..i-1)
 
-        upperArmAdjust[#upperArmAdjust+1]=sim.getObjectHandle('Ragnar_upperArmAdjust'..i-1)
-        lowerArmAdjust[#lowerArmAdjust+1]=sim.getObjectHandle('Ragnar_lowerArmAdjustA'..i-1)
-        lowerArmAdjust[#lowerArmAdjust+1]=sim.getObjectHandle('Ragnar_lowerArmAdjustB'..i-1)
+        upperArmAdjust[#upperArmAdjust+1]=sim.getObject('./Ragnar_upperArmAdjust'..i-1)
+        lowerArmAdjust[#lowerArmAdjust+1]=sim.getObject('./Ragnar_lowerArmAdjustA'..i-1)
+        lowerArmAdjust[#lowerArmAdjust+1]=sim.getObject('./Ragnar_lowerArmAdjustB'..i-1)
 
-        upperArmLAdjust[#upperArmLAdjust+1]=sim.getObjectHandle('Ragnar_upperArmLAdjust'..i-1)
-        lowerArmLAdjust[#lowerArmLAdjust+1]=sim.getObjectHandle('Ragnar_lowerArmLAdjustA'..i-1)
-        lowerArmLAdjust[#lowerArmLAdjust+1]=sim.getObjectHandle('Ragnar_lowerArmLAdjustB'..i-1)
+        upperArmLAdjust[#upperArmLAdjust+1]=sim.getObject('./Ragnar_upperArmLAdjust'..i-1)
+        lowerArmLAdjust[#lowerArmLAdjust+1]=sim.getObject('./Ragnar_lowerArmLAdjustA'..i-1)
+        lowerArmLAdjust[#lowerArmLAdjust+1]=sim.getObject('./Ragnar_lowerArmLAdjustB'..i-1)
     end
 
     for i=1,5,1 do
-        middleCoverParts[i]=sim.getObjectHandle('Ragnar_middleCover'..i)
+        middleCoverParts[i]=sim.getObject('./Ragnar_middleCover'..i)
     end
 
-    frameModel=sim.getObjectHandle('Ragnar_frame')
+    frameModel=sim.getObject('./Ragnar_frame')
     frameBeams={}
     for i=1,8,1 do
-        frameBeams[i]=sim.getObjectHandle('Ragnar_frame_beam'..i)
+        frameBeams[i]=sim.getObject('./Ragnar_frame_beam'..i)
     end
     frameJoints={}
-    frameJoints[1]=sim.getObjectHandle('Ragnar_frame_widthJ1')
-    frameJoints[2]=sim.getObjectHandle('Ragnar_frame_widthJ2')
-    frameJoints[3]=sim.getObjectHandle('Ragnar_frame_heightJ1')
-    frameJoints[4]=sim.getObjectHandle('Ragnar_frame_heightJ2')
-    frameJoints[5]=sim.getObjectHandle('Ragnar_frame_heightJ3')
-    frameJoints[6]=sim.getObjectHandle('Ragnar_frame_heightJ4')
-    frameJoints[7]=sim.getObjectHandle('Ragnar_frame_lengthJ1')
-    frameJoints[8]=sim.getObjectHandle('Ragnar_frame_lengthJ2')
-    frameJoints[9]=sim.getObjectHandle('Ragnar_frame_lengthJ3')
-    frameJoints[10]=sim.getObjectHandle('Ragnar_frame_lengthJ4')
+    frameJoints[1]=sim.getObject('./Ragnar_frame_widthJ1')
+    frameJoints[2]=sim.getObject('./Ragnar_frame_widthJ2')
+    frameJoints[3]=sim.getObject('./Ragnar_frame_heightJ1')
+    frameJoints[4]=sim.getObject('./Ragnar_frame_heightJ2')
+    frameJoints[5]=sim.getObject('./Ragnar_frame_heightJ3')
+    frameJoints[6]=sim.getObject('./Ragnar_frame_heightJ4')
+    frameJoints[7]=sim.getObject('./Ragnar_frame_lengthJ1')
+    frameJoints[8]=sim.getObject('./Ragnar_frame_lengthJ2')
+    frameJoints[9]=sim.getObject('./Ragnar_frame_lengthJ3')
+    frameJoints[10]=sim.getObject('./Ragnar_frame_lengthJ4')
 
     frameOpenClose={}
     for i=1,3,1 do
-        frameOpenClose[i]=sim.getObjectHandle('Ragnar_frame_openCloseJ'..i)
+        frameOpenClose[i]=sim.getObject('./Ragnar_frame_openCloseJ'..i)
     end
 
-    workspace=sim.getObjectHandle('Ragnar_workspace')
+    workspace=sim.getObject('./Ragnar_workspace')
 
-	sim.setScriptAttribute(sim.handle_self,sim.customizationscriptattribute_activeduringsimulation,true)
+
+    simTipDummy=sim.getObject('./Ragnar_InvKinTip')
+    simTargetDummy=sim.getObject('./Ragnar_InvKinTarget')
+    simTip1=sim.getObject('./Ragnar_RLoopArmTip14')
+    simTarget1=sim.getObject('./Ragnar_RLoopArmTarget14')
+    simTip2=sim.getObject('./Ragnar_RLoopArmTip15')
+    simTarget2=sim.getObject('./Ragnar_RLoopArmTarget15')
+    simTip3=sim.getObject('./Ragnar_RLoopArmTip16')
+    simTarget3=sim.getObject('./Ragnar_RLoopArmTarget16')
+    
+    simNotIkJoints={}
+    simNotIkJoints[1]=sim.getObject('./Ragnar_frontAdjust')
+    simNotIkJoints[2]=sim.getObject('./Ragnar_upperArmAdjust0')
+    simNotIkJoints[3]=sim.getObject('./Ragnar_lowerArmAdjustA0')
+    simNotIkJoints[4]=sim.getObject('./Ragnar_lowerArmAdjustB3')
+    simNotIkJoints[5]=sim.getObject('./Ragnar_upperArmAdjust3')
+    simNotIkJoints[6]=sim.getObject('./Ragnar_lowerArmAdjustB2')
+    simNotIkJoints[7]=sim.getObject('./Ragnar_upperArmAdjust2')
+    simNotIkJoints[8]=sim.getObject('./Ragnar_lowerArmAdjustA1')
+    simNotIkJoints[9]=sim.getObject('./Ragnar_upperArmAdjust1')
+    
+    -- Prepare the ik group, using the convenience function 'simIK.addIkElementFromScene':
+    ikEnv=simIK.createEnvironment()
+
+    ikGroup=simIK.createIkGroup(ikEnv)
+    simIK.setIkGroupCalculation(ikEnv,ikGroup,simIK.method_damped_least_squares,0.001,20)
+    local ikElement,simToIkMap=simIK.addIkElementFromScene(ikEnv,ikGroup,model,simTip1,simTarget1,simIK.constraint_pose)
+    local ikElement,simToIkMap=simIK.addIkElementFromScene(ikEnv,ikGroup,model,simTip2,simTarget2,simIK.constraint_pose)
+    local ikElement,simToIkMap=simIK.addIkElementFromScene(ikEnv,ikGroup,model,simTip3,simTarget3,simIK.constraint_pose)
+    ikElementPlatform,simToIkMap=simIK.addIkElementFromScene(ikEnv,ikGroup,model,simTipDummy,simTargetDummy,simIK.constraint_pose)
+
+    for i=1,#simNotIkJoints,1 do
+        local h=simToIkMap[simNotIkJoints[i]]
+        simIK.setJointMode(ikEnv,h,simIK.jointmode_passive)
+    end
+
+
+
+	
     updatePluginRepresentation()
     previousDlgPos,algoDlgSize,algoDlgPos,distributionDlgSize,distributionDlgPos,previousDlg1Pos=simBWF.readSessionPersistentObjectData(model,"dlgPosAndSize")
 end
@@ -1894,12 +1934,12 @@ showOrHideUiIfNeeded=function()
     end
 end
 
-if (sim_call_type==sim.customizationscriptcall_nonsimulation) then
+function sysCall_nonSimulation()
     showOrHideUiIfNeeded()
     updatePlotAndRagnarFromRealRagnarIfNeeded()
 end
 
-if (sim_call_type==sim.customizationscriptcall_simulationsensing) then
+function sysCall_sensing()
     if simJustStarted then
         updateEnabledDisabledItems()
     end
@@ -1907,45 +1947,45 @@ if (sim_call_type==sim.customizationscriptcall_simulationsensing) then
     showOrHideUiIfNeeded()
 end
 
-if (sim_call_type==sim.customizationscriptcall_simulationpause) then
+function sysCall_suspend()
     showOrHideUiIfNeeded()
 end
 
-if (sim_call_type==sim.customizationscriptcall_firstaftersimulation) then
+function sysCall_afterSimulation()
     updateEnabledDisabledItems()
     local c=readInfo()
-    if sim.boolAnd32(c['bitCoded'],256)==256 then
-        sim.setObjectInt32Parameter(workspace,sim.objintparam_visibility_layer,1)
+    if (c['bitCoded']&256)==256 then
+        sim.setObjectInt32Param(workspace,sim.objintparam_visibility_layer,1)
     else
-        sim.setObjectInt32Parameter(workspace,sim.objintparam_visibility_layer,0)
+        sim.setObjectInt32Param(workspace,sim.objintparam_visibility_layer,0)
     end
 end
 
-if (sim_call_type==sim.customizationscriptcall_lastbeforesimulation) then
+function sysCall_beforeSimulation()
     disconnect()
     closePlot()
     simJustStarted=true
     local c=readInfo()
-    local showWs=simBWF.modifyAuxVisualizationItems(sim.boolAnd32(c['bitCoded'],256+512)==256+512)
+    local showWs=simBWF.modifyAuxVisualizationItems((c['bitCoded']&256+512)==256+512)
     if showWs then
-        sim.setObjectInt32Parameter(workspace,sim.objintparam_visibility_layer,1)
+        sim.setObjectInt32Param(workspace,sim.objintparam_visibility_layer,1)
     else
-        sim.setObjectInt32Parameter(workspace,sim.objintparam_visibility_layer,0)
+        sim.setObjectInt32Param(workspace,sim.objintparam_visibility_layer,0)
     end
 end
 
-if (sim_call_type==sim.customizationscriptcall_lastbeforeinstanceswitch) then
+function sysCall_beforeInstanceSwitch()
     disconnect()
     closePlot()
     removeDlg()
     removeFromPluginRepresentation()
 end
 
-if (sim_call_type==sim.customizationscriptcall_firstafterinstanceswitch) then
+function sysCall_afterInstanceSwitch()
     updatePluginRepresentation()
 end
 
-if (sim_call_type==sim.customizationscriptcall_cleanup) then
+function sysCall_cleanup()
     disconnect()
     closePlot()
     removeDlg()

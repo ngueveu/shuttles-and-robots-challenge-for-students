@@ -1,3 +1,4 @@
+simBWF=require('simBWF')
 function removeFromPluginRepresentation()
 
 end
@@ -7,14 +8,14 @@ function updatePluginRepresentation()
 end
 
 function setObjectSize(h,x,y,z)
-    local r,mmin=sim.getObjectFloatParameter(h,sim.objfloatparam_objbbox_min_x)
-    local r,mmax=sim.getObjectFloatParameter(h,sim.objfloatparam_objbbox_max_x)
+    local mmin=sim.getObjectFloatParam(h,sim.objfloatparam_objbbox_min_x)
+    local mmax=sim.getObjectFloatParam(h,sim.objfloatparam_objbbox_max_x)
     local sx=mmax-mmin
-    local r,mmin=sim.getObjectFloatParameter(h,sim.objfloatparam_objbbox_min_y)
-    local r,mmax=sim.getObjectFloatParameter(h,sim.objfloatparam_objbbox_max_y)
+    local mmin=sim.getObjectFloatParam(h,sim.objfloatparam_objbbox_min_y)
+    local mmax=sim.getObjectFloatParam(h,sim.objfloatparam_objbbox_max_y)
     local sy=mmax-mmin
-    local r,mmin=sim.getObjectFloatParameter(h,sim.objfloatparam_objbbox_min_z)
-    local r,mmax=sim.getObjectFloatParameter(h,sim.objfloatparam_objbbox_max_z)
+    local mmin=sim.getObjectFloatParam(h,sim.objfloatparam_objbbox_min_z)
+    local mmax=sim.getObjectFloatParam(h,sim.objfloatparam_objbbox_max_z)
     local sz=mmax-mmin
     sim.scaleObject(h,x/sx,y/sy,z/sz)
 end
@@ -153,7 +154,7 @@ function generatePallet()
                 local item={}
                 local pos={palletOffset[1]+(i-1)*palletSeparation,palletOffset[2]+yo,palletOffset[3]}
                 local dummy=sim.createDummy(0.01)
-                local prop=sim.boolOr32(sim.getObjectProperty(dummy),sim.objectproperty_dontshowasinsidemodel+sim.objectproperty_selectmodelbaseinstead)
+                local prop=(sim.getObjectProperty(dummy)|sim.objectproperty_dontshowasinsidemodel+sim.objectproperty_selectmodelbaseinstead)
                 sim.setObjectProperty(dummy,prop)
                 sim.setObjectPosition(dummy,cartridges[cart]['centerH'],pos)
                 sim.setObjectOrientation(dummy,cartridges[cart]['centerH'],{0,0,0})
@@ -187,11 +188,11 @@ function updateConveyor()
     local divs=conf['cartridgeDivisions']
     local stopperOffset=conf['stopperOffsets']
     local rackOffset=conf['cartridgeRackOffset']
-    local rotated=sim.boolAnd32(bitCoded,256)>0
+    local rotated=(bitCoded&256)>0
     local direction=1
     if rotated then direction=-1 end
 
-    local re=sim.boolAnd32(bitCoded,16)==0
+    local re=(bitCoded&16)==0
 ---[[
     sim.setObjectPosition(rotJoints[1],model,{0,-length*0.5,-height*0.5})
     sim.setObjectPosition(rotJoints[2],model,{0,length*0.5,-height*0.5})
@@ -225,26 +226,26 @@ function updateConveyor()
     sim.setObjectPosition(sides[2],model,{(width+wt)*0.5,0,(-height+borderHeight)*0.5})
 
     if re then
-        sim.setObjectInt32Parameter(endParts[1],sim.objintparam_visibility_layer,1)
-        sim.setObjectInt32Parameter(endParts[2],sim.objintparam_visibility_layer,1)
-        sim.setObjectInt32Parameter(endParts[3],sim.objintparam_visibility_layer,1)
-        sim.setObjectInt32Parameter(endParts[4],sim.objintparam_visibility_layer,1)
-        sim.setObjectInt32Parameter(endParts[5],sim.objintparam_visibility_layer,256)
-        sim.setObjectInt32Parameter(endParts[6],sim.objintparam_visibility_layer,256)
-        sim.setObjectInt32Parameter(endParts[5],sim.shapeintparam_respondable,1)
-        sim.setObjectInt32Parameter(endParts[6],sim.shapeintparam_respondable,1)
+        sim.setObjectInt32Param(endParts[1],sim.objintparam_visibility_layer,1)
+        sim.setObjectInt32Param(endParts[2],sim.objintparam_visibility_layer,1)
+        sim.setObjectInt32Param(endParts[3],sim.objintparam_visibility_layer,1)
+        sim.setObjectInt32Param(endParts[4],sim.objintparam_visibility_layer,1)
+        sim.setObjectInt32Param(endParts[5],sim.objintparam_visibility_layer,256)
+        sim.setObjectInt32Param(endParts[6],sim.objintparam_visibility_layer,256)
+        sim.setObjectInt32Param(endParts[5],sim.shapeintparam_respondable,1)
+        sim.setObjectInt32Param(endParts[6],sim.shapeintparam_respondable,1)
     else
-        sim.setObjectInt32Parameter(endParts[1],sim.objintparam_visibility_layer,0)
-        sim.setObjectInt32Parameter(endParts[2],sim.objintparam_visibility_layer,0)
-        sim.setObjectInt32Parameter(endParts[3],sim.objintparam_visibility_layer,0)
-        sim.setObjectInt32Parameter(endParts[4],sim.objintparam_visibility_layer,0)
-        sim.setObjectInt32Parameter(endParts[5],sim.objintparam_visibility_layer,0)
-        sim.setObjectInt32Parameter(endParts[6],sim.objintparam_visibility_layer,0)
-        sim.setObjectInt32Parameter(endParts[5],sim.shapeintparam_respondable,0)
-        sim.setObjectInt32Parameter(endParts[6],sim.shapeintparam_respondable,0)
+        sim.setObjectInt32Param(endParts[1],sim.objintparam_visibility_layer,0)
+        sim.setObjectInt32Param(endParts[2],sim.objintparam_visibility_layer,0)
+        sim.setObjectInt32Param(endParts[3],sim.objintparam_visibility_layer,0)
+        sim.setObjectInt32Param(endParts[4],sim.objintparam_visibility_layer,0)
+        sim.setObjectInt32Param(endParts[5],sim.objintparam_visibility_layer,0)
+        sim.setObjectInt32Param(endParts[6],sim.objintparam_visibility_layer,0)
+        sim.setObjectInt32Param(endParts[5],sim.shapeintparam_respondable,0)
+        sim.setObjectInt32Param(endParts[6],sim.shapeintparam_respondable,0)
     end
 
-    if sim.boolAnd32(bitCoded,32)==0 then
+    if (bitCoded&32)==0 then
         local textureID=sim.getShapeTextureId(textureHolder)
         sim.setShapeTexture(middleParts[2],textureID,sim.texturemap_plane,12,{0.04,0.04})
         sim.setShapeTexture(endParts[1],textureID,sim.texturemap_plane,12,{0.04,0.04})
@@ -353,7 +354,7 @@ function updateEnabledDisabledItemsDlg()
 
         -- Conveyor part:
         local c=readInfo()
-        local re=sim.boolAnd32(c['bitCoded'],16)==0
+        local re=(c['bitCoded']&16)==0
         simUI.setEnabled(ui,2,simStopped,true)
         simUI.setEnabled(ui,4,simStopped,true)
         simUI.setEnabled(ui,20,simStopped,true)
@@ -396,11 +397,11 @@ function setDlgItemContent()
         simUI.setEditValue(ui,21,simBWF.format("%.0f",conveyorConfig['borderHeight']/0.001),true)
         simUI.setEditValue(ui,26,simBWF.format("%.0f",conveyorConfig['wallThickness']/0.001),true)
         simUI.setEditValue(ui,44,conveyorConfig['locationName'],true)
-        simUI.setCheckboxValue(ui,45,(sim.boolAnd32(conveyorConfig['bitCoded'],256)~=0) and 2 or 0,true)
+        simUI.setCheckboxValue(ui,45,((conveyorConfig['bitCoded']&256)~=0) and 2 or 0,true)
 
-        simUI.setCheckboxValue(ui,27,(sim.boolAnd32(conveyorConfig['bitCoded'],16)==0) and 2 or 0,true)
+        simUI.setCheckboxValue(ui,27,((conveyorConfig['bitCoded']&16)==0) and 2 or 0,true)
 
-        simUI.setCheckboxValue(ui,1000,(sim.boolAnd32(conveyorConfig['bitCoded'],64)~=0) and 2 or 0,true)
+        simUI.setCheckboxValue(ui,1000,((conveyorConfig['bitCoded']&64)~=0) and 2 or 0,true)
         simUI.setEditValue(ui,10,simBWF.format("%.0f",conveyorConfig['velocity']/0.001),true)
         simUI.setEditValue(ui,12,simBWF.format("%.0f",conveyorConfig['acceleration']/0.001),true)
         simUI.setEditValue(ui,39,simBWF.format("%.0f",conveyorConfig['cartridgeRackOffset']/0.001),true)
@@ -422,7 +423,7 @@ function setDlgItemContent()
         simUI.setEditValue(ui,40,simBWF.format("%.0f , %.0f , %.0f",pallet[1][1]*1000,pallet[1][2]*1000,pallet[1][3]*1000),true)
         simUI.setEditValue(ui,41,simBWF.format("%.0f",pallet[2]),true)
         simUI.setEditValue(ui,42,simBWF.format("%.0f",pallet[3]/0.001),true)
-        simUI.setCheckboxValue(ui,43,(sim.boolAnd32(conveyorConfig['bitCoded'],128)~=0) and 2 or 0,true)
+        simUI.setCheckboxValue(ui,43,((conveyorConfig['bitCoded']&128)~=0) and 2 or 0,true)
 
 
         updateStartStopTriggerComboboxes()
@@ -438,7 +439,7 @@ function getAvailableSensors()
     for i=1,#l,1 do
         local data=sim.readCustomDataBlock(l[i],'XYZ_BINARYSENSOR_INFO')
         if data then
-            retL[#retL+1]={sim.getObjectName(l[i]),l[i]}
+            retL[#retL+1]={sim.getObjectAlias(l[i],1),l[i]}
         end
     end
     return retL
@@ -565,7 +566,7 @@ end
 
 function roundedEndsClicked(ui,id,newVal)
     local conf=readInfo()
-    conf['bitCoded']=sim.boolOr32(conf['bitCoded'],16)
+    conf['bitCoded']=(conf['bitCoded']|16)
     if newVal~=0 then
         conf['bitCoded']=conf['bitCoded']-16
     end
@@ -577,7 +578,7 @@ end
 
 function enabledClicked(ui,id,newVal)
     local conf=readInfo()
-    conf['bitCoded']=sim.boolOr32(conf['bitCoded'],64)
+    conf['bitCoded']=(conf['bitCoded']|64)
     if newVal==0 then
         conf['bitCoded']=conf['bitCoded']-64
     end
@@ -859,7 +860,7 @@ end
 
 function showPointsClicked(ui,id,newVal)
     local conf=readInfo()
-    conf['bitCoded']=sim.boolOr32(conf['bitCoded'],128)
+    conf['bitCoded']=(conf['bitCoded']|128)
     if newVal==0 then
         conf['bitCoded']=conf['bitCoded']-128
     end
@@ -870,7 +871,7 @@ end
 
 function rotatedClicked(ui,id,newVal)
     local conf=readInfo()
-    conf['bitCoded']=sim.boolOr32(conf['bitCoded'],256)
+    conf['bitCoded']=(conf['bitCoded']|256)
     if newVal==0 then
         conf['bitCoded']=conf['bitCoded']-256
     end
@@ -1008,23 +1009,23 @@ end
 
 enableStopper=function(handle,enable)
     if enable then
-        sim.setObjectInt32Parameter(handle,sim.objintparam_visibility_layer,1) -- make it visible
+        sim.setObjectInt32Param(handle,sim.objintparam_visibility_layer,1) -- make it visible
         sim.setObjectSpecialProperty(handle,sim.objectspecialproperty_collidable+sim.objectspecialproperty_measurable+sim.objectspecialproperty_detectable_all+sim.objectspecialproperty_renderable) -- make it collidable, measurable, detectable, etc.
-        sim.setObjectInt32Parameter(handle,sim.shapeintparam_respondable,1) -- make it respondable
+        sim.setObjectInt32Param(handle,sim.shapeintparam_respondable,1) -- make it respondable
         sim.resetDynamicObject(handle)
     else
-        sim.setObjectInt32Parameter(handle,sim.objintparam_visibility_layer,0)
+        sim.setObjectInt32Param(handle,sim.objintparam_visibility_layer,0)
         sim.setObjectSpecialProperty(handle,0)
-        sim.setObjectInt32Parameter(handle,sim.shapeintparam_respondable,0)
+        sim.setObjectInt32Param(handle,sim.shapeintparam_respondable,0)
         sim.resetDynamicObject(handle)
     end
 end
 
 makeVisible=function(handle,visible)
     if visible then
-        sim.setObjectInt32Parameter(handle,sim.objintparam_visibility_layer,1) -- make it visible
+        sim.setObjectInt32Param(handle,sim.objintparam_visibility_layer,1) -- make it visible
     else
-        sim.setObjectInt32Parameter(handle,sim.objintparam_visibility_layer,0)
+        sim.setObjectInt32Param(handle,sim.objintparam_visibility_layer,0)
     end
 end
 
@@ -1035,9 +1036,9 @@ makeTargetDummiesVisible=function(visible)
             local h=sim.getObjectChild(cartridges[cart]['targets'],i)
             if h<0 then break end
             if visible then
-                sim.setObjectInt32Parameter(h,sim.objintparam_visibility_layer,4)
+                sim.setObjectInt32Param(h,sim.objintparam_visibility_layer,4)
             else
-                sim.setObjectInt32Parameter(h,sim.objintparam_visibility_layer,0)
+                sim.setObjectInt32Param(h,sim.objintparam_visibility_layer,0)
             end
             i=i+1
         end
@@ -1054,10 +1055,10 @@ prepareAndClearTrackingWIndowInfo=function()
     sim.writeCustomDataBlock(targetTracking,simBWF.modelTags.TRACKINGWINDOW,sim.packTable(info))
 end
 
-if (sim_call_type==sim.customizationscriptcall_initialization) then
+function sysCall_init()
     dlgMainTabIndex=0
-    model=sim.getObjectAssociatedWithScript(sim.handle_self)
-    targetTracking=sim.getObjectHandle('genericPingPongPacker_targetTracking')
+    model=sim.getObject('.')
+    targetTracking=sim.getObject('./genericPingPongPacker_targetTracking')
     prepareAndClearTrackingWIndowInfo()
 
     _MODELVERSION_=0
@@ -1076,65 +1077,65 @@ if (sim_call_type==sim.customizationscriptcall_initialization) then
     ----------------------------------------
     writeInfo(_info)
     rotJoints={}
-    rotJoints[1]=sim.getObjectHandle('genericPingPongPacker_jointB')
-    rotJoints[2]=sim.getObjectHandle('genericPingPongPacker_jointC')
+    rotJoints[1]=sim.getObject('./genericPingPongPacker_jointB')
+    rotJoints[2]=sim.getObject('./genericPingPongPacker_jointC')
 
     middleParts={}
-    middleParts[1]=sim.getObjectHandle('genericPingPongPacker_sides')
-    middleParts[2]=sim.getObjectHandle('genericPingPongPacker_textureA')
-    middleParts[3]=sim.getObjectHandle('genericPingPongPacker_forwarderA')
+    middleParts[1]=sim.getObject('./genericPingPongPacker_sides')
+    middleParts[2]=sim.getObject('./genericPingPongPacker_textureA')
+    middleParts[3]=sim.getObject('./genericPingPongPacker_forwarderA')
     
     endParts={}
-    endParts[1]=sim.getObjectHandle('genericPingPongPacker_textureB')
-    endParts[2]=sim.getObjectHandle('genericPingPongPacker_textureC')
-    endParts[3]=sim.getObjectHandle('genericPingPongPacker_B')
-    endParts[4]=sim.getObjectHandle('genericPingPongPacker_C')
-    endParts[5]=sim.getObjectHandle('genericPingPongPacker_forwarderB')
-    endParts[6]=sim.getObjectHandle('genericPingPongPacker_forwarderC')
+    endParts[1]=sim.getObject('./genericPingPongPacker_textureB')
+    endParts[2]=sim.getObject('./genericPingPongPacker_textureC')
+    endParts[3]=sim.getObject('./genericPingPongPacker_B')
+    endParts[4]=sim.getObject('./genericPingPongPacker_C')
+    endParts[5]=sim.getObject('./genericPingPongPacker_forwarderB')
+    endParts[6]=sim.getObject('./genericPingPongPacker_forwarderC')
 
     sides={}
-    sides[1]=sim.getObjectHandle('genericPingPongPacker_leftSide')
-    sides[2]=sim.getObjectHandle('genericPingPongPacker_rightSide')
+    sides[1]=sim.getObject('./genericPingPongPacker_leftSide')
+    sides[2]=sim.getObject('./genericPingPongPacker_rightSide')
 
     baseJoints={}
-    baseJoints[1]=sim.getObjectHandle('genericPingPongPacker_j0')
-    baseJoints[2]=sim.getObjectHandle('genericPingPongPacker_j1')
-    baseJoints[3]=sim.getObjectHandle('genericPingPongPacker_j2A')
-    baseJoints[4]=sim.getObjectHandle('genericPingPongPacker_j2B')
-    baseJoints[5]=sim.getObjectHandle('genericPingPongPacker_j2B')
-    baseJoints[6]=sim.getObjectHandle('genericPingPongPacker_jrot')
-    baseJoints[7]=sim.getObjectHandle('genericPingPongPacker_jholderRot')
+    baseJoints[1]=sim.getObject('./genericPingPongPacker_j0')
+    baseJoints[2]=sim.getObject('./genericPingPongPacker_j1')
+    baseJoints[3]=sim.getObject('./genericPingPongPacker_j2A')
+    baseJoints[4]=sim.getObject('./genericPingPongPacker_j2B')
+    baseJoints[5]=sim.getObject('./genericPingPongPacker_j2B')
+    baseJoints[6]=sim.getObject('./genericPingPongPacker_jrot')
+    baseJoints[7]=sim.getObject('./genericPingPongPacker_jholderRot')
 
-    textureHolder=sim.getObjectHandle('genericPingPongPacker_textureHolder')
+    textureHolder=sim.getObject('./genericPingPongPacker_textureHolder')
 
     cartridge1={}
     cartridge2={}
     cartridges={cartridge1,cartridge2}
-    cartridgeDefPosDummy=sim.getObjectHandle('genericPingPongPacker_cartridge1_defPos')
-    cartridge2SpecialSensor=sim.getObjectHandle('genericPingPongPacker_cartridge2_sensor2')
+    cartridgeDefPosDummy=sim.getObject('./genericPingPongPacker_cartridge1_defPos')
+    cartridge2SpecialSensor=sim.getObject('./genericPingPongPacker_cartridge2_sensor2')
     for cartr=1,2,1 do
-        cartridges[cartr]['forwardJointH']=sim.getObjectHandle('genericPingPongPacker_cartridge'..cartr..'_forwardJoint')
-        cartridges[cartr]['H']=sim.getObjectHandle('genericPingPongPacker_cartridge'..cartr)
-        cartridges[cartr]['centerH']=sim.getObjectHandle('genericPingPongPacker_cartridge'..cartr..'_center')
-        cartridges[cartr]['wallAH']=sim.getObjectHandle('genericPingPongPacker_cartridge'..cartr..'_wallA')
-        cartridges[cartr]['wallBH']=sim.getObjectHandle('genericPingPongPacker_cartridge'..cartr..'_wallB')
-        cartridges[cartr]['wallCH']=sim.getObjectHandle('genericPingPongPacker_cartridge'..cartr..'_wallC')
-        cartridges[cartr]['flipJointH']=sim.getObjectHandle('genericPingPongPacker_cartridge'..cartr..'_flipJoint')
-        cartridges[cartr]['flipH']=sim.getObjectHandle('genericPingPongPacker_cartridge'..cartr..'_flip')
-        cartridges[cartr]['flipJointBH']=sim.getObjectHandle('genericPingPongPacker_cartridge'..cartr..'_flipJointB')
-        cartridges[cartr]['baseB1H']=sim.getObjectHandle('genericPingPongPacker_cartridge'..cartr..'_baseB1')
-        cartridges[cartr]['baseB2H']=sim.getObjectHandle('genericPingPongPacker_cartridge'..cartr..'_baseB2')
-        cartridges[cartr]['flipJointCH']=sim.getObjectHandle('genericPingPongPacker_cartridge'..cartr..'_flipJointC')
-        cartridges[cartr]['baseC1H']=sim.getObjectHandle('genericPingPongPacker_cartridge'..cartr..'_baseC1')
-        cartridges[cartr]['baseC2H']=sim.getObjectHandle('genericPingPongPacker_cartridge'..cartr..'_baseC2')
-        cartridges[cartr]['div1H']=sim.getObjectHandle('genericPingPongPacker_cartridge'..cartr..'_divWall1')
-        cartridges[cartr]['div2H']=sim.getObjectHandle('genericPingPongPacker_cartridge'..cartr..'_divWall2')
-        cartridges[cartr]['sensor']=sim.getObjectHandle('genericPingPongPacker_cartridge'..cartr..'_sensor')
-        cartridges[cartr]['stopper']=sim.getObjectHandle('genericPingPongPacker_cartridge'..cartr..'_stopper')
-        cartridges[cartr]['targets']=sim.getObjectHandle('genericPingPongPacker_cartridge'..cartr..'_targets')
+        cartridges[cartr]['forwardJointH']=sim.getObject('./genericPingPongPacker_cartridge'..cartr..'_forwardJoint')
+        cartridges[cartr]['H']=sim.getObject('./genericPingPongPacker_cartridge'..cartr)
+        cartridges[cartr]['centerH']=sim.getObject('./genericPingPongPacker_cartridge'..cartr..'_center')
+        cartridges[cartr]['wallAH']=sim.getObject('./genericPingPongPacker_cartridge'..cartr..'_wallA')
+        cartridges[cartr]['wallBH']=sim.getObject('./genericPingPongPacker_cartridge'..cartr..'_wallB')
+        cartridges[cartr]['wallCH']=sim.getObject('./genericPingPongPacker_cartridge'..cartr..'_wallC')
+        cartridges[cartr]['flipJointH']=sim.getObject('./genericPingPongPacker_cartridge'..cartr..'_flipJoint')
+        cartridges[cartr]['flipH']=sim.getObject('./genericPingPongPacker_cartridge'..cartr..'_flip')
+        cartridges[cartr]['flipJointBH']=sim.getObject('./genericPingPongPacker_cartridge'..cartr..'_flipJointB')
+        cartridges[cartr]['baseB1H']=sim.getObject('./genericPingPongPacker_cartridge'..cartr..'_baseB1')
+        cartridges[cartr]['baseB2H']=sim.getObject('./genericPingPongPacker_cartridge'..cartr..'_baseB2')
+        cartridges[cartr]['flipJointCH']=sim.getObject('./genericPingPongPacker_cartridge'..cartr..'_flipJointC')
+        cartridges[cartr]['baseC1H']=sim.getObject('./genericPingPongPacker_cartridge'..cartr..'_baseC1')
+        cartridges[cartr]['baseC2H']=sim.getObject('./genericPingPongPacker_cartridge'..cartr..'_baseC2')
+        cartridges[cartr]['div1H']=sim.getObject('./genericPingPongPacker_cartridge'..cartr..'_divWall1')
+        cartridges[cartr]['div2H']=sim.getObject('./genericPingPongPacker_cartridge'..cartr..'_divWall2')
+        cartridges[cartr]['sensor']=sim.getObject('./genericPingPongPacker_cartridge'..cartr..'_sensor')
+        cartridges[cartr]['stopper']=sim.getObject('./genericPingPongPacker_cartridge'..cartr..'_stopper')
+        cartridges[cartr]['targets']=sim.getObject('./genericPingPongPacker_cartridge'..cartr..'_targets')
     end
 
-	sim.setScriptAttribute(sim.handle_self,sim.customizationscriptattribute_activeduringsimulation,true)
+	
     updatePluginRepresentation()
     previousDlgPos,algoDlgSize,algoDlgPos,distributionDlgSize,distributionDlgPos,previousDlg1Pos=simBWF.readSessionPersistentObjectData(model,"dlgPosAndSize")
 end
@@ -1148,11 +1149,11 @@ showOrHideUiIfNeeded=function()
     end
 end
 
-if (sim_call_type==sim.customizationscriptcall_nonsimulation) then
+function sysCall_nonSimulation()
     showOrHideUiIfNeeded()
 end
 
-if (sim_call_type==sim.customizationscriptcall_simulationsensing) then
+function sysCall_sensing()
     if simJustStarted then
         updateEnabledDisabledItemsDlg()
     end
@@ -1160,11 +1161,11 @@ if (sim_call_type==sim.customizationscriptcall_simulationsensing) then
     showOrHideUiIfNeeded()
 end
 
-if (sim_call_type==sim.customizationscriptcall_simulationpause) then
+function sysCall_suspend()
     showOrHideUiIfNeeded()
 end
 
-if (sim_call_type==sim.customizationscriptcall_firstaftersimulation) then
+function sysCall_afterSimulation()
     prepareAndClearTrackingWIndowInfo()
     updateEnabledDisabledItemsDlg()
     local conf=readInfo()
@@ -1180,7 +1181,7 @@ if (sim_call_type==sim.customizationscriptcall_firstaftersimulation) then
     makeTargetDummiesVisible(true)
 end
 
-if (sim_call_type==sim.customizationscriptcall_lastbeforesimulation) then
+function sysCall_beforeSimulation()
     prepareAndClearTrackingWIndowInfo()
     simJustStarted=true
     enableStopper(cartridges[1]['stopper'],false)
@@ -1195,16 +1196,16 @@ if (sim_call_type==sim.customizationscriptcall_lastbeforesimulation) then
     makeTargetDummiesVisible(false)
 end
 
-if (sim_call_type==sim.customizationscriptcall_lastbeforeinstanceswitch) then
+function sysCall_beforeInstanceSwitch()
     removeDlg()
     removeFromPluginRepresentation()
 end
 
-if (sim_call_type==sim.customizationscriptcall_firstafterinstanceswitch) then
+function sysCall_afterInstanceSwitch()
     updatePluginRepresentation()
 end
 
-if (sim_call_type==sim.customizationscriptcall_cleanup) then
+function sysCall_cleanup()
     removeDlg()
     removeFromPluginRepresentation()
     simBWF.writeSessionPersistentObjectData(model,"dlgPosAndSize",previousDlgPos,algoDlgSize,algoDlgPos,distributionDlgSize,distributionDlgPos,previousDlg1Pos)

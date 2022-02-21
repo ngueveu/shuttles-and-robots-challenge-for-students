@@ -1,10 +1,11 @@
+simBWF=require('simBWF')
 getDistributionValue=function(distribution)
     if (type(distribution[1])=='table') and (#distribution[1]==2) then
         local cnt=0
         for i=1,#distribution,1 do
            cnt=cnt+distribution[i][1] 
         end
-        local p=sim.getFloatParameter(sim.floatparam_rand)*cnt
+        local p=sim.getFloatParam(sim.floatparam_rand)*cnt
         cnt=0
         for i=1,#distribution,1 do
             if cnt+distribution[i][1]>=p then
@@ -14,7 +15,7 @@ getDistributionValue=function(distribution)
         end
     else
         local cnt=#distribution
-        local p=1+math.floor(sim.getFloatParameter(sim.floatparam_rand)*cnt-0.0001)
+        local p=1+math.floor(sim.getFloatParam(sim.floatparam_rand)*cnt-0.0001)
         return distribution[p]
     end
 end
@@ -34,18 +35,18 @@ end
 function isPartDetected(partHandle)
     --[[ We don't use a proximity sensor anymore, we simply check the position relative to the box
     local shapesToTest={}
-    if sim.boolAnd32(sim.getModelProperty(partHandle),sim.modelproperty_not_model)>0 then
+    if (sim.getModelProperty(partHandle)&sim.modelproperty_not_model)>0 then
         -- We have a single shape which is not a model. Is the shape detectable?
-        if sim.boolAnd32(sim.getObjectSpecialProperty(partHandle),sim.objectspecialproperty_detectable_all)>0 then
+        if (sim.getObjectSpecialProperty(partHandle)&sim.objectspecialproperty_detectable_all)>0 then
             shapesToTest[1]=partHandle -- yes, it is detectable
         end
     else
         -- We have a model. Does the model have the detectable flags overridden?
-        if sim.boolAnd32(sim.getModelProperty(partHandle),sim.modelproperty_not_detectable)==0 then
+        if (sim.getModelProperty(partHandle)&sim.modelproperty_not_detectable)==0 then
             -- No, now take all model shapes that are detectable:
             local t=sim.getObjectsInTree(partHandle,sim.object_shape_type,0)
             for i=1,#t,1 do
-                if sim.boolAnd32(sim.getObjectSpecialProperty(t[i]),sim.objectspecialproperty_detectable_all)>0 then
+                if (sim.getObjectSpecialProperty(t[i])&sim.objectspecialproperty_detectable_all)>0 then
                     shapesToTest[#shapesToTest+1]=t[i]
                 end
             end
@@ -62,17 +63,17 @@ function isPartDetected(partHandle)
     return math.abs(p[1])<width*0.5 and math.abs(p[2])<length*0.5 and math.abs(p[3])<height*0.5
 end
 
-if (sim_call_type==sim.childscriptcall_initialization) then
-    model=sim.getObjectAssociatedWithScript(sim.handle_self)
---    sensor=sim.getObjectHandle('genericPartTagger_sensor')
+function sysCall_init()
+    model=sim.getObject('.')
+--    sensor=sim.getObject('./genericPartTagger_sensor')
     local data=sim.readCustomDataBlock(model,simBWF.modelTags.PARTTAGGER)
     data=sim.unpackTable(data)
-    if sim.boolAnd32(data['bitCoded'],8)>0 then
+    if (data['bitCoded']&8)>0 then
         console=sim.auxiliaryConsoleOpen('Tagged Parts',1000,4,nil,{600,300},nil,{0.9,0.9,1})
     end
-    changeName=(sim.boolAnd32(data['bitCoded'],2)>0)
-    changeDestination=(sim.boolAnd32(data['bitCoded'],4)>0)
-    changeColor=(sim.boolAnd32(data['bitCoded'],16)>0)
+    changeName=((data['bitCoded']&2)>0)
+    changeDestination=((data['bitCoded']&4)>0)
+    changeColor=((data['bitCoded']&16)>0)
     changeAnything=changeName or changeDestination or changeColor
     width=data['width']
     length=data['length']
@@ -81,7 +82,7 @@ if (sim_call_type==sim.childscriptcall_initialization) then
     counter=0
 end
 
-if (sim_call_type==sim.childscriptcall_sensing) then
+function sysCall_sensing()
     local t=sim.getSimulationTime()
     if changeAnything then
         local line=''
@@ -111,7 +112,7 @@ if (sim_call_type==sim.childscriptcall_sensing) then
                     local colorChanged=false
                     local data=sim.readCustomDataBlock(p[i],simBWF.modelTags.PART)
                     data=sim.unpackTable(data)
-                    local lline="Object name '"..sim.getObjectName(p[i]).."':\n"
+                    local lline="Object name '"..sim.getObjectAlias(p[i],1).."':\n"
                     lline=lline.."    --> from part with name '"..data['name'].."' and destination '"..data['destination'].."'\n" 
                     if changeName then
                         local newName=getDistributionValue(newNameDistribution)

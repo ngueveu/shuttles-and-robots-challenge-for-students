@@ -15,40 +15,40 @@
   <td >
 <p><a href="../../index.html" TARGET="_top"><img src="../images/homeImg.png"></a></p>
 
-<h1><a href="../apiOverview.htm">Regular API</a> function</h1>
-<h3 class=subsectionBar><a name="simUnpackUInt32Table" id="simUnpackUInt32Table"></a>simUnpackUInt32Table / sim.unpackUInt32Table </h3>
+<h1>Regular API function</h1>
+<p class=subsectionBar><a name="simUnpackUInt32Table" id="simUnpackUInt32Table"></a>simUnpackUInt32Table / sim.unpackUInt32Table </p>
 <table class=apiTable>
 <tr class=apiTableTr> 
 <td class=apiTableLeftDescr>
 Description 
 </td> 
-<td class=apiTableRightDescr>Unpacks a string (or part of it) into a table of uint32 numbers. See also <a href="simPackUInt32Table.htm">sim.packUInt32Table</a> and the <a href="../apiFunctionListCategory.htm#packing">other packing/unpacking functions</a>.</td>
+<td class=apiTableRightDescr>Unpacks a string (or part of it) into a table of uint32 numbers. See also <a href="simPackUInt32Table.htm">sim.packUInt32Table</a> and the <a href="../apiFunctions.htm#packing">other packing/unpacking functions</a>.</td>
 </tr> 
 <tr class=apiTableTr> 
 <td class=apiTableLeftCSyn>
-C synopsis
+C/C++<br>synopsis
 </td> 
-<td class=apiTableRightCSyn>-</td> 
+<td class=apiTableRightCSyn><div></div></td> 
 </tr> 
 <tr class=apiTableTr> 
-<td class=apiTableLeftCParam>C parameters</td> 
+<td class=apiTableLeftCParam>C/C++<br>parameters</td> 
 <td class=apiTableRightCParam>
-<div>-</div>
+<div></div>
 </td> 
 </tr> 
 <tr class=apiTableTr> 
 <td class=apiTableLeftCRet>
-C return value
+C/C++<br>return value
 </td> 
 <td class=apiTableRightCRet>
-<div>-</div>
+<div></div>
 </td> 
 </tr> 
 <tr class=apiTableTr> 
 <td class=apiTableLeftLSyn>
 Lua synopsis
 </td> 
-<td class=apiTableRightLSyn>table uint32Numbers=sim.unpackUInt32Table(string data,number startUint32Index=0,number uint32Count=0,number additionalByteOffset=0)</td> 
+<td class=apiTableRightLSyn>int[] uint32Numbers=sim.unpackUInt32Table(buffer data,int startUint32Index=0,int uint32Count=0,int additionalByteOffset=0)</td> 
 </tr> 
 <tr class=apiTableTr> 
 <td class=apiTableLeftLParam>Lua parameters</td> 
@@ -63,15 +63,18 @@ Lua synopsis
 Lua return values
 </td> 
 <td class=apiTableRightLRet>
-<div></div>
-<div><strong>integerNumbers</strong>: a table containing unpacked uint32 numbers if operation was successful, nil otherwise</div>
-<div></div></td> 
+<div><strong>integerNumbers</strong>: a table containing unpacked uint32 numbers</div>
+</td> 
 </tr> 
+
+
+<tr class=apiTableTr>
+<td class=apiTableLeftPSyn>Python synopsis</td>
+<td class=apiTableRightPSyn>list uint32Numbers=sim.unpackUInt32Table(bytes data,int startUint32Index=0,int uint32Count=0,int additionalByteOffset=0)</td>
+</tr>
+
 </table> 
 
-<br>
-<p><a href="../apiFunctions.htm">All regular API functions on one page</a></p>
-<br>
 <br>
 </td>
 </tr>

@@ -101,7 +101,7 @@ end
 function model.ext.getCalibrationDataForCurrentMode()
     local data={}
     local c=model.readInfo()
-    local onlSw=sim.getBoolParameter(sim.boolparam_online_mode)
+    local onlSw=false --sim.getBoolParam(sim.boolparam_online_mode)
     if c.calibration and onlSw then
         data.realCalibration=true
         data.ball1=c.calibration[1]
@@ -139,12 +139,12 @@ end
 
 function model.ext.getSerializationData()
     local data={}
-    data.objectName=sim.getObjectName(model.handle)
-    data.objectAltName=sim.getObjectName(model.handle+sim.handleflag_altname)
+    data.objectName=sim.getObjectAlias(model.handle,1)
+    data.objectAltName=sim.getObjectAlias(model.handle)
     data.matrix=sim.getObjectMatrix(model.handle,-1)
     local parentHandle=sim.getObjectParent(model.handle)
     if parentHandle>=0 then
-        data.parentName=sim.getObjectName(parentHandle)
+        data.parentName=sim.getObjectAlias(parentHandle,1)
     end
     data.embeddedData=model.readInfo()
     

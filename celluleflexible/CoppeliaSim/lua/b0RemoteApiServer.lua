@@ -201,22 +201,16 @@ function ReadForceSensor(...)
     return sim.readForceSensor(handle)
 end
 
-function BreakForceSensor(...)
-    debugFunc("BreakForceSensor",...)
-    local handle=...
-    return sim.breakForceSensor(handle)
-end
-
 function ClearFloatSignal(...)
     debugFunc("ClearFloatSignal",...)
     local sig=...
     return sim.clearFloatSignal(sig)
 end
 
-function ClearIntegerSignal(...)
-    debugFunc("ClearIntegerSignal",...)
+function ClearInt32Signal(...)
+    debugFunc("ClearInt32Signal",...)
     local sig=...
-    return sim.clearIntegerSignal(sig)
+    return sim.clearInt32Signal(sig)
 end
 
 function ClearStringSignal(...)
@@ -231,10 +225,10 @@ function SetFloatSignal(...)
     return sim.setFloatSignal(sig,v)
 end
 
-function SetIntSignal(...)
-    debugFunc("SetIntSignal",...)
+function SetInt32Signal(...)
+    debugFunc("SetInt32Signal",...)
     local sig,v=...
-    return sim.setIntegerSignal(sig,v)
+    return sim.setInt32Signal(sig,v)
 end
 
 function SetStringSignal(...)
@@ -249,10 +243,10 @@ function GetFloatSignal(...)
     return sim.getFloatSignal(sig)
 end
 
-function GetIntSignal(...)
-    debugFunc("GetIntSignal",...)
+function GetInt32Signal(...)
+    debugFunc("GetInt32Signal",...)
     local sig=...
-    return sim.getIntegerSignal(sig)
+    return sim.getInt32Signal(sig)
 end
 
 function GetStringSignal(...)
@@ -264,7 +258,7 @@ end
 function AddStatusbarMessage(...)
     debugFunc("AddStatusbarMessage",...)
     local txt=...
-    return sim.addStatusbarMessage(txt)
+    return sim.addLog(sim.verbosity_msgs,txt)
 end
 
 function GetObjectPosition(...)
@@ -279,8 +273,11 @@ end
 function GetObjectHandle(...)
     debugFunc("GetObjectHandle",...)
     local objName=...
-    if string.find(objName,'#')==nil then
-        objName=objName..'#'
+    if (string.find(objName,'/')==nil) and (string.find(objName,'.')==nil) and (string.find(objName,':')==nil) then
+        -- Old way of accessing objects
+        if string.find(objName,'#')==nil then
+            objName=objName..'#'
+        end
     end
     return sim.getObjectHandle(objName)
 end
@@ -437,15 +434,15 @@ function RemoveObjects(...)
     debugFunc("RemoveObjects",...)
     local objHandles,options=...
     local allObjs1=sim.getObjectsInTree(sim.handle_scene,sim.handle_all,0)
-    if sim.boolAnd32(options,2)>0 then
+    if (options & 2)>0 then
         sim.removeObject(sim.handle_all)
     else
-        if sim.boolAnd32(options,1)>0 then
+        if (options & 1)>0 then
             for i=1,#objHandles,1 do
                 local h=objHandles[i]
-                if sim.isHandleValid(h)>0 then
+                if sim.isHandle(h) then
                     local mp=sim.getModelProperty(h)
-                    if sim.boolAnd32(mp,sim.modelproperty_not_model)>0 then
+                    if (mp & sim.modelproperty_not_model)>0 then
                         sim.removeObject(objHandles[i])
                     else
                         sim.removeModel(objHandles[i])
@@ -467,102 +464,250 @@ function CloseScene(...)
     return sim.closeScene()
 end
 
+-- DEPRECATED START
 function SetStringParameter(...)
-    debugFunc("SetStringParameter",...)
-    local paramId,val=...
-    if type(paramId)=='string' then
-        paramId=evalStr(paramId)
-    end
-    return sim.setStringParameter(paramId,val)
+    return SetStringParam(...)
 end
 
 function GetStringParameter(...)
-    debugFunc("GetStringParameter",...)
-    local paramId=...
-    if type(paramId)=='string' then
-        paramId=evalStr(paramId)
-    end
-    return sim.getStringParameter(paramId)
+    return GetStringParam(...)
 end
 
 function SetFloatParameter(...)
-    debugFunc("SetFloatParameter",...)
-    local paramId,val=...
-    if type(paramId)=='string' then
-        paramId=evalStr(paramId)
-    end
-    return sim.setFloatParameter(paramId,val)
+    return SetFloatParam(...)
 end
 
 function GetFloatParameter(...)
-    debugFunc("GetFloatParameter",...)
-    local paramId=...
-    if type(paramId)=='string' then
-        paramId=evalStr(paramId)
-    end
-    return sim.getFloatParameter(paramId)
+    return GetFloatParam(...)
 end
 
 function SetIntParameter(...)
-    debugFunc("SetIntParameter",...)
-    local paramId,val=...
-    if type(paramId)=='string' then
-        paramId=evalStr(paramId)
-    end
-    return sim.setInt32Parameter(paramId,val)
+    return SetInt32Param(...)
 end
 
 function GetIntParameter(...)
-    debugFunc("GetIntParameter",...)
-    local paramId=...
-    if type(paramId)=='string' then
-        paramId=evalStr(paramId)
-    end
-    return sim.getInt32Parameter(paramId)
+    return GetInt32Param(...)
 end
 
 function SetBoolParameter(...)
-    debugFunc("SetBoolParameter",...)
-    local paramId,val=...
-    if type(paramId)=='string' then
-        paramId=evalStr(paramId)
-    end
-    return sim.setBoolParameter(paramId,val)
+    return SetBoolParam(...)
 end
 
 function GetBoolParameter(...)
-    debugFunc("GetBoolParameter",...)
-    local paramId=...
-    if type(paramId)=='string' then
-        paramId=evalStr(paramId)
-    end
-    return sim.getBoolParameter(paramId)
+    return GetBoolParam(...)
 end
 
 function SetArrayParameter(...)
-    debugFunc("SetArrayParameter",...)
+    return SetArrayParam(...)
+end
+
+function GetArrayParameter(...)
+    return GetArrayParam(...)
+end
+
+function GetObjectFloatParameter(...)
+    return GetObjectFloatParam(...)
+end
+
+function GetObjectIntParameter(...)
+    return GetObjectInt32Param(...)
+end
+
+function GetObjectStringParameter(...)
+    return GetObjectStringParam(...)
+end
+
+function SetObjectFloatParameter(...)
+    return SetObjectFloatParam(...)
+end
+
+function SetObjectIntParameter(...)
+    return SetObjectInt32Param(...)
+end
+
+function SetObjectStringParameter(...)
+    return SetObjectStringParam(...)
+end
+function ClearIntegerSignal(...)
+    return ClearInt32Signal(...)
+end
+function SetIntSignal(...)
+    return SetInt32Signal(...)
+end
+function GetIntSignal(...)
+    return GetInt32Signal(...)
+end
+function GetObjectName(...)
+    -- For backward compatibility:
+    debugFunc("GetObjectName",...)
+    local handle,altName=...
+    if altName then
+        handle=handle+sim.handleflag_altname
+    end
+    return sim.getObjectName(handle)
+end
+function BreakForceSensor(...)
+    debugFunc("BreakForceSensor",...)
+    local handle=...
+    local c=sim.getObjectChild(handle,0)
+    return sim.setObjectParent(c,-1,true)
+end
+-- DEPRECATED END
+
+function SetStringParam(...)
+    debugFunc("SetStringParam",...)
     local paramId,val=...
     if type(paramId)=='string' then
         paramId=evalStr(paramId)
     end
-    return sim.setArrayParameter(paramId,val)
+    return sim.setStringParam(paramId,val)
 end
 
-function GetArrayParameter(...)
-    debugFunc("GetArrayParameter",...)
+function GetStringParam(...)
+    debugFunc("GetStringParam",...)
     local paramId=...
     if type(paramId)=='string' then
         paramId=evalStr(paramId)
     end
-    return sim.getArrayParameter(paramId)
+    return sim.getStringParam(paramId)
 end
+
+function SetFloatParam(...)
+    debugFunc("SetFloatParam",...)
+    local paramId,val=...
+    if type(paramId)=='string' then
+        paramId=evalStr(paramId)
+    end
+    return sim.setFloatParam(paramId,val)
+end
+
+function GetFloatParam(...)
+    debugFunc("GetFloatParam",...)
+    local paramId=...
+    if type(paramId)=='string' then
+        paramId=evalStr(paramId)
+    end
+    return sim.getFloatParam(paramId)
+end
+
+function SetInt32Param(...)
+    debugFunc("SetInt32Param",...)
+    local paramId,val=...
+    if type(paramId)=='string' then
+        paramId=evalStr(paramId)
+    end
+    return sim.setInt32Param(paramId,val)
+end
+
+function GetInt32Param(...)
+    debugFunc("GetInt32Param",...)
+    local paramId=...
+    if type(paramId)=='string' then
+        paramId=evalStr(paramId)
+    end
+    return sim.getInt32Param(paramId)
+end
+
+function SetBoolParam(...)
+    debugFunc("SetBoolParam",...)
+    local paramId,val=...
+    if type(paramId)=='string' then
+        paramId=evalStr(paramId)
+    end
+    return sim.setBoolParam(paramId,val)
+end
+
+function GetBoolParam(...)
+    debugFunc("GetBoolParam",...)
+    local paramId=...
+    if type(paramId)=='string' then
+        paramId=evalStr(paramId)
+    end
+    return sim.getBoolParam(paramId)
+end
+
+function SetArrayParam(...)
+    debugFunc("SetArrayParam",...)
+    local paramId,val=...
+    if type(paramId)=='string' then
+        paramId=evalStr(paramId)
+    end
+    return sim.setArrayParam(paramId,val)
+end
+
+function GetArrayParam(...)
+    debugFunc("GetArrayParam",...)
+    local paramId=...
+    if type(paramId)=='string' then
+        paramId=evalStr(paramId)
+    end
+    return sim.getArrayParam(paramId)
+end
+
+function GetObjectFloatParam(...)
+    debugFunc("GetObjectFloatParam",...)
+    local handle,paramId=...
+    if type(paramId)=='string' then
+        paramId=evalStr(paramId)
+    end
+    local retV=sim.getObjectFloatParam(handle,paramId)
+    return retV
+end
+
+function GetObjectInt32Param(...)
+    debugFunc("GetObjectInt32Param",...)
+    local handle,paramId=...
+    if type(paramId)=='string' then
+        paramId=evalStr(paramId)
+    end
+    local retV=sim.getObjectInt32Param(handle,paramId)
+    return retV
+end
+
+function GetObjectStringParam(...)
+    debugFunc("GetObjectStringParam",...)
+    local handle,paramId=...
+    if type(paramId)=='string' then
+        paramId=evalStr(paramId)
+    end
+    local r,retV=sim.getObjectStringParam(handle,paramId)
+    return retV
+end
+
+function SetObjectFloatParam(...)
+    debugFunc("SetObjectFloatParam",...)
+    local handle,paramId,v=...
+    if type(paramId)=='string' then
+        paramId=evalStr(paramId)
+    end
+    return sim.setObjectFloatParam(handle,paramId,v)
+end
+
+function SetObjectInt32Param(...)
+    debugFunc("SetObjectInt32Param",...)
+    local handle,paramId,v=...
+    if type(paramId)=='string' then
+        paramId=evalStr(paramId)
+    end
+    return sim.setObjectInt32Param(handle,paramId,v)
+end
+
+function SetObjectStringParam(...)
+    debugFunc("SetObjectStringParam",...)
+    local handle,paramId,v=...
+    if type(paramId)=='string' then
+        paramId=evalStr(paramId)
+    end
+    return sim.setObjectStringParam(handle,paramId,v)
+end
+
 function DisplayDialog(...)
     debugFunc("DisplayDialog",...)
     local titleText,mainText,dlgType,initText=...
     if type(dlgType)=='string' then
         dlgType=evalStr(dlgType)
     end
-    return sim.displayDialog(titleText,mainText,dlgType,initText)
+    return sim.displayDialog(titleText,mainText,dlgType,initText) -- func is actually deprecated
 end
 
 function GetDialogResult(...)
@@ -595,7 +740,15 @@ function GetCollectionHandle(...)
     if string.find(objName,'#')==nil then
         objName=objName..'#'
     end
-    return sim.getCollectionHandle(objName)
+	local retVal=sim.getCollectionHandle(objName..'@silentError')
+	if retVal<0 then
+		-- fallback convenience functionality: new collections do not have any name
+		retVal=sim.getIntegerSignal(objName)
+		if retVal==nil then
+			retVal=sim.getCollectionHandle(objName) -- for correct error reporting
+		end
+	end
+    return retVal
 end
 
 function GetCollisionHandle(...)
@@ -709,70 +862,10 @@ function GetObjectsInTree(...)
     return sim.getObjectsInTree(treeBase,objType,options)
 end
 
-function GetObjectName(...)
-    debugFunc("GetObjectName",...)
-    local handle,altName=...
-    if altName then
-        handle=handle+sim.handleflag_altname
-    end
-    return sim.getObjectName(handle)
-end
-
-function GetObjectFloatParameter(...)
-    debugFunc("GetObjectFloatParameter",...)
-    local handle,paramId=...
-    if type(paramId)=='string' then
-        paramId=evalStr(paramId)
-    end
-    local r,retV=sim.getObjectFloatParameter(handle,paramId)
-    return retV
-end
-
-function GetObjectIntParameter(...)
-    debugFunc("GetObjectIntParameter",...)
-    local handle,paramId=...
-    if type(paramId)=='string' then
-        paramId=evalStr(paramId)
-    end
-    local r,retV=sim.getObjectInt32Parameter(handle,paramId)
-    return retV
-end
-
-function GetObjectStringParameter(...)
-    debugFunc("GetObjectStringParameter",...)
-    local handle,paramId=...
-    if type(paramId)=='string' then
-        paramId=evalStr(paramId)
-    end
-    local r,retV=sim.getObjectStringParameter(handle,paramId)
-    return retV
-end
-
-function SetObjectFloatParameter(...)
-    debugFunc("SetObjectFloatParameter",...)
-    local handle,paramId,v=...
-    if type(paramId)=='string' then
-        paramId=evalStr(paramId)
-    end
-    return sim.setObjectFloatParameter(handle,paramId,v)
-end
-
-function SetObjectIntParameter(...)
-    debugFunc("SetObjectIntParameter",...)
-    local handle,paramId,v=...
-    if type(paramId)=='string' then
-        paramId=evalStr(paramId)
-    end
-    return sim.setObjectInt32Parameter(handle,paramId,v)
-end
-
-function SetObjectStringParameter(...)
-    debugFunc("SetObjectStringParameter",...)
-    local handle,paramId,v=...
-    if type(paramId)=='string' then
-        paramId=evalStr(paramId)
-    end
-    return sim.setObjectStringParameter(handle,paramId,v)
+function GetObjectAlias(...)
+    debugFunc("GetObjectAlias",...)
+    local handle,options=...
+    return sim.getObjectAlias(handle,options)
 end
 
 function GetSimulationTime(...)
@@ -814,11 +907,15 @@ end
 function GetObjects(...)
     debugFunc("GetObjects",...)
     local objType=...
+    if type(objType)=='string' then
+        objType=evalStr(objType)
+    end
     local retVal={}
     local i=0
     local h=sim.getObjects(i,objType)
     while h>=0 do
-        retVal[#retVal+1]=handle
+        retVal[#retVal+1]=h
+        i=i+1
         h=sim.getObjects(i,objType)
     end
     return retVal
@@ -862,11 +959,23 @@ function GetObjectVelocity(...)
     return sim.getObjectVelocity(handle+sim.handleflag_axis)
 end
 
-function LoadModel(...)
-    debugFunc("LoadModel",...)
+function LoadModelFromFile(...)
+    debugFunc("LoadModelFromFile",...)
     local filename=...
     local s=sim.getObjectSelection()
     local h=sim.loadModel(filename)
+    sim.removeObjectFromSelection(sim.handle_all,-1);
+    if s then
+        sim.addObjectToSelection(s)
+    end
+    return h
+end
+
+function LoadModelFromBuffer(...)
+    debugFunc("LoadModelFromBuffer",...)
+    local buff=...
+    local s=sim.getObjectSelection()
+    local h=sim.loadModel(buff)
     sim.removeObjectFromSelection(sim.handle_all,-1);
     if s then
         sim.addObjectToSelection(s)
@@ -894,9 +1003,9 @@ function timeStr()
         t=os.date('*t')
         t=string.format('[%02d:%02d:%02d] ',t.hour,t.min,t.sec)
     else
-        local st=sim.getSimulationTime()
-        t=os.date('*t',3600*23+st)
-        t=string.format('[%02d:%02d:%02d.%02d] ',t.hour,t.min,t.sec,st%1)
+        local st=sim.getSimulationTime()+0.001
+        t=os.date('*t',3600*23+math.floor(st))
+        t=string.format('[%02d:%02d:%02d.%02d] ',t.hour,t.min,t.sec,math.floor(100*(st%1)))
     end
     return t
 end
@@ -974,9 +1083,8 @@ function debugFunc(funcName,...)
         if arg=='' then
             arg='none'
         end
-        local a=timeStr()..b0RemoteApiServerNameDebug..": calling function '"..funcName.."' with following arguments: "..arg
-        a="<font color='#4B4'>"..a.."</font>@html"
-        sim.addStatusbarMessage(a)
+        local a=timeStr().." calling function '"..funcName.."' with following arguments: "..arg
+        sim.addLog(sim.verbosity_msgs,a)
     end
 end
 
@@ -984,9 +1092,8 @@ function PCALL(func,printErrors,...)
     local res,a,b,c,d,e,f,g,h,i,j,k=pcall(func,...)
     
     if modelData and modelData.debugLevel>=1 and (not res) and printErrors then
-        local a=string.format(timeStr()..b0RemoteApiServerNameDebug..": error while calling function '%s': %s",lastFuncName,a)
-        a="<font color='#a00'>"..a.."</font>@html"
-        sim.addStatusbarMessage(a)
+        local a=string.format(timeStr().." error while calling function '%s': %s",lastFuncName,a)
+        sim.addLog(sim.verbosity_msgs,a)
     end
     
     return res,a,b,c,d,e,f,g,h,i,j,k
@@ -1015,9 +1122,8 @@ end
 function createNode()
     if not b0Node then
         if modelData.debugLevel>=1 then
-            local a=string.format(timeStr()..b0RemoteApiServerNameDebug..": creating BlueZero node '%s' and associated publisher, subscriber and service server (on channel '%s')",modelData.nodeName,modelData.channelName)
-            a="<font color='#070'>"..a.."</font>@html"
-            sim.addStatusbarMessage(a)
+            local a=string.format(timeStr().." creating BlueZero node '%s' and associated publisher, subscriber and service server (on channel '%s')",modelData.nodeName,modelData.channelName)
+            sim.addLog(sim.verbosity_msgs,a)
         end
         modelData.currentNodeName=modelData.nodeName
         modelData.currentChannelName=modelData.channelName
@@ -1031,8 +1137,10 @@ function createNode()
                 ui=simUI.create(xml)
             end
             if not simB0.pingResolver() then
-                sim.addStatusbarMessage("<font color='#070'>B0 Remote API: B0 resolver was not detected. Launching it from here...</font>@html")
+                sim.addLog(sim.verbosity_msgs,"B0 Remote API: B0 resolver was not detected. Launching it from here...")
                 sim.launchExecutable('b0_resolver','',1)
+                local st=sim.getSystemTimeInMs(-1)
+                while sim.getSystemTimeInMs(st)<1000 do end
             end
             if simUI then
                 simUI.destroy(ui)
@@ -1048,7 +1156,7 @@ function createNode()
                 initStg=1
             else
                 initStg=0
-                sim.addStatusbarMessage("<font color='#070'>"..timeStr()..b0RemoteApiServerNameDebug..": B0 resolver could not be launched.".."</font>@html")
+                sim.addLog(sim.verbosity_msgs,timeStr().." B0 resolver could not be launched.")
             end
         end
 
@@ -1069,9 +1177,8 @@ end
 function destroyNode()
     if b0Node then
         if modelData.debugLevel>=1 then
-            local a=string.format(timeStr()..b0RemoteApiServerNameDebug..": destroying BlueZero node '%s' and associated publisher, subscriber and service server (on channel '%s')",modelData.currentNodeName,modelData.currentChannelName)
-            a="<font color='#070'>"..a.."</font>@html"
-            sim.addStatusbarMessage(a)
+            local a=string.format(timeStr().." destroying BlueZero node '%s' and associated publisher, subscriber and service server (on channel '%s')",modelData.currentNodeName,modelData.currentChannelName)
+            sim.addLog(sim.verbosity_msgs,a)
         end
         modelData.currentNodeName=nil
         modelData.currentChannelName=nil
@@ -1163,9 +1270,8 @@ function sendAndSpin(calledMoment)
             local clientId=clientsToRemove[i]
             DisconnectClient(clientId)
             if modelData.debugLevel>=1 then
-                local a=string.format(timeStr()..b0RemoteApiServerNameDebug..": destroyed all streaming functions for client '%s' after detection of inactivity",clientId)
-                a="<font color='#070'>"..a.."</font>@html"
-                sim.addStatusbarMessage(a)
+                local a=string.format(timeStr().." destroyed all streaming functions for client '%s' after detection of inactivity",clientId)
+                sim.addLog(sim.verbosity_msgs,a)
             end
         end
     end
@@ -1219,9 +1325,8 @@ function sendAndSpin(calledMoment)
             end
         end
         if msgCnt>0 and modelData and modelData.debugLevel>=2 then
-            local a=string.format(timeStr()..b0RemoteApiServerNameDebug..": published %i message(s) to %i client(s): %s",msgCnt,clientCnt,funcs)
-            a="<font color='#070'>"..a..append.."</font>@html"
-            sim.addStatusbarMessage(a)
+            local a=string.format(timeStr().." published %i message(s) to %i client(s): %s",msgCnt,clientCnt,funcs)
+            sim.addLog(sim.verbosity_msgs,a)
         end
     end
     
@@ -1258,6 +1363,9 @@ end
 
 function hasClientReachedMaxInactivityTime(clientId)
     local val=allClients[clientId]
+    if val.maxInactivityTimeMs==0 then
+        return false
+    end
     return sim.getSystemTimeInMs(val.lastActivityTimeMs)>val.maxInactivityTimeMs
 end
 
@@ -1283,24 +1391,21 @@ function serviceServer_callback(receiveMsg)
             end
             dedicatedSubscribers[clientId][funcArgs[1]]={handle=subscr,dropMessages=funcArgs[2]}
             if modelData.debugLevel>=1 then
-                local a=string.format(timeStr()..b0RemoteApiServerNameDebug..": creating dedicated subscriber for client '%s' with topic '%s'",clientId,funcArgs[1])
-                a="<font color='#070'>"..a.."</font>@html"
-                sim.addStatusbarMessage(a)
+                local a=string.format(timeStr().." creating dedicated subscriber for client '%s' with topic '%s'",clientId,funcArgs[1])
+                sim.addLog(sim.verbosity_msgs,a)
             end
         elseif funcName=='inactivityTolerance' then
             setClientMaxInactivityTime(clientId,funcArgs[1])
             if modelData.debugLevel>=2 then
-                local a=string.format(timeStr()..b0RemoteApiServerNameDebug..": setting max. inactivity tolerance for client '%s'",clientId)
-                a="<font color='#070'>"..a.."</font>@html"
-                sim.addStatusbarMessage(a)
+                local a=string.format(timeStr().." setting max. inactivity tolerance for client '%s'",clientId)
+                sim.addLog(sim.verbosity_msgs,a)
             end
         else
             retVal=PACKSERVMSG(PCALL(_G[funcName],true,unpack(funcArgs)))
     --        result,data=PCALL(_G[funcName],unpack(funcArgs))
             if modelData.debugLevel>=2 then
-                local a=string.format(timeStr()..b0RemoteApiServerNameDebug..": called function for client '%s': %s (service call)",clientId,receiveMsg[1][1])
-                a="<font color='#070'>"..a.."</font>@html"
-                sim.addStatusbarMessage(a)
+                local a=string.format(timeStr().." called function for client '%s': %s (service call)",clientId,receiveMsg[1][1])
+                sim.addLog(sim.verbosity_msgs,a)
             end
         end
     end
@@ -1320,9 +1425,8 @@ function handlePublisherSetupFunctions(task,funcName,clientId,topic,funcArgs)
         local val=allPublishers[clientId][topic]
         val.cmds[#val.cmds+1]={func=funcName,args=funcArgs,triggerIntervalCnt=1}
         if modelData.debugLevel>=1 then
-            local a=string.format(timeStr()..b0RemoteApiServerNameDebug..": registering streaming function '%s' for client '%s' on topic '%s' (default publisher)",funcName,clientId,topic)
-            a="<font color='#070'>"..a.."</font>@html"
-            sim.addStatusbarMessage(a)
+            local a=string.format(timeStr().." registering streaming function '%s' for client '%s' on topic '%s' (default publisher)",funcName,clientId,topic)
+            sim.addLog(sim.verbosity_msgs,a)
         end
     elseif task==4 then
         -- We want to register a command to be constantly executed on a dedicated publisher:
@@ -1331,9 +1435,8 @@ function handlePublisherSetupFunctions(task,funcName,clientId,topic,funcArgs)
             allCmds=val.cmds
             allCmds[#allCmds+1]={func=funcName,args=funcArgs,triggerIntervalCnt=1}
             if modelData.debugLevel>=1 then
-                local a=string.format(timeStr()..b0RemoteApiServerNameDebug..": registering streaming function '%s' for client '%s' on topic '%s' (dedicated publisher)",funcName,clientId,topic)
-                a="<font color='#070'>"..a.."</font>@html"
-                sim.addStatusbarMessage(a)
+                local a=string.format(timeStr().." registering streaming function '%s' for client '%s' on topic '%s' (dedicated publisher)",funcName,clientId,topic)
+                sim.addLog(sim.verbosity_msgs,a)
             end
         end
     else
@@ -1348,9 +1451,8 @@ function handlePublisherSetupFunctions(task,funcName,clientId,topic,funcArgs)
             local trigInterv=funcArgs[2]
             allPublishers[clientId][targetTopic]={handle=pub,cmds={},triggerInterval=trigInterv}
             if modelData.debugLevel>=1 then
-                local a=string.format(timeStr()..b0RemoteApiServerNameDebug..": creating dedicated publisher for client '%s' with topic '%s'",clientId,targetTopic)
-                a="<font color='#070'>"..a.."</font>@html"
-                sim.addStatusbarMessage(a)
+                local a=string.format(timeStr().." creating dedicated publisher for client '%s' with topic '%s'",clientId,targetTopic)
+                sim.addLog(sim.verbosity_msgs,a)
             end
             return true
         elseif funcName=='setDefaultPublisherPubInterval' then
@@ -1363,9 +1465,8 @@ function handlePublisherSetupFunctions(task,funcName,clientId,topic,funcArgs)
                 allPublishers[clientId][targetTopic]={handle=defaultPublisher,cmds={},triggerInterval=trigInterv}
             end
             if modelData.debugLevel>=2 then
-                local a=string.format(timeStr()..b0RemoteApiServerNameDebug..": setting default publisher interval for client '%s' with topic '%s'",clientId,targetTopic)
-                a="<font color='#070'>"..a.."</font>@html"
-                sim.addStatusbarMessage(a)
+                local a=string.format(timeStr().." setting default publisher interval for client '%s' with topic '%s'",clientId,targetTopic)
+                sim.addLog(sim.verbosity_msgs,a)
             end
             return true
         elseif funcName=='stopDefaultPublisher' or funcName=='stopPublisher' then
@@ -1393,9 +1494,8 @@ function handlePublisherSetupFunctions(task,funcName,clientId,topic,funcArgs)
                                 cm=cm..cmds[i].func
                             end
                         end
-                        local a=string.format(timeStr()..b0RemoteApiServerNameDebug..": stopping %s publisher for client '%s' with topic '%s'. All Streaming functions on that topic will be unregistered%s",nn,clientId,topic,cm)
-                        a="<font color='#070'>"..a.."</font>@html"
-                        sim.addStatusbarMessage(a)
+                        local a=string.format(timeStr().." stopping %s publisher for client '%s' with topic '%s'. All Streaming functions on that topic will be unregistered%s",nn,clientId,topic,cm)
+                        sim.addLog(sim.verbosity_msgs,a)
                     end
                 end
             end
@@ -1408,9 +1508,8 @@ function handlePublisherSetupFunctions(task,funcName,clientId,topic,funcArgs)
                     simB0.subscriberDestroy(dedicatedSubscribers[clientId][topic].handle)
                     dedicatedSubscribers[clientId][topic]=nil
                     if modelData.debugLevel>=1 then
-                        local a=string.format(timeStr()..b0RemoteApiServerNameDebug..": stopping dedicated subscriber for client '%s' with topic '%s'",clientId,topic)
-                        a="<font color='#070'>"..a.."</font>@html"
-                        sim.addStatusbarMessage(a)
+                        local a=string.format(timeStr().." stopping dedicated subscriber for client '%s' with topic '%s'",clientId,topic)
+                        sim.addLog(sim.verbosity_msgs,a)
                     end
                 end
             end
@@ -1434,9 +1533,8 @@ function defaultSubscriber_callback(msg)
     if not handlePublisherSetupFunctions(task,funcName,clientId,topic,funcArgs) then
         PCALL(_G[funcName],true,unpack(funcArgs))
         if modelData.debugLevel>=2 then
-            local a=string.format(timeStr()..b0RemoteApiServerNameDebug..": called function for client '%s': %s (default subscriber)",clientId,funcName)
-            a="<font color='#070'>"..a.."</font>@html"
-            sim.addStatusbarMessage(a)
+            local a=string.format(timeStr().." called function for client '%s': %s (default subscriber)",clientId,funcName)
+            sim.addLog(sim.verbosity_msgs,a)
         end
     end
 end    
@@ -1452,9 +1550,8 @@ function dedicatedSubscriber_callback(msg)
     -- We simply want to execute the function and forget (no return)
     PCALL(_G[funcName],true,unpack(funcArgs))
     if modelData.debugLevel>=2 then
-        local a=string.format(timeStr()..b0RemoteApiServerNameDebug..": called function for client '%s': %s (dedicated subscriber)",clientId,funcName)
-        a="<font color='#070'>"..a.."</font>@html"
-        sim.addStatusbarMessage(a)
+        local a=string.format(timeStr().." called function for client '%s': %s (dedicated subscriber)",clientId,funcName)
+        sim.addLog(sim.verbosity_msgs,a)
     end
 end    
 
@@ -1534,72 +1631,31 @@ function onConfigRestartNode(ui,id,newVal)
     end
 end
 
-function createConfigDlg()
-    if simUI then
-        if not configUiData then
-            local xml = [[
-            <ui title="BlueZero-based remote API, server-side configuration" closeable="false" resizable="false" activate="false">
-            <group layout="form" flat="true">
-            <label text="Node name"/>
-            <edit on-editing-finished="onConfigNodeNameChanged" id="1"/>
-            <label text="Channel name"/>
-            <edit on-editing-finished="onConfigChannelNameChanged" id="2"/>
-            <label text=""/>
-            <button text="Restart node with above names" checked="false" on-click="onConfigRestartNode" />
-            
-            <label text="Pack strings as binary"/>
-            <checkbox text="" on-change="onPackStrAsBinChanged" id="4" />
-            <label text="Enabled during simulation only"/>
-            <checkbox text="" on-change="onSimOnlyChanged" id="5" />
-            <label text="Debug level"/>
-            <combobox id="3" on-change="onDebugLevelChanged"></combobox>
-            </group>
-            </ui>
-            ]]
-            configUiData={}
-            configUiData.dlg=simUI.create(xml)
-            if previousConfigDlgPos then
-                simUI.setPosition(configUiData.dlg,previousConfigDlgPos[1],previousConfigDlgPos[2],true)
-            end
-            configUiData.nodeName=modelData.nodeName
-            configUiData.channelName=modelData.channelName
-            configUiData.debugLevel=modelData.debugLevel
-            configUiData.packStrAsBin=modelData.packStrAsBin
-            configUiData.duringSimulationOnly=modelData.duringSimulationOnly
-            simUI.setEditValue(configUiData.dlg,1,configUiData.nodeName)
-            simUI.setEditValue(configUiData.dlg,2,configUiData.channelName)
-            simUI.setCheckboxValue(configUiData.dlg,4,configUiData.packStrAsBin and 2 or 0)
-            simUI.setCheckboxValue(configUiData.dlg,5,configUiData.duringSimulationOnly and 2 or 0)
-            updateDebugLevelCombobox()
-        end
-    end
+function onDlgClose()
+	local x,y=simUI.getPosition(configUiData.dlg)
+	previousConfigDlgPos={x,y}
+	simUI.destroy(configUiData.dlg)
+	configUiData=nil
 end
 
-function removeConfigDlg()
-    if simUI then
-        if configUiData then
-            local x,y=simUI.getPosition(configUiData.dlg)
-            previousConfigDlgPos={x,y}
-            simUI.destroy(configUiData.dlg)
-            configUiData=nil
-        end
-    end
+function sysCall_info()
+    return {autoStart=false,menu='Connectivity\nB0 remote API server'}
+end
+
+function sysCall_addOnScriptSuspend()
+    return {cmd='cleanup'} -- the clean-up section will be called and the add-on stopped
 end
 
 function sysCall_init()
-    local res
-    res,model=PCALL(sim.getObjectAssociatedWithScript,false,sim.handle_self) -- if call made directly, will fail with add-on script
+    model=sim.getObjectHandle('.',{noError=true})
     local abort=false
-    if not res or model==-1 then
+    if model==-1 then
         -- We are running this script via an Add-On script
-        
         model=-1
-        b0RemoteApiServerNameDebug='B0 Remote API (add-on)'
         modelData={nodeName='b0RemoteApi_CoppeliaSim-addOn',channelName='b0RemoteApiAddOn',debugLevel=1,packStrAsBin=false,duringSimulationOnly=false}
     else
         -- We are probably running this script via a customization script
         modelTag='b0-remoteApi'
-        b0RemoteApiServerNameDebug='B0 Remote API'
 --        sim.writeCustomDataBlock(model,modelTag,sim.packTable({nodeName='b0RemoteApi_CoppeliaSim',channelName='b0RemoteApi',debugLevel=1,packStrAsBin=false,duringSimulationOnly=false}))
         
         local objs=sim.getObjectsWithTag(modelTag,true)
@@ -1621,16 +1677,9 @@ end
 
 function sysCall_cleanup()
     destroyNode()
-    removeConfigDlg()
 end
 
 function sysCall_nonSimulation()
-    local s=sim.getObjectSelection()
-    if s and #s==1 and s[1]==model then
-        createConfigDlg()
-    else
-        removeConfigDlg()
-    end
     sendAndSpin(0)
 end
 
@@ -1645,7 +1694,6 @@ function sysCall_suspended()
 end
 
 function sysCall_beforeSimulation()
-    removeConfigDlg()
     if modelData.duringSimulationOnly then
         createNode()
     end
@@ -1661,7 +1709,6 @@ end
 function sysCall_beforeInstanceSwitch()
     if model>=0 then
         destroyNode()
-        removeConfigDlg()
     end
 end
 
@@ -1674,12 +1721,40 @@ function sysCall_afterInstanceSwitch()
     end
 end
 
-function sysCall_addOnScriptSuspend()
-    destroyNode()
-end
-
-function sysCall_addOnScriptResume()
-    if not modelData.duringSimulationOnly then
-        createNode()
-    end
+function sysCall_userConfig()
+    local simStopped=sim.getSimulationState()==sim.simulation_stopped
+	local xml ='<ui title="BlueZero-based remote API, server-side configuration" closeable="true" on-close="onDlgClose" modal="true" resizable="false" activate="false" enabled="'..tostring(simStopped)
+	xml=xml..[[">
+	<group layout="form" flat="true">
+	<label text="Node name"/>
+	<edit on-editing-finished="onConfigNodeNameChanged" id="1"/>
+	<label text="Channel name"/>
+	<edit on-editing-finished="onConfigChannelNameChanged" id="2"/>
+	<label text=""/>
+	<button text="Restart node with above names" checked="false" on-click="onConfigRestartNode" />
+	
+	<label text="Pack strings as binary"/>
+	<checkbox text="" on-change="onPackStrAsBinChanged" id="4" />
+	<label text="Enabled during simulation only"/>
+	<checkbox text="" on-change="onSimOnlyChanged" id="5" />
+	<label text="Debug level"/>
+	<combobox id="3" on-change="onDebugLevelChanged"></combobox>
+	</group>
+	</ui>
+	]]
+	configUiData={}
+	configUiData.dlg=simUI.create(xml)
+	if previousConfigDlgPos then
+		simUI.setPosition(configUiData.dlg,previousConfigDlgPos[1],previousConfigDlgPos[2],true)
+	end
+	configUiData.nodeName=modelData.nodeName
+	configUiData.channelName=modelData.channelName
+	configUiData.debugLevel=modelData.debugLevel
+	configUiData.packStrAsBin=modelData.packStrAsBin
+	configUiData.duringSimulationOnly=modelData.duringSimulationOnly
+	simUI.setEditValue(configUiData.dlg,1,configUiData.nodeName)
+	simUI.setEditValue(configUiData.dlg,2,configUiData.channelName)
+	simUI.setCheckboxValue(configUiData.dlg,4,configUiData.packStrAsBin and 2 or 0)
+	simUI.setCheckboxValue(configUiData.dlg,5,configUiData.duringSimulationOnly and 2 or 0)
+	updateDebugLevelCombobox()
 end

@@ -1,7 +1,8 @@
+simBWF=require('simBWF')
 getRobotHandle=function(objectHandle)
     while true do
         local p=sim.getModelProperty(objectHandle)
-        if sim.boolAnd32(p,sim.modelproperty_not_model)==0 then
+        if (p&sim.modelproperty_not_model)==0 then
             return objectHandle
         end
         objectHandle=sim.getObjectParent(objectHandle)
@@ -23,12 +24,12 @@ getColorFromIntensity=function(intensity)
     return coll
 end
 
-if (sim_call_type==sim.childscriptcall_initialization) then
-    dummy=sim.getObjectAssociatedWithScript(sim.handle_self)
+function sysCall_init()
+    dummy=sim.getObject('.')
     model=getRobotHandle(dummy)
     local ragnarSettings=sim.readCustomDataBlock(model,simBWF.modelTags.RAGNAR)
     ragnarSettings=sim.unpackTable(ragnarSettings)
-    showTrajectory=simBWF.modifyAuxVisualizationItems(sim.boolAnd32(ragnarSettings['bitCoded'],1)>0)
+    showTrajectory=simBWF.modifyAuxVisualizationItems((ragnarSettings['bitCoded']&1)>0)
     if showTrajectory then
         local lineBufferSize=100
         cont=sim.addDrawingObject(sim.drawing_lines+sim.drawing_itemcolors+sim.drawing_emissioncolor+sim.drawing_cyclic,3,0,-1,lineBufferSize)
@@ -38,7 +39,7 @@ if (sim_call_type==sim.childscriptcall_initialization) then
 end
 
 
-if (sim_call_type==sim.childscriptcall_sensing) then
+function sysCall_sensing()
     if showTrajectory then
         local ragnarSettings=sim.readCustomDataBlock(model,simBWF.modelTags.RAGNAR)
         ragnarSettings=sim.unpackTable(ragnarSettings)

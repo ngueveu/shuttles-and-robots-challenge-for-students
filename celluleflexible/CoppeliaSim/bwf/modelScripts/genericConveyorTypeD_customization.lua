@@ -1,3 +1,4 @@
+simBWF=require('simBWF')
 function removeFromPluginRepresentation()
 
 end
@@ -9,7 +10,7 @@ end
 function ext_getItemData_pricing()
     local c=readInfo()
     local obj={}
-    obj.name=sim.getObjectName(model)
+    obj.name=sim.getObjectAlias(model,1)
     obj.type='conveyor'
     obj.conveyorType='default'
     obj.brVersion=0
@@ -142,14 +143,14 @@ function getColor2()
 end
 
 function setShapeSize(h,x,y,z)
-    local r,mmin=sim.getObjectFloatParameter(h,sim.objfloatparam_objbbox_min_x)
-    local r,mmax=sim.getObjectFloatParameter(h,sim.objfloatparam_objbbox_max_x)
+    local mmin=sim.getObjectFloatParam(h,sim.objfloatparam_objbbox_min_x)
+    local mmax=sim.getObjectFloatParam(h,sim.objfloatparam_objbbox_max_x)
     local sx=mmax-mmin
-    local r,mmin=sim.getObjectFloatParameter(h,sim.objfloatparam_objbbox_min_y)
-    local r,mmax=sim.getObjectFloatParameter(h,sim.objfloatparam_objbbox_max_y)
+    local mmin=sim.getObjectFloatParam(h,sim.objfloatparam_objbbox_min_y)
+    local mmax=sim.getObjectFloatParam(h,sim.objfloatparam_objbbox_max_y)
     local sy=mmax-mmin
-    local r,mmin=sim.getObjectFloatParameter(h,sim.objfloatparam_objbbox_min_z)
-    local r,mmax=sim.getObjectFloatParameter(h,sim.objfloatparam_objbbox_max_z)
+    local mmin=sim.getObjectFloatParam(h,sim.objfloatparam_objbbox_min_z)
+    local mmax=sim.getObjectFloatParam(h,sim.objfloatparam_objbbox_max_z)
     local sz=mmax-mmin
     sim.scaleObject(h,x/sx,y/sy,z/sz)
 end
@@ -160,7 +161,7 @@ function getAvailableSensors()
     for i=1,#l,1 do
         local data=sim.readCustomDataBlock(l[i],'XYZ_BINARYSENSOR_INFO')
         if data then
-            retL[#retL+1]={sim.getObjectName(l[i]),l[i]}
+            retL[#retL+1]={sim.getObjectAlias(l[i],1),l[i]}
         end
     end
     return retL
@@ -173,7 +174,7 @@ function getAvailableMasterConveyors()
         if l[i]~=model then
             local data=sim.readCustomDataBlock(l[i],simBWF.modelTags.CONVEYOR)
             if data then
-                retL[#retL+1]={sim.getObjectName(l[i]),l[i]}
+                retL[#retL+1]={sim.getObjectAlias(l[i],1),l[i]}
             end
         end
     end
@@ -274,7 +275,7 @@ function setDlgItemContent()
         simUI.setEditValue(ui,4,simBWF.format("%.0f",config['width']/0.001),true)
         simUI.setEditValue(ui,21,simBWF.format("%.0f",config['padSpacing']/0.001),true)
         simUI.setEditValue(ui,28,simBWF.format("%.0f",config['height']/0.001),true)
-        simUI.setCheckboxValue(ui,1000,(sim.boolAnd32(config['bitCoded'],64)~=0) and 2 or 0,true)
+        simUI.setCheckboxValue(ui,1000,((config['bitCoded']&64)~=0) and 2 or 0,true)
         simUI.setLabelText(ui,26,simBWF.format("%.0f",getActualPadSpacing()/0.001),true)
 
 
@@ -380,9 +381,9 @@ function updateConveyor()
         pad=sim.groupShapes(walls)
         sim.reorientShapeBoundingBox(pad,-1)
     end
-    sim.setObjectInt32Parameter(pad,sim.objintparam_visibility_layer,1+256)
+    sim.setObjectInt32Param(pad,sim.objintparam_visibility_layer,1+256)
     sim.setObjectProperty(pad,sim.objectproperty_selectable+sim.objectproperty_selectmodelbaseinstead)
-    sim.setObjectInt32Parameter(pad,sim.shapeintparam_respondable,1)
+    sim.setObjectInt32Param(pad,sim.shapeintparam_respondable,1)
     sim.setObjectSpecialProperty(pad,sim.objectspecialproperty_collidable+sim.objectspecialproperty_measurable+sim.objectspecialproperty_detectable_all+sim.objectspecialproperty_renderable)
     sim.setObjectPosition(pad,padBase,{(pthickness+pwheight)*0.5,plength*0.5,0})
     sim.setObjectOrientation(pad,padBase,{0,-math.pi/2,math.pi/2})
@@ -392,10 +393,10 @@ function updateConveyor()
         local p=sim.copyPasteObjects({pad},0)[1]
         sim.setObjectParent(p,pb,true)
         sim.setObjectParent(pb,path,true)
-        sim.setObjectInt32Parameter(p,sim.objintparam_visibility_layer,1+256)
-        sim.setObjectInt32Parameter(p,sim.shapeintparam_respondable,1)
+        sim.setObjectInt32Param(p,sim.objintparam_visibility_layer,1+256)
+        sim.setObjectInt32Param(p,sim.shapeintparam_respondable,1)
         sim.setObjectSpecialProperty(p,sim.objectspecialproperty_collidable+sim.objectspecialproperty_measurable+sim.objectspecialproperty_detectable_all+sim.objectspecialproperty_renderable)
-        sim.setObjectFloatParameter(pb,sim.dummyfloatparam_follow_path_offset,i*dx)
+        sim.setObjectFloatParam(pb,sim.dummyfloatparam_follow_path_offset,i*dx)
     end
     -- Delete the first pad:
     sim.removeObject(pad)
@@ -656,7 +657,7 @@ end
 
 function enabledClicked(ui,id,newVal)
     local c=readInfo()
-    c['bitCoded']=sim.boolOr32(c['bitCoded'],64)
+    c['bitCoded']=(c['bitCoded']|64)
     if newVal==0 then
         c['bitCoded']=c['bitCoded']-64
     end
@@ -788,9 +789,9 @@ function removeDlg()
     end
 end
 
-if (sim_call_type==sim.customizationscriptcall_initialization) then
+function sysCall_init()
     dlgMainTabIndex=0
-    model=sim.getObjectAssociatedWithScript(sim.handle_self)
+    model=sim.getObject('.')
     _MODELVERSION_=0
     _CODEVERSION_=0
     local _info=readInfo()
@@ -810,15 +811,15 @@ if (sim_call_type==sim.customizationscriptcall_initialization) then
     end
     ----------------------------------------
     writeInfo(_info)
-    base=sim.getObjectHandle('genericConveyorTypeD_base')
-    baseBack=sim.getObjectHandle('genericConveyorTypeD_baseBack')
-    baseFront=sim.getObjectHandle('genericConveyorTypeD_baseFront')
-    padBase=sim.getObjectHandle('genericConveyorTypeD_padBase')
-    padBaseShape=sim.getObjectHandle('genericConveyorTypeD_padBaseShape')
-    padWallShape=sim.getObjectHandle('genericConveyorTypeD_padWallShape')
-    path=sim.getObjectHandle('genericConveyorTypeD_path')
+    base=sim.getObject('./genericConveyorTypeD_base')
+    baseBack=sim.getObject('./genericConveyorTypeD_baseBack')
+    baseFront=sim.getObject('./genericConveyorTypeD_baseFront')
+    padBase=sim.getObject('./genericConveyorTypeD_padBase')
+    padBaseShape=sim.getObject('./genericConveyorTypeD_padBaseShape')
+    padWallShape=sim.getObject('./genericConveyorTypeD_padWallShape')
+    path=sim.getObject('./genericConveyorTypeD_path')
 
-	sim.setScriptAttribute(sim.handle_self,sim.customizationscriptattribute_activeduringsimulation,true)
+	
     updatePluginRepresentation()
     previousDlgPos,algoDlgSize,algoDlgPos,distributionDlgSize,distributionDlgPos,previousDlg1Pos=simBWF.readSessionPersistentObjectData(model,"dlgPosAndSize")
 end
@@ -832,11 +833,11 @@ showOrHideUiIfNeeded=function()
     end
 end
 
-if (sim_call_type==sim.customizationscriptcall_nonsimulation) then
+function sysCall_nonSimulation()
     showOrHideUiIfNeeded()
 end
 
-if (sim_call_type==sim.customizationscriptcall_simulationsensing) then
+function sysCall_sensing()
     if simJustStarted then
         updateEnabledDisabledItems()
     end
@@ -844,11 +845,11 @@ if (sim_call_type==sim.customizationscriptcall_simulationsensing) then
     showOrHideUiIfNeeded()
 end
 
-if (sim_call_type==sim.customizationscriptcall_simulationpause) then
+function sysCall_suspend()
     showOrHideUiIfNeeded()
 end
 
-if (sim_call_type==sim.customizationscriptcall_firstaftersimulation) then
+function sysCall_afterSimulation()
     updateEnabledDisabledItems()
     local conf=readInfo()
     conf['encoderDistance']=0
@@ -856,20 +857,20 @@ if (sim_call_type==sim.customizationscriptcall_firstaftersimulation) then
     writeInfo(conf)
 end
 
-if (sim_call_type==sim.customizationscriptcall_lastbeforesimulation) then
+function sysCall_beforeSimulation()
     simJustStarted=true
 end
 
-if (sim_call_type==sim.customizationscriptcall_lastbeforeinstanceswitch) then
+function sysCall_beforeInstanceSwitch()
     removeDlg()
     removeFromPluginRepresentation()
 end
 
-if (sim_call_type==sim.customizationscriptcall_firstafterinstanceswitch) then
+function sysCall_afterInstanceSwitch()
     updatePluginRepresentation()
 end
 
-if (sim_call_type==sim.customizationscriptcall_cleanup) then
+function sysCall_cleanup()
     removeDlg()
     removeFromPluginRepresentation()
     simBWF.writeSessionPersistentObjectData(model,"dlgPosAndSize",previousDlgPos,algoDlgSize,algoDlgPos,distributionDlgSize,distributionDlgPos,previousDlg1Pos)

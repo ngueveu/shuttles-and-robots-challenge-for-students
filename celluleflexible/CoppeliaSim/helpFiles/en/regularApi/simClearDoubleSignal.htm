@@ -15,46 +15,46 @@
   <td >
 <p><a href="../../index.html" TARGET="_top"><img src="../images/homeImg.png"></a></p>
 
-<h1><a href="../apiOverview.htm">Regular API</a> function</h1>
-<h3 class=subsectionBar><a name="simClearDoubleSignal" id="simClearDoubleSignal"></a>simClearDoubleSignal / sim.clearDoubleSignal</h3>
+<h1>Regular API function</h1>
+<p class=subsectionBar><a name="simClearDoubleSignal" id="simClearDoubleSignal"></a>simClearDoubleSignal / sim.clearDoubleSignal</p>
 <table class=apiTable>
 <tr class=apiTableTr> 
 <td class=apiTableLeftDescr>
 Description 
 </td> 
-<td class=apiTableRightDescr>Clears a double signal (removes it). See also the <a href="../apiFunctionListCategory.htm#signals">other signal functions</a>.</td>
+<td class=apiTableRightDescr>Clears a double signal (removes it). See also the <a href="../apiFunctions.htm#signals">other signal functions</a>.</td>
 </tr> 
 <tr class=apiTableTr> 
 <td class=apiTableLeftCSyn>
-C synopsis
+C/C++<br>synopsis
 </td> 
 <td class=apiTableRightCSyn>simInt simClearDoubleSignal(const simChar* signalName)<br></td> 
 </tr> 
 <tr class=apiTableTr> 
-<td class=apiTableLeftCParam>C parameters</td> 
+<td class=apiTableLeftCParam>C/C++<br>parameters</td> 
 <td class=apiTableRightCParam>
-<div><strong>signalName</strong>: name of the signal or NULL to clear all double signals</div>
+<div><strong>signalName</strong>: name of the signal</div>
 <div></div>
 </td> 
 </tr> 
 <tr class=apiTableTr> 
 <td class=apiTableLeftCRet>
-C return value
+C/C++<br>return value
 </td> 
 <td class=apiTableRightCRet>
-<div>-1 if operation was not successful, otherwise the number of signals cleared</div>
+<div>-1 if operation was not successful</div>
 </td> 
 </tr> 
 <tr class=apiTableTr> 
 <td class=apiTableLeftLSyn>
 Lua synopsis
 </td> 
-<td class=apiTableRightLSyn>number result=sim.clearDoubleSignal(string signalName)</td> 
+<td class=apiTableRightLSyn>sim.clearDoubleSignal(string signalName)</td> 
 </tr> 
 <tr class=apiTableTr> 
 <td class=apiTableLeftLParam>Lua parameters</td> 
 <td class=apiTableRightLParam>
-<div>Same as C-function</div>
+<div>Similar to the C-function counterpart</div>
 </td> 
 </tr> 
 <tr class=apiTableTr> 
@@ -62,28 +62,24 @@ Lua synopsis
 Lua return values
 </td> 
 <td class=apiTableRightLRet>
-<div>Same as C-function</div>
+<div></div>
 </td> 
 </tr> 
 
-<tr class=apiTableTr> 
-<td class=remApiTableLeftCParam>
-Remote API equiv.
-</td> 
-<td class=remApiTableRightCParam>
-<div>B0-based remote API: <a href="../b0RemoteApi-cpp.htm#simxClearFloatSignal">simxClearFloatSignal</a></div>
-<div>Legacy remote API: <a href="../remoteApiFunctions.htm#simxClearFloatSignal">simxClearFloatSignal</a></div>
-</td> 
-</tr> 
+ 
+
+
+
+<tr class=apiTableTr>
+<td class=apiTableLeftPSyn>Python synopsis</td>
+<td class=apiTableRightPSyn>sim.clearDoubleSignal(string signalName)</td>
+</tr>
 
 </table> 
 
 <br>
-<p><a href="../apiFunctions.htm">All regular API functions on one page</a></p>
-<br>
-<br>
 </td>
-</tr>
+
 </table>
 </div>
 </body>

@@ -1,3 +1,4 @@
+simBWF=require('simBWF')
 function removeFromPluginRepresentation()
 
 end
@@ -9,7 +10,7 @@ end
 function ext_getItemData_pricing()
     local c=readInfo()
     local obj={}
-    obj.name=sim.getObjectName(model)
+    obj.name=sim.getObjectAlias(model,1)
     obj.type='conveyor'
     obj.conveyorType='default'
     obj.brVersion=0
@@ -105,14 +106,14 @@ function getColor()
 end
 
 function setShapeSize(h,x,y,z)
-    local r,mmin=sim.getObjectFloatParameter(h,sim.objfloatparam_objbbox_min_x)
-    local r,mmax=sim.getObjectFloatParameter(h,sim.objfloatparam_objbbox_max_x)
+    local mmin=sim.getObjectFloatParam(h,sim.objfloatparam_objbbox_min_x)
+    local mmax=sim.getObjectFloatParam(h,sim.objfloatparam_objbbox_max_x)
     local sx=mmax-mmin
-    local r,mmin=sim.getObjectFloatParameter(h,sim.objfloatparam_objbbox_min_y)
-    local r,mmax=sim.getObjectFloatParameter(h,sim.objfloatparam_objbbox_max_y)
+    local mmin=sim.getObjectFloatParam(h,sim.objfloatparam_objbbox_min_y)
+    local mmax=sim.getObjectFloatParam(h,sim.objfloatparam_objbbox_max_y)
     local sy=mmax-mmin
-    local r,mmin=sim.getObjectFloatParameter(h,sim.objfloatparam_objbbox_min_z)
-    local r,mmax=sim.getObjectFloatParameter(h,sim.objfloatparam_objbbox_max_z)
+    local mmin=sim.getObjectFloatParam(h,sim.objfloatparam_objbbox_min_z)
+    local mmax=sim.getObjectFloatParam(h,sim.objfloatparam_objbbox_max_z)
     local sz=mmax-mmin
     sim.scaleObject(h,x/sx,y/sy,z/sz)
 end
@@ -123,7 +124,7 @@ function getAvailableSensors()
     for i=1,#l,1 do
         local data=sim.readCustomDataBlock(l[i],'XYZ_BINARYSENSOR_INFO')
         if data then
-            retL[#retL+1]={sim.getObjectName(l[i]),l[i]}
+            retL[#retL+1]={sim.getObjectAlias(l[i],1),l[i]}
         end
     end
     return retL
@@ -136,7 +137,7 @@ function getAvailableMasterConveyors()
         if l[i]~=model then
             local data=sim.readCustomDataBlock(l[i],simBWF.modelTags.CONVEYOR)
             if data then
-                retL[#retL+1]={sim.getObjectName(l[i]),l[i]}
+                retL[#retL+1]={sim.getObjectAlias(l[i],1),l[i]}
             end
         end
     end
@@ -180,47 +181,47 @@ function updateConveyor()
     sim.setObjectPosition(rightSide,model,{(width+wt)*0.5,0,-baseThickness*0.5})
     sim.setObjectPosition(pad,sim.handle_parent,{0,padHeight*0.5,0})
 
-    if sim.boolAnd32(bitCoded,1)~=0 then
-        sim.setObjectInt32Parameter(leftSide,sim.objintparam_visibility_layer,0)
-        sim.setObjectInt32Parameter(leftSide,sim.shapeintparam_respondable,0)
+    if (bitCoded&1)~=0 then
+        sim.setObjectInt32Param(leftSide,sim.objintparam_visibility_layer,0)
+        sim.setObjectInt32Param(leftSide,sim.shapeintparam_respondable,0)
         sim.setObjectSpecialProperty(leftSide,0)
         sim.setObjectProperty(leftSide,sim.objectproperty_dontshowasinsidemodel)
     else
-        sim.setObjectInt32Parameter(leftSide,sim.objintparam_visibility_layer,1+256)
-        sim.setObjectInt32Parameter(leftSide,sim.shapeintparam_respondable,1)
+        sim.setObjectInt32Param(leftSide,sim.objintparam_visibility_layer,1+256)
+        sim.setObjectInt32Param(leftSide,sim.shapeintparam_respondable,1)
         sim.setObjectSpecialProperty(leftSide,sim.objectspecialproperty_collidable+sim.objectspecialproperty_measurable+sim.objectspecialproperty_detectable_all+sim.objectspecialproperty_renderable)
         sim.setObjectProperty(leftSide,sim.objectproperty_selectable+sim.objectproperty_selectmodelbaseinstead)
     end
-    if sim.boolAnd32(bitCoded,2)~=0 then
-        sim.setObjectInt32Parameter(rightSide,sim.objintparam_visibility_layer,0)
-        sim.setObjectInt32Parameter(rightSide,sim.shapeintparam_respondable,0)
+    if (bitCoded&2)~=0 then
+        sim.setObjectInt32Param(rightSide,sim.objintparam_visibility_layer,0)
+        sim.setObjectInt32Param(rightSide,sim.shapeintparam_respondable,0)
         sim.setObjectSpecialProperty(rightSide,0)
         sim.setObjectProperty(rightSide,sim.objectproperty_dontshowasinsidemodel)
     else
-        sim.setObjectInt32Parameter(rightSide,sim.objintparam_visibility_layer,1+256)
-        sim.setObjectInt32Parameter(rightSide,sim.shapeintparam_respondable,1)
+        sim.setObjectInt32Param(rightSide,sim.objintparam_visibility_layer,1+256)
+        sim.setObjectInt32Param(rightSide,sim.shapeintparam_respondable,1)
         sim.setObjectSpecialProperty(rightSide,sim.objectspecialproperty_collidable+sim.objectspecialproperty_measurable+sim.objectspecialproperty_detectable_all+sim.objectspecialproperty_renderable)
         sim.setObjectProperty(rightSide,sim.objectproperty_selectable+sim.objectproperty_selectmodelbaseinstead)
     end
-    if sim.boolAnd32(bitCoded,4)~=0 then
-        sim.setObjectInt32Parameter(frontSide,sim.objintparam_visibility_layer,0)
-        sim.setObjectInt32Parameter(frontSide,sim.shapeintparam_respondable,0)
+    if (bitCoded&4)~=0 then
+        sim.setObjectInt32Param(frontSide,sim.objintparam_visibility_layer,0)
+        sim.setObjectInt32Param(frontSide,sim.shapeintparam_respondable,0)
         sim.setObjectSpecialProperty(frontSide,0)
         sim.setObjectProperty(frontSide,sim.objectproperty_dontshowasinsidemodel)
     else
-        sim.setObjectInt32Parameter(frontSide,sim.objintparam_visibility_layer,1+256)
-        sim.setObjectInt32Parameter(frontSide,sim.shapeintparam_respondable,1)
+        sim.setObjectInt32Param(frontSide,sim.objintparam_visibility_layer,1+256)
+        sim.setObjectInt32Param(frontSide,sim.shapeintparam_respondable,1)
         sim.setObjectSpecialProperty(frontSide,sim.objectspecialproperty_collidable+sim.objectspecialproperty_measurable+sim.objectspecialproperty_detectable_all+sim.objectspecialproperty_renderable)
         sim.setObjectProperty(frontSide,sim.objectproperty_selectable+sim.objectproperty_selectmodelbaseinstead)
     end
-    if sim.boolAnd32(bitCoded,8)~=0 then
-        sim.setObjectInt32Parameter(backSide,sim.objintparam_visibility_layer,0)
-        sim.setObjectInt32Parameter(backSide,sim.shapeintparam_respondable,0)
+    if (bitCoded&8)~=0 then
+        sim.setObjectInt32Param(backSide,sim.objintparam_visibility_layer,0)
+        sim.setObjectInt32Param(backSide,sim.shapeintparam_respondable,0)
         sim.setObjectSpecialProperty(backSide,0)
         sim.setObjectProperty(backSide,sim.objectproperty_dontshowasinsidemodel)
     else
-        sim.setObjectInt32Parameter(backSide,sim.objintparam_visibility_layer,1+256)
-        sim.setObjectInt32Parameter(backSide,sim.shapeintparam_respondable,1)
+        sim.setObjectInt32Param(backSide,sim.objintparam_visibility_layer,1+256)
+        sim.setObjectInt32Param(backSide,sim.shapeintparam_respondable,1)
         sim.setObjectSpecialProperty(backSide,sim.objectspecialproperty_collidable+sim.objectspecialproperty_measurable+sim.objectspecialproperty_detectable_all+sim.objectspecialproperty_renderable)
         sim.setObjectProperty(backSide,sim.objectproperty_selectable+sim.objectproperty_selectmodelbaseinstead)
     end
@@ -271,10 +272,10 @@ function updateConveyor()
         local p=sim.copyPasteObjects({pad},0)[1]
         sim.setObjectParent(p,pb,true)
         sim.setObjectParent(pb,path,true)
-        sim.setObjectInt32Parameter(p,sim.objintparam_visibility_layer,1+256)
-        sim.setObjectInt32Parameter(p,sim.shapeintparam_respondable,1)
+        sim.setObjectInt32Param(p,sim.objintparam_visibility_layer,1+256)
+        sim.setObjectInt32Param(p,sim.shapeintparam_respondable,1)
         sim.setObjectSpecialProperty(p,sim.objectspecialproperty_collidable+sim.objectspecialproperty_measurable+sim.objectspecialproperty_detectable_all+sim.objectspecialproperty_renderable)
-        sim.setObjectFloatParameter(pb,sim.dummyfloatparam_follow_path_offset,i*dx)
+        sim.setObjectFloatParam(pb,sim.dummyfloatparam_follow_path_offset,i*dx)
     end
 --]]
     
@@ -404,7 +405,7 @@ end
 
 function leftSideOpenClicked(ui,id,newVal)
     local conf=readInfo()
-    conf['bitCoded']=sim.boolOr32(conf['bitCoded'],1)
+    conf['bitCoded']=(conf['bitCoded']|1)
     if newVal==0 then
         conf['bitCoded']=conf['bitCoded']-1
     end
@@ -415,7 +416,7 @@ end
 
 function rightSideOpenClicked(ui,id,newVal)
     local conf=readInfo()
-    conf['bitCoded']=sim.boolOr32(conf['bitCoded'],2)
+    conf['bitCoded']=(conf['bitCoded']|2)
     if newVal==0 then
         conf['bitCoded']=conf['bitCoded']-2
     end
@@ -426,7 +427,7 @@ end
 
 function frontSideOpenClicked(ui,id,newVal)
     local conf=readInfo()
-    conf['bitCoded']=sim.boolOr32(conf['bitCoded'],4)
+    conf['bitCoded']=(conf['bitCoded']|4)
     if newVal==0 then
         conf['bitCoded']=conf['bitCoded']-4
     end
@@ -437,7 +438,7 @@ end
 
 function backSideOpenClicked(ui,id,newVal)
     local conf=readInfo()
-    conf['bitCoded']=sim.boolOr32(conf['bitCoded'],8)
+    conf['bitCoded']=(conf['bitCoded']|8)
     if newVal==0 then
         conf['bitCoded']=conf['bitCoded']-8
     end
@@ -504,7 +505,7 @@ end
 
 function enabledClicked(ui,id,newVal)
     local conf=readInfo()
-    conf['bitCoded']=sim.boolOr32(conf['bitCoded'],64)
+    conf['bitCoded']=(conf['bitCoded']|64)
     if newVal==0 then
         conf['bitCoded']=conf['bitCoded']-64
     end
@@ -680,11 +681,11 @@ function createDlg()
         simUI.setEditValue(ui,27,simBWF.format("%.0f",config['padThickness']/0.001),true)
         simUI.setEditValue(ui,28,simBWF.format("%.0f",config['height']/0.001),true)
         simUI.setEditValue(ui,29,simBWF.format("%.0f",config['wallThickness']/0.001),true)
-        simUI.setCheckboxValue(ui,22,(sim.boolAnd32(config['bitCoded'],1)~=0) and 2 or 0,true)
-        simUI.setCheckboxValue(ui,23,(sim.boolAnd32(config['bitCoded'],2)~=0) and 2 or 0,true)
-        simUI.setCheckboxValue(ui,24,(sim.boolAnd32(config['bitCoded'],4)~=0) and 2 or 0,true)
-        simUI.setCheckboxValue(ui,25,(sim.boolAnd32(config['bitCoded'],8)~=0) and 2 or 0,true)
-        simUI.setCheckboxValue(ui,1000,(sim.boolAnd32(config['bitCoded'],64)~=0) and 2 or 0,true)
+        simUI.setCheckboxValue(ui,22,((config['bitCoded']&1)~=0) and 2 or 0,true)
+        simUI.setCheckboxValue(ui,23,((config['bitCoded']&2)~=0) and 2 or 0,true)
+        simUI.setCheckboxValue(ui,24,((config['bitCoded']&4)~=0) and 2 or 0,true)
+        simUI.setCheckboxValue(ui,25,((config['bitCoded']&8)~=0) and 2 or 0,true)
+        simUI.setCheckboxValue(ui,1000,((config['bitCoded']&64)~=0) and 2 or 0,true)
         simUI.setLabelText(ui,26,simBWF.format("%.0f",getActualPadSpacing()/0.001),true)
 
         simUI.setSliderValue(ui,5,red*100,true)
@@ -716,9 +717,9 @@ function removeDlg()
     end
 end
 
-if (sim_call_type==sim.customizationscriptcall_initialization) then
+function sysCall_init()
     dlgMainTabIndex=0
-    model=sim.getObjectAssociatedWithScript(sim.handle_self)
+    model=sim.getObject('.')
     _MODELVERSION_=0
     _CODEVERSION_=0
     local _info=readInfo()
@@ -739,18 +740,18 @@ if (sim_call_type==sim.customizationscriptcall_initialization) then
     ----------------------------------------
     writeInfo(_info)
 
-    backSide=sim.getObjectHandle('genericConveyorTypeC_backSide')
-    frontSide=sim.getObjectHandle('genericConveyorTypeC_frontSide')
-    leftSide=sim.getObjectHandle('genericConveyorTypeC_leftSide')
-    rightSide=sim.getObjectHandle('genericConveyorTypeC_rightSide')
-    base=sim.getObjectHandle('genericConveyorTypeC_base')
-    baseBack=sim.getObjectHandle('genericConveyorTypeC_baseBack')
-    baseFront=sim.getObjectHandle('genericConveyorTypeC_baseFront')
-    padBase=sim.getObjectHandle('genericConveyorTypeC_padBase')
-    pad=sim.getObjectHandle('genericConveyorTypeC_pad')
-    path=sim.getObjectHandle('genericConveyorTypeC_path')
+    backSide=sim.getObject('./genericConveyorTypeC_backSide')
+    frontSide=sim.getObject('./genericConveyorTypeC_frontSide')
+    leftSide=sim.getObject('./genericConveyorTypeC_leftSide')
+    rightSide=sim.getObject('./genericConveyorTypeC_rightSide')
+    base=sim.getObject('./genericConveyorTypeC_base')
+    baseBack=sim.getObject('./genericConveyorTypeC_baseBack')
+    baseFront=sim.getObject('./genericConveyorTypeC_baseFront')
+    padBase=sim.getObject('./genericConveyorTypeC_padBase')
+    pad=sim.getObject('./genericConveyorTypeC_pad')
+    path=sim.getObject('./genericConveyorTypeC_path')
 
-	sim.setScriptAttribute(sim.handle_self,sim.customizationscriptattribute_activeduringsimulation,true)
+	
     updatePluginRepresentation()
     previousDlgPos,algoDlgSize,algoDlgPos,distributionDlgSize,distributionDlgPos,previousDlg1Pos=simBWF.readSessionPersistentObjectData(model,"dlgPosAndSize")
 end
@@ -764,11 +765,11 @@ showOrHideUiIfNeeded=function()
     end
 end
 
-if (sim_call_type==sim.customizationscriptcall_nonsimulation) then
+function sysCall_nonSimulation()
     showOrHideUiIfNeeded()
 end
 
-if (sim_call_type==sim.customizationscriptcall_simulationsensing) then
+function sysCall_sensing()
     if simJustStarted then
         updateEnabledDisabledItems()
     end
@@ -776,11 +777,11 @@ if (sim_call_type==sim.customizationscriptcall_simulationsensing) then
     showOrHideUiIfNeeded()
 end
 
-if (sim_call_type==sim.customizationscriptcall_simulationpause) then
+function sysCall_suspend()
     showOrHideUiIfNeeded()
 end
 
-if (sim_call_type==sim.customizationscriptcall_firstaftersimulation) then
+function sysCall_afterSimulation()
     updateEnabledDisabledItems()
     local conf=readInfo()
     conf['encoderDistance']=0
@@ -788,20 +789,20 @@ if (sim_call_type==sim.customizationscriptcall_firstaftersimulation) then
     writeInfo(conf)
 end
 
-if (sim_call_type==sim.customizationscriptcall_lastbeforesimulation) then
+function sysCall_beforeSimulation()
     simJustStarted=true
 end
 
-if (sim_call_type==sim.customizationscriptcall_lastbeforeinstanceswitch) then
+function sysCall_beforeInstanceSwitch()
     removeDlg()
     removeFromPluginRepresentation()
 end
 
-if (sim_call_type==sim.customizationscriptcall_firstafterinstanceswitch) then
+function sysCall_afterInstanceSwitch()
     updatePluginRepresentation()
 end
 
-if (sim_call_type==sim.customizationscriptcall_cleanup) then
+function sysCall_cleanup()
     removeDlg()
     removeFromPluginRepresentation()
     simBWF.writeSessionPersistentObjectData(model,"dlgPosAndSize",previousDlgPos,algoDlgSize,algoDlgPos,distributionDlgSize,distributionDlgPos,previousDlg1Pos)

@@ -4,7 +4,7 @@ function model.embedPartGeometry(partHandle)
     local vertices=nil
     local indices=nil
     local normals=nil
-    if sim.boolAnd32(p,sim.modelproperty_not_model)>0 then
+    if (p&sim.modelproperty_not_model)>0 then
         -- We have a shape here
         vertices,indices,normals=sim.getShapeMesh(partHandle)
     else
@@ -14,8 +14,8 @@ function model.embedPartGeometry(partHandle)
         normals={}
         local shapes=sim.getObjectsInTree(partHandle,sim.object_shape_type,0)
         for i=1,#shapes,1 do
-            local r,l=sim.getObjectInt32Parameter(shapes[i],sim.objintparam_visibility_layer)
-            if sim.boolAnd32(l,255)>0 then
+            local l=sim.getObjectInt32Param(shapes[i],sim.objintparam_visibility_layer)
+            if (l&255)>0 then
                 -- For all visible shapes, get the data..
                 local v,ind,norm=sim.getShapeMesh(shapes[i])
                 -- Make the vertices relative to the model...
@@ -101,7 +101,6 @@ function model.getPartTable()
     local l=sim.getObjectsInTree(model.handles.originalPartHolder,sim.handle_all,1+2)
     local retL={}
     for i=1,#l,1 do
- --       print(sim.getObjectName(l[i]),sim.getObjectName(l[i]+sim.handleflag_altname),simBWF.getObjectAltName(l[i]))
         retL[#retL+1]={simBWF.getObjectAltName(l[i]),l[i]}
     end
     return retL
@@ -158,7 +157,7 @@ function model.removePart(partHandle)
             -- 2. Remove the part:
             model.dlg.selectedPartId=-1
             local p=sim.getModelProperty(partHandle)
-            if sim.boolAnd32(p,sim.modelproperty_not_model)>0 then
+            if (p&sim.modelproperty_not_model)>0 then
                 sim.removeObject(partHandle)
             else
                 sim.removeModel(partHandle)
@@ -198,13 +197,13 @@ function model.insertPart(partHandle)
     sim.setObjectPosition(partHandle,model.handle,{0,0,0}) -- keep the orientation as it is
 
     -- Make the model static, non-respondable, non-collidable, non-measurable, non-visible, etc.
-    if sim.boolAnd32(sim.getModelProperty(partHandle),sim.modelproperty_not_model)>0 then
+    if (sim.getModelProperty(partHandle)&sim.modelproperty_not_model)>0 then
         -- Shape
-        local p=sim.boolOr32(sim.getObjectProperty(partHandle),sim.objectproperty_dontshowasinsidemodel)
+        local p=(sim.getObjectProperty(partHandle)|sim.objectproperty_dontshowasinsidemodel)
         sim.setObjectProperty(partHandle,p)
     else
         -- Model
-        local p=sim.boolOr32(sim.getModelProperty(partHandle),sim.modelproperty_not_showasinsidemodel)
+        local p=(sim.getModelProperty(partHandle)|sim.modelproperty_not_showasinsidemodel)
         sim.setModelProperty(partHandle,p)
     end
 
@@ -231,7 +230,7 @@ function model.getAllPartNameMap()
 end
 
 function model.removeAssociatedCustomizationScriptIfAvailable(h)
-    local sh=sim.getCustomizationScriptAssociatedWithObject(h)
+    local sh=sim.getScriptHandle(sim.scripttype_customizationscript,h)
     if sh>0 then
         sim.removeScript(sh)
     end

@@ -28,7 +28,7 @@ public:
     void buildInterpolation(const C7Vector& fromThis,const C7Vector& toThat,simMathReal t);
     void inverse();
     void copyTo(simMathReal m[4][4]) const;
-    C3Vector getAxis(int index) const;
+    C3Vector getAxis(size_t index) const;
 
     C7Vector operator* (const C7Vector& v) const;
 
@@ -37,28 +37,28 @@ public:
     C3Vector operator* (const C3Vector& v) const;
     C7Vector& operator= (const C7Vector& v);
 
-    inline void getInternalData(simMathReal d[7]) const
+    inline void getInternalData(simMathReal d[7],bool xyzwLayout=false) const
     {
         X.getInternalData(d+0);
-        Q.getInternalData(d+3);
+        Q.getInternalData(d+3,xyzwLayout);
     }
-    inline void setInternalData(const simMathReal d[7])
+    inline void setInternalData(const simMathReal d[7],bool xyzwLayout=false)
     {
         X.setInternalData(d+0);
-        Q.setInternalData(d+3);
+        Q.setInternalData(d+3,xyzwLayout);
     }
     inline bool operator!= (const C7Vector& v)
     {
         return( (Q!=v.Q)||(X!=v.X) );
     }
-    inline simMathReal& operator() (unsigned i)
+    inline simMathReal& operator() (size_t i)
     {
         if (i<3)
             return(X(i));
         else
             return(Q(i-3));
     }
-    inline const simMathReal& operator() (unsigned i) const
+    inline const simMathReal& operator() (size_t i) const
     {
         if (i<3)
             return(X(i));
