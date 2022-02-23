@@ -7,7 +7,4 @@
 # new environment variables
 
 # modified environment variables
-export CMAKE_PREFIX_PATH="/home/projet-long20/TERcelluleflexible/celluleflexible/ros_ws/devel:$CMAKE_PREFIX_PATH"
 export PWD='/home/projet-long20/TERcelluleflexible/celluleflexible/ros_ws/build'
-export ROSLISP_PACKAGE_DIRECTORIES='/home/projet-long20/TERcelluleflexible/celluleflexible/ros_ws/devel/share/common-lisp'
-export ROS_PACKAGE_PATH="/home/projet-long20/TERcelluleflexible/celluleflexible/ros_ws/src:$ROS_PACKAGE_PATH"

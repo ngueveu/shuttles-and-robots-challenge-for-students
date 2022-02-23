@@ -6,6 +6,22 @@
 
 #IncludeRegexTransform: 
 
+/home/projet-long20/TERcelluleflexible/celluleflexible/ros_ws/devel/include/commande_locale/Msg_ChoixMode.h
+string
+-
+vector
+-
+map
+-
+ros/types.h
+-
+ros/serialization.h
+-
+ros/builtin_message_traits.h
+-
+ros/message_operations.h
+-
+
 /home/projet-long20/TERcelluleflexible/celluleflexible/ros_ws/devel/include/commande_locale/Msg_StopControl.h
 string
 -
