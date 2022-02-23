@@ -2,7 +2,7 @@
 
 Dans le répertoire de travail : 
 
-          git clone -branch Noetic https://github.com/Yacoubo/PL2022.git
+          git clone -b Noetic https://github.com/Yacoubo/PL2022.git
 
 Il faut renommer le répertoire PL2022 en TERcelluleflexible
 
