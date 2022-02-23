@@ -1,17 +1,22 @@
 # TER atelier flexible ou cellule flexible sous ubuntu 20 avec ROS Noetic
 
-Dans le répertoire de travail : git clone -branch Noetic https://github.com/Yacoubo/PL2022.git
+Dans le répertoire de travail : 
+
+          git clone -branch Noetic https://github.com/Yacoubo/PL2022.git
+
 Il faut renommer le répertoire PL2022 en TERcelluleflexible
-Lancement du test
-          - commande : cd TERcelluleflexible/celluleflexible/ros_ws
-          - Supprimer les dossiers build et devel
-          - commande : cd src
-          - Supprimer le fichier CMakeLists.txt
-          - commande : cd ..
-          - commande : catkin_make
-          - commande source devel/setup.bash
-          - commande : cd ..
-          - commande ./launch.sh
+
+Puis lancement du test
+
+          commande : cd TERcelluleflexible/celluleflexible/ros_ws
+          Supprimer les dossiers build et devel
+          commande : cd src
+          Supprimer le fichier CMakeLists.txt
+          commande : cd ..
+          commande : catkin_make
+          commande source devel/setup.bash
+          commande : cd ..
+          commande ./launch.sh
 
 
 # PARTIE ETUDIANTE
@@ -23,6 +28,7 @@ Se placer dans le dossier etu (c'est dans ce dossier que s'effectueront toutes l
           cd etu
 
  S'assurer que les différents scripts sont bien executables:
+ 
           (chmod -R 777 etu) ou
           chmod +x script0_Compile.sh
           chmod +x script1_Run.sh
