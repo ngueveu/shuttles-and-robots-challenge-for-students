@@ -187,6 +187,8 @@ int main(int argc, char **argv)
                         */
                 M[0]--;
 
+		cmd.Stop_PS(19);
+
 
                 aiguillage.Gauche(3);
                 aiguillage.Gauche(10);
