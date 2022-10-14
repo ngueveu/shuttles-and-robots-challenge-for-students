@@ -58,12 +58,12 @@ echo "--------------------------------------------------------------${normal}"
     # Wait... (10 seconds)
 
     # Launch of the other nodes
-	echo "Launching the other nodes " 
+#SUN	echo "Launching the other nodes " 
 	#roslaunch launcher launch_beta.launch 
-    sleep 10
-    roslaunch schneider roslaunch_cellule.launch & 
-    sleep 10
-    roslaunch schneider_104 roslaunch_cellule_104.launch & 
-    sleep 10
-    roslaunch schneider_103 roslaunch_cellule_103.launch & 
+#SUN    sleep 10
+#SUN    roslaunch schneider roslaunch_cellule.launch & 
+#SUN    sleep 10
+#SUN    roslaunch schneider_104 roslaunch_cellule_104.launch & 
+#SUN    sleep 10
+#SUN    roslaunch schneider_103 roslaunch_cellule_103.launch & 
 fi
