@@ -44,6 +44,7 @@ if ! type "doxygen" > /dev/null; then
           echo "\n!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n\n"
           exit
     fi
+    ./doxygen output/$1.doxyfileconfig.txt
 fi
 
  

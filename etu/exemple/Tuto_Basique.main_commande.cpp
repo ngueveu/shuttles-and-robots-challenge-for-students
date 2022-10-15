@@ -181,7 +181,7 @@ int main(int argc, char **argv)
             {
             /*!
                         * \b T1: init aiguillages et produit et stop navette 1
-                        * \arg positionnement des aiguillages et ajout des produits et blocage de la navette 1
+                        * \arg init aiguillages et ajout produit et stop navette 1
                         * \arg \b Precondition: M[0]
                         * \arg \b Postcondition: M[2]++
                         */
@@ -222,7 +222,7 @@ int main(int argc, char **argv)
             /*!
                         * \b T4: positionnement aiguillages vers prochain poste 3
                         * \arg les aiguillages vers prochain poste 3 sont placés
-                        * \arg \b Precondition: M[3] && robot.TacheFinie(Prod_seqdeposte[0][0])
+                        * \arg \b Precondition: M[3] && TacheFinie(Prod[0][0])
                         * \arg \b Postcondition: M[4]++
                         */
                 M[3]--;
@@ -241,7 +241,7 @@ int main(int argc, char **argv)
             {
             /*!
                         * \b T3: piece de poste 2 à navette
-                        * \arg deplacement de piece
+                        * \arg transport piece du poste 2 à la navette
                         * \arg \b Precondition: M[4] && capteur.get_PS(22)
                         * \arg \b Postcondition: M[PlaceAval]++; M[PlaceAvalBis]
                         */
@@ -257,7 +257,7 @@ int main(int argc, char **argv)
             /*!
                         * \b T5: faire repartir navette PS22
                         * \arg navette repart de PS22, PS3 stop activé
-                        * \arg \b Precondition: M[5] && robot.FinDeplacerPiece(ROBOT_1)
+                        * \arg \b Precondition: M[5] && FinDeplacerPiece(ROBOT_1)
                         * \arg \b Postcondition: M[6]++
                         */
                 M[5]--;
@@ -272,7 +272,7 @@ int main(int argc, char **argv)
             {
             /*!
                         * \b T6: deplacement piece navette poste
-                        * \arg deplacement piece depuis navette sur PS3 vers poste 3
+                        * \arg transport piece depuis navette en PS3 vers poste 3
                         * \arg \b Precondition: M[6] && capteur.get_PS(3)
                         * \arg \b Postcondition: M[7]++
                         */
@@ -288,7 +288,7 @@ int main(int argc, char **argv)
             /*!
                         * \b T7: lancer tache sur poste 3
                         * \arg lancer tache sur POSTE_3
-                        * \arg \b Precondition: M[7] && robot.FinDeplacerPiece(ROBOT_2)
+                        * \arg \b Precondition: M[7] && FinDeplacerPiece(ROBOT_2)
                         * \arg \b Postcondition: M[8]++
                         */
                 M[7]--;
@@ -303,7 +303,7 @@ int main(int argc, char **argv)
             /*!
                         * \b T8: evacuer et fin rdp
                         * \arg evacuer et fin du rdp
-                        * \arg \b Precondition: M[8] && robot.TacheFinie(Prod_seqdeposte[0][1])
+                        * \arg \b Precondition: M[8] && TacheFinie(Prod[0][1])
                         * \arg \b Postcondition: M[PlaceFin]++
                         */
                 M[8]--;

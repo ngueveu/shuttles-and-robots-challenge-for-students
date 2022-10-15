@@ -8,7 +8,7 @@
 /*!
  * \file TeamEMPTY_main_commande.cpp
  * \brief code créé pour TER atelier flexible - fichier vide si besoin
- * \author Team EMPTY (N7 2020-2021)
+ * \author Team EMPTY (N7 2022-2023)
  * \version 0.1
  */
 
@@ -162,6 +162,12 @@ int main(int argc, char **argv)
     ///////////////////////////////////////////////////////////////////
     
     
+    
+    
+    
+    
+    
+    
     ///////////////////////////////////////////////////////////////////
     /////////////////////  |  FIN INIT ETU  |  ////////////////////
     ///////////////////////////////////////////////////////////////////
@@ -185,7 +191,7 @@ int main(int argc, char **argv)
             */
             M[0] --;
 
-            //ACTION….
+            //ACTION
 
             //M[PlaceAval] ++;
             display();
