@@ -8,7 +8,7 @@
 /*!
  * \file Tuto_Basique.main_commande.cpp
  * \brief code correspondant au tuto du sujet de TER atelier flexible
- * \author Team Tuto_Basique (N7 2020-2021)
+ * \author Team Tuto_Basique (N7 2022-2023)
  * \version 0.1
  */
 
@@ -180,15 +180,14 @@ int main(int argc, char **argv)
             if(M[0])
             {
             /*!
-                        * \b T1: init aiguillages et produit
-                        * \arg positionnement des aiguillages et ajout des produits
+                        * \b T1: init aiguillages et produit et stop navette 1
+                        * \arg positionnement des aiguillages et ajout des produits et blocage de la navette 1
                         * \arg \b Precondition: M[0]
                         * \arg \b Postcondition: M[2]++
                         */
                 M[0]--;
 
-		cmd.Stop_PS(19);
-
+                cmd.Stop_PS(19);
 
                 aiguillage.Gauche(3);
                 aiguillage.Gauche(10);
@@ -207,7 +206,7 @@ int main(int argc, char **argv)
             {
                 /*!
                         * \b T2: aiguillage A02 mise en place
-                        * \arg  courte description
+                        * \arg  mise en place de l'aiguillage A02
                         * \arg \b Precondition: M[2] && capteur.get_PS(6)
                         * \arg \b Postcondition: M[3]++
                         */
@@ -222,7 +221,7 @@ int main(int argc, char **argv)
             {
             /*!
                         * \b T4: positionnement aiguillages vers prochain poste 3
-                        * \arg courte description
+                        * \arg les aiguillages vers prochain poste 3 sont placés
                         * \arg \b Precondition: M[3] && robot.TacheFinie(Prod_seqdeposte[0][0])
                         * \arg \b Postcondition: M[4]++
                         */
@@ -235,7 +234,6 @@ int main(int argc, char **argv)
                 cmd.Stop_PS(22);
 
                 
-
                 M[4]++;
                 display();
             }
@@ -267,7 +265,6 @@ int main(int argc, char **argv)
                 cmd.Ouvrir_PS(22);
                 cmd.Stop_PS(2);
 
-
                 M[6]++;
                 display();
             }
@@ -296,8 +293,8 @@ int main(int argc, char **argv)
                         */
                 M[7]--;
 
-
                 robot.Evacuer();
+
                 M[8]++;
                 display();
             }
