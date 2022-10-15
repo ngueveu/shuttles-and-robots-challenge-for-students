@@ -4,8 +4,8 @@ Nomenclature des noms des fichiers de données : dataX_Y_Z_nT.proconfig.h
 
 Où
 
-X = 2 si tous les produits ne nécessitent que les postes 1, 2, 3, 4 (et donc les 2 premiers robots)
-    4 sinon
+X = R si tous les produits ne nécessitent que les postes 1, 2, 3, 4 (et donc les 2 premiers robots)
+    RB sinon
 
 
 Y = nombre de types de produits différents fabriqués (valeur allant de 1 à 6)
