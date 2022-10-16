@@ -1,48 +1,136 @@
-# TER atelier flexible ou cellule flexible sous ubuntu 20 avec ROS Noetic
+# TER atelier flexible
 
-Dans le répertoire de travail : 
+![AIP](celluleflexible/Doc/CelluleAIP.png)
 
-          git clone -b Noetic https://github.com/Yacoubo/PL2022.git
+![CoppeliaSim](celluleflexible/Doc/CelluleCoppelia.png)
 
-Il faut renommer le répertoire PL2022 en TERcelluleflexible
+![Schema](celluleflexible/Doc/CelluleSchema.png)
 
-Puis lancement du test
+Petit guide pour installer le projet sur votre machine: soit une machine Ubuntu 20.04, soit une machine virtuelle 20.04
 
-          commande : cd TERcelluleflexible/celluleflexible/ros_ws
-          Supprimer les dossiers build et devel
-          commande : cd src
-          Supprimer le fichier CMakeLists.txt
-          commande : cd ..
-          commande : catkin_make
-          commande source devel/setup.bash
-          commande : cd ..
-          commande ./launch.sh
+- 0) Ouvrir un terminal et faire :
+```
+		sudo apt update
+		sudo apt upgrade
+```
+
+- 1) Si ROS noetic n'est pas déjà installé, suivre la procédure :
+```
+		http://wiki.ros.org/noetic/Installation/Ubuntu
+```
+
+	- Cette procédure contient les étapes suivantes :
+```
+sudo sh -c 'echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) main" > /etc/apt/sources.list.d/ros-latest.list'
+sudo apt update
+```
+
+	- Cette procédure a créé le message d'erreur suivant disant que la clé publique associée à ROS n'était pas disponible.
+	** Err:5 http://packages.ros.org/ros/ubuntu focal InRelease
+	** The following signatures couldn't be verified because the public key is not available: NO_PUBKEY F42ED6FBAB17C654
+
+	- Comme nous faisons confiance à ROS, nous pouvons l'ajouter manuellement
+```
+		sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys F42ED6FBAB17C654
+```
+
+	- A présent on peut donc refaire:
+```
+sudo apt update
+```
+
+	- qui ne donne plus de message d'erreur, ce qui permet de faire :
+```
+sudo apt install ros-noetic-desktop-full
+```
+
+- 2) Ajouter les packages ROS suivants :
+```
+		sudo apt-get install ros-noetic-moveit
+		sudo apt-get install ros-noetic-industrial-*
+```
+
+- 3) Installer la librairie modbus :
+```
+		sudo apt-get install libmodbus-dev
+		sudo pip install pyModbusTCP
+```
+
+- 4) Pour installer catmux :
+```
+		sudo apt-get install tmux
+		pip3 install --user catmux
+```
+
+- 5) Une fois l'installation terminée, redémarrer :
+```
+		sudo reboot
+```
+
+- 6) Vérifier si git est installée en tapant `git`. S'il n'est pas installé, suivre la procédure suivante, car nous en auront besoin pour récupérer le répertoire du TER :
+```
+		sudo apt-get install git
+```
+
+- 7) Vérifier si xterm  est installé en tapant `xterm`. S'il n'est pas installé, alors le faire car notre launcher de ROS (roslaunch) en aura besoin:
+```
+		sudo apt-get install xterm
+```
+
+- 8) A présent, se placer dans le répertoire où nous voudrons le répertoire du TER:
+```
+		cd XXX/XXX
+```
+
+- 9) Cloner le répertoire de travail sur le bureau :
+```
+		git clone https://sungueve@redmine.laas.fr/laas/users/ngueveu/t/tercelluleflexible.git
+```
+
+ou, si vous voulez cloner mais uniquement en "lecture seule" et sans jamais pouvoir interagir avec le répertoire sur le serveur:
+```
+		git clone git://redmine.laas.fr/laas/users/ngueveu/t/tercelluleflexible.git
+```
+
+Notez que si le projet existait déjà mais que vous décidez de le mettre à jour (ce qui écrasera en grande partie la précédente version), alors se placer à la racine du répertoire TERcelluleflexible du git et exécuter:
+
+          git fetch --all
+          git reset --hard origin/master
+
+Dans le dossier TERcelluleflexible il devrait y avoir deux dossier: celluleflexible et etu (si ce dossier n'existe pas, se placer à la racine du dossier TERcelluleflexible et exécuter l'instruction suivante : cp celluleflexible/forTER/etu_init etu).
+
+- 10) Vérifier si Doxygen est installé. Si ce n'est pas le cas, si vous avez les droits administrateurs, faire :
+```
+		sudo apt-get install doxygen
+		sudo apt-get install doxygen-gui
+		sudo apt-get install doxygen-doc
+```
+Sinon, si vous n'avez pas les droits administrateurs, alors récupérez un exécutable de Doxygen (https://doc.ubuntu-fr.org/doxygen) et mettez-le dans le dossier etu
+
+- 11) Exécuter le code de TER :
+```
+		cd tercelluleflexible
+		source /opt/ros/noetic/setup.bash
+		cd celluleflexible/ros_ws
+		catkin_make
+		source devel/setup.bash
+		cd ../../etu
+```
+
+- 12) Tester si tout a bien fonctionné en testant le tutoriel :
+```
+		cd ../../etu/
+		cp exemple/Tuto_Basique.main_commande.cpp .
+		./script0_Compile.sh Tuto_Basique dataR_1_1_n0
+		./script1_Run.sh
+		./script2_GetSimuOutput.sh Tuto_Basique dataR_1_1_n0
+		./script3_Validation.sh Tuto_Basique dataR_1_1_n0
+		./script4_Documentation.sh Tuto_Basique
+```
+
+- 13) A présent vous êtes prêt à commencer le TER, se référer au README.txt dans le dossier etu pour la suite.
 
 
-# PARTIE ETUDIANTE
-
-Dans le dossier TERcelluleflexible il devrait y avoir deux dossier: celluleflexible et etu (si ce dossier n'existe pas, se placer à la racine du dossier TERcelluleflexible et exécuter l'instruction suivante : cp celluleflexible/forTER/etu_init etu)
-
-Se placer dans le dossier etu (c'est dans ce dossier que s'effectueront toutes les manipulations du TER):
-    
-          cd etu
-
- S'assurer que les différents scripts sont bien executables:
- 
-          (chmod -R 777 etu) ou
-          chmod +x script0_Compile.sh
-          chmod +x script1_Run.sh
-          chmod +x script2_GetSimuOutput.sh
-          chmod +x script3_Validation.sh
-          chmod +x script4_Documentation.sh
-
-A présent vous êtes prêt à commencer le TER, se référer aux fichiers dans le dossier etu pour la suite.
-
-
-Quelques erreurs lors de l'installation la première fois
-s'assurer d'avoir fait dans le terminal: source /opt/ros/melodic/setup.bash
-s'assurer que xterm est installé: sudo apt install xterm
-recupérer coppelia sim ubuntu18 et écraser/fusionner avec le dossier actuel
-depuis le dossier ros_ws faire source devel/setup.bash
-
-
+A noter que si la compilation ne se lance pas, allez dans le dossier ros_ws, supprimez les dossiers build et devez. Puis allez dans le dossier ros_ws et supprimez le fichier "CMakeLists".
+Quelques erreurs lors de l'installation la première fois s'assurer d'avoir fait dans le terminal: source /opt/ros/melodic/setup.bash s'assurer que xterm est installé: `sudo apt install xterm`
+recupérer coppelia sim ubuntu20 et écraser/fusionner avec le dossier actuel depuis le dossier ros_ws faire `source devel/setup.bash`

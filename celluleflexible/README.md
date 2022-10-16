@@ -1,6 +1,6 @@
 # TER atelier flexible ou cellule flexible
 
-Petit guide pour lancer le projet sur votre machine : (Ubuntu 16, ROS Kinetic)
+Petit guide pour lancer le projet sur votre machine : (Ubuntu 20, ROS Noetic)
 
 - 0) Il est toujours bon de faire un 
 
@@ -13,12 +13,13 @@ Petit guide pour lancer le projet sur votre machine : (Ubuntu 16, ROS Kinetic)
 - 2) Cloner la branche master de ce repository :
     (si git n'est pas installé, vous pouvez toujours télécharger le projet en zip et en extraire le code)
     
-          git clone https://gitlab.enseeiht.fr/sandra/TERcelluleflexible.git
+          git clone https://sungueve@redmine.laas.fr/laas/users/ngueveu/t/tercelluleflexible.git
         
           
 - 3) Compiler les packages ros en se plaçant dans ros_ws et en effectuant :
 
-          catkin_make
+          source /opt/ros/noetic/setup.bash  
+	  catkin_make
           
 - 4) Sourcez les fichiers compilés (depuis le dossier ros_ws):
 
@@ -30,7 +31,7 @@ Petit guide pour lancer le projet sur votre machine : (Ubuntu 16, ROS Kinetic)
           
 En résumé (pour copier/coller dans un terminal):
 
-          git clone https://gitlab.enseeiht.fr/sandra/TERcelluleflexible.git
+          git clone https://sungueve@redmine.laas.fr/laas/users/ngueveu/t/tercelluleflexible.git
           cd ros_ws
           source devel/setup.bash
           catkin_make
