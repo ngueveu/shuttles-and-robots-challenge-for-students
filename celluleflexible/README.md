@@ -13,10 +13,10 @@ Petit guide pour lancer le projet sur votre machine : (Ubuntu 20, ROS Noetic)
 - 2) Cloner la branche master de ce repository :
     (si git n'est pas installé, vous pouvez toujours télécharger le projet en zip et en extraire le code)
     
-          git clone https://sungueve@redmine.laas.fr/laas/users/ngueveu/t/tercelluleflexible.git
+          git clone https://github.com/ngueveu/shuttles-and-robots-challenge-for-students.git
         
           
-- 3) Compiler les packages ros en se plaçant dans ros_ws et en effectuant :
+- 3) Compiler les packages ros en se plaçant dans le dossier celluleflexible/ros_ws, puis en effectuant :
 
           source /opt/ros/noetic/setup.bash  
 	  catkin_make
@@ -31,7 +31,7 @@ Petit guide pour lancer le projet sur votre machine : (Ubuntu 20, ROS Noetic)
           
 En résumé (pour copier/coller dans un terminal):
 
-          git clone https://sungueve@redmine.laas.fr/laas/users/ngueveu/t/tercelluleflexible.git
+          git clone https://github.com/ngueveu/shuttles-and-robots-challenge-for-students.git
           cd ros_ws
           source devel/setup.bash
           catkin_make

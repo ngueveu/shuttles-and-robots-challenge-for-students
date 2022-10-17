@@ -84,12 +84,12 @@ sudo apt install ros-noetic-desktop-full
 
 - 9) Cloner le répertoire de travail sur le bureau :
 ```
-		git clone https://sungueve@redmine.laas.fr/laas/users/ngueveu/t/tercelluleflexible.git
+		git clone https://github.com/ngueveu/shuttles-and-robots-challenge-for-students.git
 ```
 
 ou, si vous voulez cloner mais uniquement en "lecture seule" et sans jamais pouvoir interagir avec le répertoire sur le serveur:
 ```
-		git clone git://redmine.laas.fr/laas/users/ngueveu/t/tercelluleflexible.git
+		git clone https://github.com/ngueveu/shuttles-and-robots-challenge-for-students.git
 ```
 
 Notez que si le projet existait déjà mais que vous décidez de le mettre à jour (ce qui écrasera en grande partie la précédente version), alors se placer à la racine du répertoire TERcelluleflexible du git et exécuter:
