@@ -92,6 +92,11 @@ ou, si vous voulez cloner mais uniquement en "lecture seule" et sans jamais pouv
 		git clone https://github.com/ngueveu/shuttles-and-robots-challenge-for-students.git
 ```
 
+Puis vous pouvez renommer le répertoire TERcelluleflexible
+```
+		mv shuttles-and-robots-challenge-for-students TERcelluleflexible
+```
+
 Notez que si le projet existait déjà mais que vous décidez de le mettre à jour (ce qui écrasera en grande partie la précédente version), alors se placer à la racine du répertoire TERcelluleflexible du git et exécuter:
 
           git fetch --all
@@ -99,7 +104,7 @@ Notez que si le projet existait déjà mais que vous décidez de le mettre à jo
 
 Dans le dossier TERcelluleflexible il devrait y avoir deux dossier: celluleflexible et etu (si ce dossier n'existe pas, se placer à la racine du dossier TERcelluleflexible et exécuter l'instruction suivante : cp celluleflexible/forTER/etu_init etu).
 
-- 10) Vérifier si Doxygen est installé. Si ce n'est pas le cas, si vous avez les droits administrateurs, faire :
+- 11) Vérifier si Doxygen est installé. Si ce n'est pas le cas, si vous avez les droits administrateurs, faire :
 ```
 		sudo apt-get install doxygen
 		sudo apt-get install doxygen-gui
@@ -107,7 +112,7 @@ Dans le dossier TERcelluleflexible il devrait y avoir deux dossier: celluleflexi
 ```
 Sinon, si vous n'avez pas les droits administrateurs, alors récupérez un exécutable de Doxygen (https://doc.ubuntu-fr.org/doxygen) et mettez-le dans le dossier etu
 
-- 11) Exécuter le code de TER :
+- 12) Exécuter le code de TER :
 ```
 		cd tercelluleflexible
 		source /opt/ros/noetic/setup.bash
@@ -117,7 +122,7 @@ Sinon, si vous n'avez pas les droits administrateurs, alors récupérez un exéc
 		cd ../../etu
 ```
 
-- 12) Tester si tout a bien fonctionné en testant le tutoriel :
+- 13) Tester si tout a bien fonctionné en testant le tutoriel :
 ```
 		cd ../../etu/
 		cp exemple/Tuto_Basique.main_commande.cpp .
@@ -128,7 +133,7 @@ Sinon, si vous n'avez pas les droits administrateurs, alors récupérez un exéc
 		./script4_Documentation.sh Tuto_Basique
 ```
 
-- 13) A présent vous êtes prêt à commencer le TER, se référer au README.txt dans le dossier etu pour la suite.
+- 14) A présent vous êtes prêt à commencer le TER, se référer au README.txt dans le dossier etu pour la suite.
 
 
 A noter que si la compilation ne se lance pas, allez dans le dossier ros_ws, supprimez les dossiers build et devez. Puis allez dans le dossier ros_ws et supprimez le fichier "CMakeLists".
