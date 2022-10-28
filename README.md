@@ -21,8 +21,8 @@ https://user-images.githubusercontent.com/84821679/198697250-7861b35a-a503-4246-
 |  bool **capteur.get_DD**(int num_DD)  |  void **cmd.Stop_PS**(num_capteur_PS)  |
 |  void **cmd.Ouvrir_PS**(num_capteur_PS)  |  void **robot.FaireTache**(ref_poste, duree)  |
 | int **robot.TacheFinie**(ref_poste)   |  void **robot.AjouterProduit**(ref_poste, num_produit)  |
-|  int **robot.FinDeplacerPiece**(ref_robot)    |  void **robot.Evacuer()**  |
-|    |void **robot.DeplacerPiece**(ref_robot, num_position_A, num_position_B)  |
+|  int **robot.FinDeplacerPiece**(ref_robot)    |  void **robot.DeplacerPiece**(ref_robot, num_position_A, num_position_B)  |
+|  void **robot.Evacuer()**  |  |
 
 ### Guide d'installation
 
