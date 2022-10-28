@@ -41,8 +41,8 @@ Petit guide pour installer le projet sur votre machine: soit une machine Ubuntu 
 
 	- Cette procédure contient les étapes suivantes :
 ```
-sudo sh -c 'echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) main" > /etc/apt/sources.list.d/ros-latest.list'
-sudo apt update
+		sudo sh -c 'echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) main" > /etc/apt/sources.list.d/ros-latest.list'
+		sudo apt update
 ```
 
 	- Cette procédure a créé le message d'erreur suivant disant que la clé publique associée à ROS n'était pas disponible.
@@ -56,12 +56,12 @@ sudo apt update
 
 	- A présent on peut donc refaire:
 ```
-sudo apt update
+		sudo apt update
 ```
 
 	- qui ne donne plus de message d'erreur, ce qui permet de faire :
 ```
-sudo apt install ros-noetic-desktop-full
+		sudo apt install ros-noetic-desktop-full
 ```
 
 - 2) Ajouter les packages ROS suivants :
@@ -118,9 +118,10 @@ Puis vous pouvez renommer le répertoire TERcelluleflexible
 ```
 
 Notez que si le projet existait déjà mais que vous décidez de le mettre à jour (ce qui écrasera en grande partie la précédente version), alors se placer à la racine du répertoire TERcelluleflexible du git et exécuter:
-
-          git fetch --all
-          git reset --hard origin/master
+```
+          	git fetch --all
+          	git reset --hard origin/master
+```
 
 Dans le dossier TERcelluleflexible il devrait y avoir deux dossier: celluleflexible et etu (si ce dossier n'existe pas, se placer à la racine du dossier TERcelluleflexible et exécuter l'instruction suivante : cp celluleflexible/forTER/etu_init etu).
 
