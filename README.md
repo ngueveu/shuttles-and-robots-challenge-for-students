@@ -1,3 +1,8 @@
+
+# Shuttles and robots challenge for students  
+
+https://user-images.githubusercontent.com/84821679/198697250-7861b35a-a503-4246-86e2-939076bb784c.mp4
+
 # TER atelier flexible
 
 ![AIP](celluleflexible/Doc/CelluleAIP.png)
