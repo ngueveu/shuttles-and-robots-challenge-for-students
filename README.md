@@ -87,7 +87,7 @@ Petit guide pour installer le projet sur votre machine: soit une machine Ubuntu 
 		sudo reboot
 ```
 
-- 6) Vérifier si git est installée en tapant `git`. S'il n'est pas installé, suivre la procédure suivante, car nous en auront besoin pour récupérer le répertoire du TER :
+- 6) Vérifier si git est installée en tapant `git`. S'il n'est pas installé, suivre la procédure suivante, car nous en aurons besoin pour récupérer le répertoire du TER :
 ```
 		sudo apt-get install git
 ```
@@ -157,6 +157,6 @@ Sinon, si vous n'avez pas les droits administrateurs, alors récupérez un exéc
 - 14) A présent vous êtes prêt à commencer le TER, se référer au README.txt dans le dossier etu pour la suite.
 
 
-A noter que si la compilation ne se lance pas, allez dans le dossier ros_ws, supprimez les dossiers build et devez. Puis allez dans le dossier ros_ws et supprimez le fichier "CMakeLists".
+A noter que si la compilation ne se lance pas, allez dans le dossier ros_ws, supprimez les dossiers build et devel. Puis allez dans le dossier ros_ws et supprimez le fichier "CMakeLists".
 Quelques erreurs lors de l'installation la première fois s'assurer d'avoir fait dans le terminal: source /opt/ros/melodic/setup.bash s'assurer que xterm est installé: `sudo apt install xterm`
 recupérer coppelia sim ubuntu20 et écraser/fusionner avec le dossier actuel depuis le dossier ros_ws faire `source devel/setup.bash`
