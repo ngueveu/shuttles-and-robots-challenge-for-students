@@ -83,6 +83,8 @@ production = []  # Catalogue l'enchainement de tâches des 6 produits désirée
 config = [ [] for i in range(MAX_PROD_TYPE+1)]
 nbtoprod = [ 0 for i in range(MAX_PROD_TYPE+1)]
 wip = 0
+wipvector = []
+wiptime = 0
 wipmax = 0
 
 # Initilisation des matrices ci-dessous (sauf verif_config) qui seront tous des tableaux de 6 lignes, chaque ligne par produit -> 1ère ligne pour produit 1, 2ème ligne pour produit 2, etc
@@ -337,6 +339,7 @@ if erreur_config == 0:  # On lit le contenu du fichier log SEULEMENT SI il n'y a
                 nextstep[P][i] = k + 1
                 if k == 1:
                     wip = wip + 1
+                    wipvector.append(dict(wip=wip, time=wiptime))
                     if wip > wipmax:
                         wipmax = wip
             else:
@@ -362,6 +365,7 @@ if erreur_config == 0:  # On lit le contenu du fichier log SEULEMENT SI il n'y a
                         time, nb_produit_new[P - 1], P))
             nbprodcreate[P] = nbprodcreate[P] + 1
             totprodcreate[P] = totprodcreate[P] + time
+            wiptime = time
             i=0
             while (i < len(nextstep[P])) and (nextstep[P][i] != 0):
                 i = i+1
@@ -421,6 +425,7 @@ if erreur_config == 0:  # On lit le contenu du fichier log SEULEMENT SI il n'y a
                 if i < len(nextstep[P]):
                     nextstep[P][i] = 0 #reinitialisation
                     wip = wip - 1
+                    wipvector.append(dict(wip=wip, time=time))
                 else:
                     print("ERROR !!!! wrong step in exit of product of type ", P)
                     test = 0
@@ -575,6 +580,8 @@ if erreur_config == 0:
 
     print("avgmakespanprod=", avgprodmakespan, "\nglobalavgmakespan=", avgmakespan,"s")
     print("wipmax=", wipmax, "\ntotduration=", totduration,"s")
+
+print("THE END")
 
 # print(' ')  # sert juste à aérer l'affichage
 
