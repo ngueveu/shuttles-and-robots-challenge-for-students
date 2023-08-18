@@ -1,20 +1,5 @@
 import sys
-
-
-def checkNoStepRepeatInProd(config, MAX_PROD_TYPE):
-    repeat = 0
-    for P in range(1,MAX_PROD_TYPE+1):
-        for i in range(1,len(config[P])):
-            for j in range(i+1,len(config[P])):
-                if (config[P][i]['station'] == config[P][j]['station']) and (config[P][i]['duration'] == config[P][j]['duration']):
-                    repeat = 1
-                    print("ERREUR dans instance !!! La paire 'poste, duree' se répète dans la gamme de fabrication du produit {}", P)
-    return repeat
-
-
-
-if (len(sys.argv) <= 2):
-    sys.exit("Vous avec oublié de spécifier en argument le nom du fichier ProdConfig et le nom du fichier log")
+# Last modification: 20230818 - Sandra Ulrich Ngueveu
 
 # !! Ce programme doit être lancé avec python 3: python3 checker.py
 # !!! D'abord lire le fichier .config pour comprenre la synthaxe utilisé pour définir la production de chaque produit !!!
@@ -44,6 +29,22 @@ if (len(sys.argv) <= 2):
 # A améliorer:
 #   - dans erreur de durée d'une tâche, dire sur quelle version du produit s'est produit l'erreur
 #   - le programme doit pouvoir fonctionner avec n'importe quelle valeur de MAX_TACHES -> modifier la déclarations des matrices
+
+
+def checkNoStepRepeatInProd(config, MAX_PROD_TYPE):
+    repeat = 0
+    for P in range(1,MAX_PROD_TYPE+1):
+        for i in range(1,len(config[P])):
+            for j in range(i+1,len(config[P])):
+                if (config[P][i]['station'] == config[P][j]['station']) and (config[P][i]['duration'] == config[P][j]['duration']):
+                    repeat = 1
+                    print("ERREUR dans instance !!! La paire 'poste, duree' se répète dans la gamme de fabrication du produit {}", P)
+    return repeat
+
+
+
+if (len(sys.argv) <= 2):
+    sys.exit("Vous avec oublié de spécifier en argument le nom du fichier ProdConfig et le nom du fichier log")
 
 
 # LA SEULE VARIABLE DANS checker.py QUE L'UTILISATEUR PEUT CHANGER S'IL MODIFIE LE NOMBRE MAX DE TACHES SUR UN PRODUIT DANS V-REP

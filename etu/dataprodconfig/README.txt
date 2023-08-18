@@ -1,12 +1,10 @@
 
-Nomenclature des noms des fichiers de données : dataX_Y_Z_nT.proconfig.h
+Nomenclature des noms des fichiers de données : dataP?_Y_Z_nT.proconfig.h
 ----------------------------------------------
 
 Où
 
-X = R si tous les produits ne nécessitent que les postes 1, 2, 3, 4 (et donc les 2 premiers robots)
-    RB sinon
-
+? = 34 si les postes 3 et 4 sont utilisés, 1234 si ces quatre postes sont utilisés, etc.
 
 Y = nombre de types de produits différents fabriqués (valeur allant de 1 à 6)
 
@@ -17,4 +15,4 @@ T = numéro de référence de l'instance parmi celles de type X_Y_Z (0 pour la p
 
 
 
-Attention ! Pour le moment, le checker et certains éléments semblent bloqués à 3 opérations max par produit, donc pour l'instant éviter des produits à plus de 3 tâches
+Attention ! Le système ne permet pas d'avoir plus de 5 opérations max par produit, donc pour l'instant éviter des produits à plus de 5 tâches

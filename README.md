@@ -5,7 +5,7 @@ https://user-images.githubusercontent.com/84821679/198697250-7861b35a-a503-4246-
 
 # TER atelier flexible
 
-![AIP](celluleflexible/Doc/CelluleAIP.png)
+![AIP](celluleflexible/Doc/CelluleMFJASmall.png)
 
 ![CoppeliaSim](celluleflexible/Doc/CelluleCoppelia.png)
 
@@ -147,10 +147,10 @@ Sinon, si vous n'avez pas les droits administrateurs, alors récupérez un exéc
 ```
 		cd ../../etu/
 		cp exemple/Tuto_Basique.main_commande.cpp .
-		./script0_Compile.sh Tuto_Basique dataR_1_1_n0
+		./script0_Compile.sh Tuto_Basique dataP2_1_1_n0
 		./script1_Run.sh
-		./script2_GetSimuOutput.sh Tuto_Basique dataR_1_1_n0
-		./script3_Validation.sh Tuto_Basique dataR_1_1_n0
+		./script2_GetSimuOutput.sh Tuto_Basique dataP2_1_1_n0
+		./script3_Validation.sh Tuto_Basique dataP2_1_1_n0
 		./script4_Documentation.sh Tuto_Basique
 ```
 

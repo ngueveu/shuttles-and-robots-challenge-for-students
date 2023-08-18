@@ -39,9 +39,9 @@ Pour compiler "VOS_INITIALES.main_commande.cpp" en considérant en données de p
 
 	./script0_Compile.sh VOS_INITIALES NOM_FICHIER_DATA
 
-Par exemple, si vos initiales sont SUN_SC (et donc le fichier commande associé est SUN_SC.main_commande.cpp), et que le fichier data à considérer est dataR_2_2_n0.prodconfig.h, alors l'instruction pour compiler sera : 
+Par exemple, si vos initiales sont SUN_SC (et donc le fichier commande associé est SUN_SC.main_commande.cpp), et que le fichier data à considérer est dataP34_1_1_n0.prodconfig.h, alors l'instruction pour compiler sera : 
 
-	./script0_Compile.sh SUN_SC dataR_2_2_n0
+	./script0_Compile.sh SUN_SC dataP34_1_1_n0
 
 
 /////////////////////////////////////////////////////////////////////////////////////
@@ -67,9 +67,9 @@ POUR IMPORTER LES RESULTATS DE LA SIMULATION (après avoir choisi "4-Fin program
 Après chaque exécution sans bug de la simulation et après l'import des résultats avec le script2, un fichier log nommé "VOS_INITIALES_NOM_FICHIER_DATA.log.txt" doit apparaitre dans le dossier "output". 
 Si ce fichier n'existe pas, c'est qu'il y a eu une erreur lors de votre simulation.
 
-Par exemple, si vos initiales sont SUN_SC (et donc le fichier commande associé est SUN_SC.main_commande.cpp), et que le fichier data à considérer est dataR_2_2_n0.prodconfig.h, alors l'instruction pour compiler sera : 
+Par exemple, si vos initiales sont SUN_SC (et donc le fichier commande associé est SUN_SC.main_commande.cpp), et que le fichier data à considérer est dataP34_1_1_n0.prodconfig.h, alors l'instruction pour compiler sera : 
 
-	./script2_GetSimuOutput.sh SUN_SC dataR_2_2_n0
+	./script2_GetSimuOutput.sh SUN_SC dataP34_1_1_n0
 
 
 
@@ -111,10 +111,10 @@ VERIFIER QUE LA SIMULATION COPPELIA FONCTIONNE BIEN (avec le code exemple de Tut
 Le fichier Tuto_Basique.main_commande.cpp contenu dans le dossier exemple peut permettre de vérifier le bon fonctionnement de la simulation coppelia :
 
 	cp exemple/Tuto_Basique.main_commande.cpp .
-	./script0_Compile.sh Tuto_Basique data4_3_2_n0
+	./script0_Compile.sh Tuto_Basique dataP2_1_1_n0
 	./script1_Run.sh
-	./script2_GetSimuOutput.sh Tuto_Basique data4_3_2_n0
-	./script3_Validation.sh Tuto_Basique data4_3_2_n0
+	./script2_GetSimuOutput.sh Tuto_Basique dataP2_1_1_n0
+	./script3_Validation.sh Tuto_Basique dataP2_1_1_n0
 	./script4_Documentation.sh Tuto_Basique
 	rm Tuto_Basique.main_commande.cpp
 
