@@ -229,7 +229,7 @@ for ligne in contenu:  # on travail ligne par ligne, donc produit par produit
 
     # FIN de lire ligne par ligne le fichier .config
 
-print("config=",config,"config[0]=", config[0])
+print("DATA\nconfig=",config, "\nnbtoprod=",nbtoprod)
 test = test + checkNoStepRepeatInProd(config, MAX_PROD_TYPE)
 
 # REMPLIR TABLEAU temps
@@ -291,6 +291,8 @@ Log_file = open(sys.argv[2], "r")
 # Log_file = open("log.txt","r")
 Log = Log_file.readlines()
 Log_file.close()
+
+print("\nLOG")
 
 if erreur_config == 0:  # On lit le contenu du fichier log SEULEMENT SI il n'y a eu aucune erreur de décaration dans le fichier .config
     for line in Log:
@@ -579,10 +581,10 @@ if erreur_config == 0:
 
     print(' ')  # sert juste à aérer l'affichage
 
-    print("avgmakespanprod=", avgprodmakespan, "\nglobalavgmakespan=", avgmakespan,"s")
+    print("METRICS\navgmakespanprod=", avgprodmakespan, "\nglobalavgmakespan=", avgmakespan,"s")
     print("wipmax=", wipmax, "\ntotduration=", totduration,"s")
 
-print("THE END")
+print("\nTHE END")
 
 # print(' ')  # sert juste à aérer l'affichage
 
