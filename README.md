@@ -143,9 +143,8 @@ Sinon, si vous n'avez pas les droits administrateurs, alors récupérez un exéc
 		cd ../../etu
 ```
 
-- 13) Tester si tout a bien fonctionné en testant le tutoriel :
+- 13) Tester si tout a bien fonctionné en testant le tutoriel (depuis le dossier 'etu'):
 ```
-		cd ../../etu/
 		cp exemple/Tuto_Basique.main_commande.cpp .
 		./script0_Compile.sh Tuto_Basique dataP2_1_1_n0
 		./script1_Run.sh
