@@ -232,24 +232,24 @@ int main(int argc, char **argv)
                 aiguillage.Droite(12);
                 aiguillage.Droite(01);
 
-                cmd.Stop_PS(22);
+                cmd.Stop_PS(21);
 
                 
 
                 M[4]++;
                 display();
             }
-            if(M[4] && capteur.get_PS(22))
+            if(M[4] && capteur.get_PS(21))
             {
             /*!
                         * \b T3: piece de poste 2 à navette
                         * \arg deplacement de piece
-                        * \arg \b Precondition: M[4] && capteur.get_PS(22)
+                        * \arg \b Precondition: M[4] && capteur.get_PS(21)
                         * \arg \b Postcondition: M[PlaceAval]++; M[PlaceAvalBis]
                         */
                 M[4]--;
 
-                robot.DeplacerPiece(ROBOT_1, 4, 3);
+                robot.DeplacerPiece(ROBOT_1, 1, 2);
 
                 M[5]++;
                 display();
@@ -257,14 +257,14 @@ int main(int argc, char **argv)
             if(M[5] && robot.FinDeplacerPiece(ROBOT_1))
             {
             /*!
-                        * \b T5: faire repartir navette PS22
-                        * \arg navette repart de PS22, PS3 stop activé
+                        * \b T5: faire repartir navette PS21
+                        * \arg navette repart de PS21, PS2 stop activé
                         * \arg \b Precondition: M[5] && robot.FinDeplacerPiece(ROBOT_1)
                         * \arg \b Postcondition: M[6]++
                         */
                 M[5]--;
 
-                cmd.Ouvrir_PS(22);
+                cmd.Ouvrir_PS(21);
                 cmd.Stop_PS(2);
 
 
@@ -275,8 +275,8 @@ int main(int argc, char **argv)
             {
             /*!
                         * \b T6: deplacement piece navette poste
-                        * \arg deplacement piece depuis navette sur PS3 vers poste 3
-                        * \arg \b Precondition: M[6] && capteur.get_PS(3)
+                        * \arg deplacement piece depuis navette sur PS2 vers poste 3
+                        * \arg \b Precondition: M[6] && capteur.get_PS(2)
                         * \arg \b Postcondition: M[7]++
                         */
                 M[6]--;
