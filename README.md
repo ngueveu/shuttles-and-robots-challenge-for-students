@@ -135,7 +135,7 @@ Sinon, si vous n'avez pas les droits administrateurs, alors récupérez un exéc
 
 - 12) Exécuter le code de TER :
 ```
-		cd tercelluleflexible
+		cd TERcelluleflexible
 		source /opt/ros/noetic/setup.bash
 		cd celluleflexible/ros_ws
 		catkin_make
