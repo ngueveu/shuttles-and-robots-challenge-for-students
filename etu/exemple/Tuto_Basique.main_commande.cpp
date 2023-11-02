@@ -4,7 +4,7 @@
 ##  | |__| \   /--\|_(-`||(-`|   |  |(-`><||_)|(-`         | |_||_(_)      ##
 ##                                                                         ##
 ############################################################################*/
- 
+
 /*!
  * \file Tuto_Basique.main_commande.cpp
  * \brief code correspondant au tuto du sujet de TER atelier flexible
@@ -131,7 +131,8 @@ int main(int argc, char **argv)
     /* *************************************************
     // | Creation des Navettes | //
      ************************************************* */
-    
+
+    // cmd.activateShuttleManagerDisplay();
     int nbNavettes=0;//Mettre 0 pour demander a l'utilisateur
     while(nbNavettes<1||nbNavettes>6)
     {
@@ -144,11 +145,11 @@ int main(int argc, char **argv)
             cin.ignore(256,'\n');
         }
     }
-    
+
     std_msgs::Int32 msg_nbNavettes;
     msg_nbNavettes.data=nbNavettes;
     pub_spawnShuttles.publish(msg_nbNavettes);
-    
+
 
     cmd.Initialisation();
     for(int i=0;i<PlaceFin;i++) M[i]=0;
@@ -158,12 +159,12 @@ int main(int argc, char **argv)
     ************************************************* */
     M[0]=1;
     display();
-    
+
     ///////////////////////////////////////////////////////////////////
     ///////////////////// | DEBUT INIT ETU | ///////////////////
     ///////////////////////////////////////////////////////////////////
-    
-    
+
+
     ///////////////////////////////////////////////////////////////////
     /////////////////////  |  FIN INIT ETU  |  ////////////////////
     ///////////////////////////////////////////////////////////////////
@@ -193,7 +194,7 @@ int main(int argc, char **argv)
                 aiguillage.Gauche(11);
                 aiguillage.Gauche(12);
                 aiguillage.Gauche(1);
-                
+
                 cmd.Stop_PS(19);
 
                 robot.AjouterProduit(Prod_seqdeposte[0][0], Prod_type[0]);
@@ -234,7 +235,7 @@ int main(int argc, char **argv)
 
                 cmd.Stop_PS(21);
 
-                
+
 
                 M[4]++;
                 display();
@@ -317,15 +318,15 @@ int main(int argc, char **argv)
             }
 
 
-            
-            
-            
-            
-            
-            
-            
-            
-            
+
+
+
+
+
+
+
+
+
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             //////////////////////////////////// | Place de fin de Petri ETU | //////////////////////////////////////
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////////

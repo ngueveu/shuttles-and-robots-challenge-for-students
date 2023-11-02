@@ -1,3 +1,5 @@
+/* Update by SUN: added boolean 'activate_debug_display', cf line 26*/
+
 #include <ros/ros.h>
 #include <unistd.h>
 #include <queue>
@@ -13,10 +15,15 @@
 
 using namespace std;
 
+#define RESET   "\033[0m"
+#define BOLDRED     "\033[1m\033[31m"      /* Bold Red */
+#define BOLDGREEN   "\033[1m\033[32m"      /* Bold Green */
+
 int num_capteur;
 vector<FileAttente*> liste_file;
 int NbNavette=0;
 int initPos=0;
+bool activate_debug_display = false;
 
 bool shuttle_at_poste(shuttles::shuttle_id::Request  &req, shuttles::shuttle_id::Response &res)
 {
@@ -63,11 +70,21 @@ void ShutdownCallback(const std_msgs::Byte::ConstPtr& msg)
 		ros::shutdown();
 }
 
+
+void IfShuttleManagerDisplayCallback(const std_msgs::Byte::ConstPtr& msg)//SUN
+{
+	activate_debug_display = true;
+	cout << "\n\n\n activate_debug_display has been turned" << BOLDGREEN << "ON" << RESET << endl;
+}
+
+
 int main(int argc, char **argv)
 {
 	cout << "debut Shuttle manager" << endl;
 	ros::init(argc, argv, "Shuttle_manager");
 	ros::NodeHandle noeud;
+
+	ros::Subscriber sub_shuttlemanagerdisplay = noeud.subscribe("/commande/ShuttleManagerDisplay",10,&IfShuttleManagerDisplayCallback); //SUN
 
 	ros::Subscriber subNbNavette = noeud.subscribe("/commande_locale/nbNavettes", 100, &initPosNavetteCallback);
 
@@ -83,6 +100,11 @@ int main(int argc, char **argv)
 	queue<int> queue1;
 	queue<int> queue2;
 	queue<int> queue3;
+
+	//SUN
+	cout << " Tant que 'activate_debug_display' vaut " << BOLDGREEN << "false" ;
+	cout << RESET << "rien ne sera affiche dans cette fenetre" ;
+	cout << " (cf main_ShuttleManager.cpp)" << endl;
 
 	while (initPos==0)
 	{
@@ -145,7 +167,7 @@ int main(int argc, char **argv)
 
 	vector<int> mem_capteur;
 	vector<int> etat_capteur;
-	//vector<queue<int>> debug_display;
+	vector<queue<int>> debug_display;
 
 	int file_attente_suivante;
 	int id_aiguillage;
@@ -160,7 +182,10 @@ int main(int argc, char **argv)
 		mem_capteur=etat_capteur;
 		etat_capteur.clear();
 		etat_capteur.push_back(0);
-		//debug_display.push_back(queue_vide);
+		if (activate_debug_display)
+		{
+			debug_display.push_back(queue_vide);
+		}
 
 		for (int i=1;i<25;i++)
 		{
@@ -193,21 +218,27 @@ int main(int argc, char **argv)
 			file_attente_suivante=-2;
 			}
 
-			//debug_display.push_back(liste_file[i]->get_queue());
+			if (activate_debug_display)
+			{
+				debug_display.push_back(liste_file[i]->get_queue());
+			}
 		}
 
-		/*for (int i=1;i<35;i++)
+		if (activate_debug_display)
 		{
-			cout << "La file " << i <<" contient : ";
-			while (!debug_display[i].empty())
+			for (int i=1;i<35;i++)
 			{
-				cout << ' ' << debug_display[i].front();
-				debug_display[i].pop();
+				cout << "La file " << i <<" contient : ";
+				while (!debug_display[i].empty())
+				{
+					cout << ' ' << debug_display[i].front();
+					debug_display[i].pop();
+				}
+				cout << endl;
 			}
-			cout << endl;
+			cout<<endl;
+			debug_display.clear();
 		}
-		cout<<endl;
-		debug_display.clear();*/
 
 		mem_capteur.clear();
 

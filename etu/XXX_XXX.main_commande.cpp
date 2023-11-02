@@ -4,7 +4,7 @@
 ##    | |__| \   /--\|_(-`||(-`|   |  |(-`><||_)|(-`        |__ | \__/   ##
 ##                                                                       ##
 ##########################################################################*/
- 
+
 /*!
  * \file XXX_XXX_main_commande.cpp
  * \brief code créé pour TER atelier flexible
@@ -121,7 +121,7 @@ int main(int argc, char **argv)
 	{
 		ros::spinOnce();
 		loop_rate.sleep();
-	}	
+	}
 	while(nbRobot==4 && (!robot.RobotInitialise(3) || !robot.RobotInitialise(4)))
 	{
 		ros::spinOnce();
@@ -131,7 +131,8 @@ int main(int argc, char **argv)
     /* *************************************************
 	// | Creation des Navettes | //
      ************************************************* */
-    
+
+  // cmd.activateShuttleManagerDisplay();  
 	int nbNavettes=0;//Mettre 0 pour demander a l'utilisateur
 	while(nbNavettes<1||nbNavettes>6)
 	{
@@ -144,11 +145,11 @@ int main(int argc, char **argv)
 			cin.ignore(256,'\n');
 		}
 	}
-    
+
 	std_msgs::Int32 msg_nbNavettes;
 	msg_nbNavettes.data=nbNavettes;
 	pub_spawnShuttles.publish(msg_nbNavettes);
-    
+
 
 	cmd.Initialisation();
 	for(int i=0;i<PlaceFin;i++) M[i]=0;
@@ -158,12 +159,12 @@ int main(int argc, char **argv)
     ************************************************* */
 	M[0]=1;
 	display();
-    
+
     ///////////////////////////////////////////////////////////////////
     ///////////////////// | DEBUT INIT ETU | ///////////////////
     ///////////////////////////////////////////////////////////////////
-    
-    
+
+
     ///////////////////////////////////////////////////////////////////
     /////////////////////  |  FIN INIT ETU  |  ////////////////////
     ///////////////////////////////////////////////////////////////////
@@ -193,15 +194,15 @@ int main(int argc, char **argv)
             display();
             }
 
-            
-            
-            
-            
-            
-            
-            
-            
-            
+
+
+
+
+
+
+
+
+
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             //////////////////////////////////// | Place de fin de Petri ETU | //////////////////////////////////////
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////////

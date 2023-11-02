@@ -41,6 +41,7 @@ Commande::Commande(ros::NodeHandle noeud, std::string executionPath)
 	play=false;
 	clientFinInit = noeud.serviceClient<commande_locale::SrvFinInit>("srv_fin_init");
 	pub_PetriTermine = noeud.advertise<std_msgs::Byte>("/commande/PetriTermine",10);
+	pub_ShuttleManagerDisplay = noeud.advertise<std_msgs::Byte>("/commande/ShuttleManagerDisplay",10);//SUN
 
 	// Publishers messages actionneurs
 	pub_navettes_stops = noeud.advertise<commande_locale::Msg_StopControl>("/commande/Simulation/Actionneurs_stops", 100);
@@ -161,4 +162,9 @@ void Commande::RentrerErgot(int num_ergot)
 void Commande::FinPetri()
 {
 	pub_PetriTermine.publish(std_msgs::Byte());
+}
+
+void Commande::activateShuttleManagerDisplay() // SUN
+{
+	pub_ShuttleManagerDisplay.publish(std_msgs::Byte());
 }

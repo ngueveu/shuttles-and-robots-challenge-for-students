@@ -13,8 +13,9 @@
 		<node name="Robot4" pkg="robots" type="robot" output="screen" launch-prefix="xterm -geometry '80x20+550+607' -e" args="4"/>
 	</group>
 
-
-	<node name="shuttleManager" pkg="shuttles" type="main_ShuttleManager"/>
 	<node name="log_manager" pkg="commande_locale" type="log_manager"/>
+	
+	<node name="shuttleManager" pkg="shuttles" type="main_ShuttleManager" output="screen" launch-prefix="xterm -geometry '60x20+400+800' -e"/>
+	<!-- <node name="shuttleManager" pkg="shuttles" type="main_ShuttleManager"/> -->
 
 </launch>
