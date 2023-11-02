@@ -30,6 +30,7 @@ class Commande
 
 	ros::Subscriber sub_nouveau_produit;
 	ros::Publisher pub_PetriTermine;
+	ros::Publisher pub_AutoRunSimu; //SUN
 	ros::Publisher pub_ShuttleManagerDisplay; //SUN
 
 	ros::ServiceClient clientFinInit;
@@ -85,6 +86,7 @@ public:
 	void renitialiser_arrivee_nouveau_produit();
 
 	void FinPetri();
+	void activateAutoRunSimu();//SUN
 	void activateShuttleManagerDisplay();//SUN
 };
 #endif

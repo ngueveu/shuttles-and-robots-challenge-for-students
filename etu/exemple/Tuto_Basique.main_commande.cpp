@@ -133,6 +133,7 @@ int main(int argc, char **argv)
      ************************************************* */
 
     // cmd.activateShuttleManagerDisplay();
+    // cmd.activateAutoRunSimu();
     int nbNavettes=0;//Mettre 0 pour demander a l'utilisateur
     while(nbNavettes<1||nbNavettes>6)
     {

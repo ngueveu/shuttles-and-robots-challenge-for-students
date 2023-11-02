@@ -103,7 +103,7 @@ int main(int argc, char **argv)
 
 	//SUN
 	cout << " Tant que 'activate_debug_display' vaut " << BOLDGREEN << "false" ;
-	cout << RESET << "rien ne sera affiche dans cette fenetre" ;
+	cout << RESET << " rien d'autre ne s'affichera dans cette fenetre" ;
 	cout << " (cf main_ShuttleManager.cpp)" << endl;
 
 	while (initPos==0)
