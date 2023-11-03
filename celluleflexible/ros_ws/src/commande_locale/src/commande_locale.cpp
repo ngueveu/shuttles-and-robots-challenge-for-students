@@ -66,7 +66,9 @@ void CoppeliaFinInitCallback(const std_msgs::Byte::ConstPtr& msg)
 void IfPetriTermineCallback(const std_msgs::Byte::ConstPtr& msg)//SUN
 {
 	petrifinished = true;
-	cout << "\n\n\n PETRI HAS STOPPED !!!!!!!! \n" << endl;
+	if (autorunstop){
+		cout << "\n\n\n The petri net has reached its ending place and autorun is true. \n ===> shutdown will be launched. \n" << endl;
+	}
 }
 
 void AutoRunSimuCallback(const std_msgs::Byte::ConstPtr& msg)//SUN
