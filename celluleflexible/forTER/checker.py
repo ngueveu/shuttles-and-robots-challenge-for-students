@@ -63,8 +63,8 @@ erreur_config = 0  # Dit si il y a une erreur de déclaration dans le fichier .c
 # --------------- 1 - LIRE LE CONFIG ---------------
 
 def checkProductConfigKeys(ProductConfig):
-    print(ProductConfig.keys())
     if set(ProductConfig.keys()) != set(["Prod_qte", "Prod_type", "Prod_seqdeposte", "Prod_dureeparposte"]):
+        print(ProductConfig.keys())
         print("The set of dictionary keys [",ProductConfig.keys(), "] differs from the set([Prod_qte, Prod_type, Prod_seqdeposte, Prod_dureeparposte])")
         return -1
     return 0
@@ -210,14 +210,14 @@ try:
         count = splitted[i].count('{')
         if count == 1:
             parsed_vector, namevector = parse_cpp_vector(splitted[i])
-            print(i, namevector,"=", parsed_vector)
+            #print(i, namevector,"=", parsed_vector)
             ProductConfig[namevector]=parsed_vector
         if count >= 2:
             parsed_vector, namevector = parse_cpp_vector_of_vectors(splitted[i])
-            print(i, namevector,"=", parsed_vector)
+            #print(i, namevector,"=", parsed_vector)
             ProductConfig[namevector]=parsed_vector
-        if count <=0:
-            print("empty line ? ", splitted[i])
+        #if count <=0:
+            #print("empty line ? ", splitted[i])
     print(ProductConfig)
 
     #createalllines (Prod_qte, Prod_type, Prod_seqdeposte, Prod_dureeparposte)
@@ -268,14 +268,14 @@ try:
 
     print(' ')  # Sert juste à aérer l'affichage
 
-    print("what now", erreur_config)
+    #print("what now", erreur_config)
 
     if erreur_config == 0:  # Si il n'y a pas d'erreur par l'utilisateur dans le .config, on ajoute la matrice des destinations dans la matrice tache dans la ligne correspondant au produit correspondant, et on définit la matrice production pour la ligne du produit correspondant
-        print("start fill data structures")
+        #print("start fill data structures")
         ## TYPE PRODUIT
         for i in range(len(ProductConfig["Prod_type"])):
             produit_num = int(ProductConfig["Prod_type"][i])
-            print("produit, ", produit_num)
+            #print("produit, ", produit_num)
             
              ## DESTINATIONS (ou taches) ET production ET DUREE
             production[produit_num - 1][0] = produit_num
