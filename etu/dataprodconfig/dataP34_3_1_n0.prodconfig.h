@@ -46,6 +46,8 @@
 // 3 : 3 3 3 4 : 3 7 8 15 : 1
 // End
 
+// ProductConfig
+
 
 const vector<int> Prod_type{    1,
                                 2,
