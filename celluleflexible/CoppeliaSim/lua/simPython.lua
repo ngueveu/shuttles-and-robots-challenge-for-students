@@ -1,3 +1,0 @@
-local simSpline={}
-
-return simSpline
