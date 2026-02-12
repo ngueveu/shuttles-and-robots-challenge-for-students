@@ -1,33 +1,55 @@
-cmake_minimum_required(VERSION 2.8.3)
+cmake_minimum_required(VERSION 3.8)
 project(shuttles)
 
-add_compile_options(-std=c++11)
+if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+  add_compile_options(-Wall -Wextra -Wpedantic)
+endif()
 
-find_package(catkin REQUIRED COMPONENTS
-  roscpp
+# 1. Dépendances
+find_package(ament_cmake REQUIRED)
+find_package(rclcpp REQUIRED)
+find_package(std_msgs REQUIRED)
+find_package(rosidl_default_generators REQUIRED)
+find_package(aiguillages REQUIRED)
+
+# 2. Génération des Messages et Services
+rosidl_generate_interfaces(${PROJECT_NAME}
+  "msg/MsgShuttleChange.msg"
+  "msg/MsgShuttleCreate.msg"
+  "msg/MsgErreur.msg"
+  "srv/ShuttleId.srv"
+  DEPENDENCIES std_msgs aiguillages
+)
+
+# 3. Exécutable principal
+add_executable(shuttle_manager 
+  src/main_ShuttleManager.cpp 
+  src/capteurs.cpp 
+  src/FileAttente.cpp
+)
+
+# CORRECTION ICI : On inclut "src" car tes .h sont dedans
+target_include_directories(shuttle_manager PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>
+  $<INSTALL_INTERFACE:include>
+)
+
+# Liaison avec les librairies ROS 2
+ament_target_dependencies(shuttle_manager
+  rclcpp
   std_msgs
-  genmsg
-  message_generation
   aiguillages
 )
 
-add_message_files(
-	FILES
-	msgShuttleChange.msg
-	msgShuttleCreate.msg
-	Msg_Erreur.msg
-	)
+rosidl_target_interfaces(shuttle_manager
+  ${PROJECT_NAME} "rosidl_typesupport_cpp"
+)
 
-add_service_files(
-	FILES
-    shuttle_id.srv
-	)
+# 4. Installation
+install(TARGETS shuttle_manager
+  DESTINATION lib/${PROJECT_NAME}
+)
 
-generate_messages(DEPENDENCIES std_msgs)
-catkin_package( CATKIN_DEPENDS roscpp message_runtime)
+# CORRECTION ICI : On a supprimé la ligne "install(DIRECTORY include/ ...)" qui plantait
 
-include_directories(${catkin_INCLUDE_DIRS})
-
-add_executable(main_ShuttleManager src/main_ShuttleManager.cpp src/capteurs.cpp src/FileAttente.cpp)
-target_link_libraries(main_ShuttleManager ${catkin_LIBRARIES})
-add_dependencies(main_ShuttleManager ${PROJECT_NAME}_gencpp ${${shuttles}_EXPORTED_TARGETS})
+ament_package()

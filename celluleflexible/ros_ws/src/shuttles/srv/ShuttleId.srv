@@ -1,4 +1,4 @@
 int32 robot
 int32 position
 ---
-int32 IdShuttle
+int32 id_shuttle

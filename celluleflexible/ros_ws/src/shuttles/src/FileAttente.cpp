@@ -1,5 +1,7 @@
 #include "FileAttente.h"
-#include <ros/ros.h>
+#include <rclcpp/rclcpp.hpp> // ROS 2 Include
+#include <unistd.h>
+
 using namespace std;
 
 FileAttente::FileAttente(int id_aiguillage, int successeur_droite, int successeur_gauche, queue<int> spec_queue)
@@ -16,6 +18,9 @@ FileAttente::~FileAttente()
 
 int FileAttente::maj(int DD, int DG)
 {
+	// On crée un logger temporaire
+	auto logger = rclcpp::get_logger("file_attente");
+
 	//on est là suite au front descendant du capteur concerné
 	if (!queue_.empty())
 	{
@@ -31,9 +36,9 @@ int FileAttente::maj(int DD, int DG)
 		}
 		else
 		{
-			ROS_INFO("J'ai perdu une navette, a partir de maintenant, les deposes de pièces vont faire n'importe quoi");
-			ROS_INFO("Vous feriez mieux de relancer la simulation. J'ai perdu une navette car un aiguillage n'était pas en butee droite ou gauche au moment ou une navette c'est engage");
-			ros::Duration(3).sleep();
+			RCLCPP_ERROR(logger, "J'ai perdu une navette, a partir de maintenant, les deposes de pièces vont faire n'importe quoi");
+			RCLCPP_ERROR(logger, "Vous feriez mieux de relancer la simulation. J'ai perdu une navette car un aiguillage n'était pas en butee droite ou gauche au moment ou une navette c'est engage");
+			rclcpp::sleep_for(std::chrono::seconds(3)); // ROS 2 sleep
 			return -1;
 		}
 	}
@@ -55,11 +60,12 @@ void FileAttente::add_navette_in_queue(int navette)
 
 void FileAttente::delete_navette_in_queue()
 {
+	auto logger = rclcpp::get_logger("file_attente");
 	if (queue_.empty())
 	{
 		// Si on est la ça veut dire que le shuttlemanager s'est perdu
-		ROS_INFO("Attention, ça va segfault dans 10 secondes, désolé");
-		ros::Duration(10).sleep();
+		RCLCPP_WARN(logger, "Attention, ça va segfault dans 10 secondes, désolé");
+		rclcpp::sleep_for(std::chrono::seconds(10));
 	}
 	queue_.pop();
 }

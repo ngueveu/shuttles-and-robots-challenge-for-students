@@ -1,8 +1,15 @@
 #include "capteurs.h"
 
-Capteurs::Capteurs(ros::NodeHandle noeud)
+using std::placeholders::_1;
+
+Capteurs::Capteurs(std::shared_ptr<rclcpp::Node> noeud)
 {
-	sub_capteurs_simu = noeud.subscribe("/commande/Simulation/Capteurs", 1, &Capteurs::Callback_capteurs_simulation,this);
+	// Abonnement ROS 2
+	sub_capteurs_simu = noeud->create_subscription<aiguillages::msg::MsgSensorState>(
+		"/sim_ros_interface/SwitchSensor", // J'ai mis le topic direct simu que tu utilisais dans aiguillages
+		10, 
+		std::bind(&Capteurs::Callback_capteurs_simulation, this, _1));
+
 	for(int i=0;i<25;i++) PSx[i]=0;
 	for(int i=0;i<13;i++) DxD[i]=0;
 	for(int i=0;i<13;i++) DxG[i]=0;
@@ -14,13 +21,15 @@ Capteurs::~Capteurs()
 {
 }
 
-void Capteurs::Callback_capteurs_simulation(const aiguillages::Msg_SensorState::ConstPtr& msg)
+void Capteurs::Callback_capteurs_simulation(const aiguillages::msg::MsgSensorState::SharedPtr msg)
 {
-	for(int i=1;i<25;i++) PSx[i]=msg->PS[i];
-	for(int i=1;i<13;i++) DxD[i]=msg->DD[i];
-	for(int i=1;i<13;i++) DxG[i]=msg->DG[i];
-	for(int i=1;i<11;i++) CPx[i]=msg->CP[i];
-	for(int i=1;i<9;i++) CPIx[i]=msg->CPI[i];
+	// ATTENTION : En ROS 2, les champs sont en minuscules (ps, dd, dg, cp, cpi)
+	// Vérifie bien que ton message aiguillages a ces noms là (généré automatiquement en minuscules)
+	for(int i=1;i<25;i++) PSx[i]=msg->ps[i];
+	for(int i=1;i<13;i++) DxD[i]=msg->dd[i];
+	for(int i=1;i<13;i++) DxG[i]=msg->dg[i];
+	for(int i=1;i<11;i++) CPx[i]=msg->cp[i];
+	for(int i=1;i<9;i++) CPIx[i]=msg->cpi[i];
 }
 
 bool Capteurs::get_PS(int num_PS)
