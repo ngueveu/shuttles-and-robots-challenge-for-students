@@ -1,63 +1,66 @@
-cmake_minimum_required(VERSION 2.8.3)
+cmake_minimum_required(VERSION 3.5)
 project(robots)
 
+## On trouve les packages dont on a besoin
+find_package(ament_cmake REQUIRED)
+find_package(rclcpp REQUIRED)
+find_package(std_msgs REQUIRED)
+find_package(sensor_msgs REQUIRED)
+find_package(commande_locale REQUIRED)
+find_package(shuttles REQUIRED)
+find_package(rosidl_default_generators REQUIRED)
 
-add_compile_options(-std=c++11)
-
-## Find catkin macros and libraries
-## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
-## is used, also find other catkin packages
-find_package(catkin REQUIRED COMPONENTS
-  roscpp
-  std_msgs
-  genmsg
-  message_generation
-  commande_locale
+# Définition des messages et services
+rosidl_generate_interfaces(${PROJECT_NAME}
+  "msg/MoveRobot.msg"
+  "msg/FaireTacheMsg.msg"
+  "msg/MsgNumRobot.msg"
+  "msg/EvacuerMsg.msg"
+  DEPENDENCIES std_msgs
 )
 
-## Generate messages in the 'msg' folder
-add_message_files(
-   FILES
-   MoveRobot.msg
-   FaireTacheMsg.msg
-   Msg_numrobot.msg
-)
-
-## Generate added messages and services with any dependencies listed here
-generate_messages(
-   DEPENDENCIES
-   std_msgs
- )
-
-###################################
-## catkin specific configuration ##
-###################################
-## The catkin_package macro generates cmake config files for your package
-## Declare things to be passed to dependent projects
-## INCLUDE_DIRS: uncomment this if you package contains header files
-## LIBRARIES: libraries you create in this project that dependent projects also need
-## CATKIN_DEPENDS: catkin_packages dependent projects also need
-## DEPENDS: system dependencies of this project that dependent projects also need
-catkin_package(
-#  INCLUDE_DIRS include
-#  LIBRARIES robot
-#  CATKIN_DEPENDS roscpp std_msgs
-#  DEPENDS system_lib
-   CATKIN_DEPENDS message_runtime
-)
-
-###########
-## Build ##
-###########
-
-## Specify additional locations of header files
-## Your package locations should be listed before other locations
-# include_directories(include)
+# Include directories
 include_directories(
-  ${catkin_INCLUDE_DIRS}
+  include
 )
 
+# Déclaration des exécutables
 add_executable(robot src/main_robot.cpp src/Robot.cpp src/Poste.cpp)
-target_link_libraries(robot ${catkin_LIBRARIES})
-add_dependencies(robot ${PROJECT_NAME}_gencpp ${catkin_EXPORTED_TARGETS})
+ament_target_dependencies(robot
+  rclcpp
+  std_msgs
+  sensor_msgs
+  commande_locale
+  shuttles
+  rosidl_default_runtime
+)
+
+# Récupérer la cible typesupport C++
+rosidl_get_typesupport_target(
+  cpp_typesupport_target
+  ${PROJECT_NAME}
+  "rosidl_typesupport_cpp"
+)
+
+# Lier les messages à l'exécutable
+target_link_libraries(robot
+  "${cpp_typesupport_target}"
+)
+
+# Installer les exécutables
+install(TARGETS
+  robot
+  DESTINATION lib/${PROJECT_NAME}
+)
+
+# Installer tous les fichiers launch Python
+install(DIRECTORY launch/
+  DESTINATION share/${PROJECT_NAME}
+  FILES_MATCHING PATTERN "*.launch.py"
+)
+
+ament_export_dependencies(rosidl_default_runtime std_msgs)
+
+# ament package
+ament_package()
 

@@ -1,25 +1,53 @@
-cmake_minimum_required(VERSION 2.8.3)
+cmake_minimum_required(VERSION 3.8)
 project(commande)
 
-add_compile_options(-std=c++11)
-
-find_package(catkin REQUIRED COMPONENTS
-	roscpp
-	std_msgs
-	genmsg
-	robots
-	commande_locale
-	shuttles
-	message_generation
-	)
 
 
-catkin_package(CATKIN_DEPENDS roscpp message_runtime)
+# Packages ROS2
+find_package(ament_cmake REQUIRED)
+find_package(rclcpp REQUIRED)
+find_package(std_msgs REQUIRED)
+find_package(robots REQUIRED)
+find_package(commande_locale REQUIRED)
+find_package(shuttles REQUIRED)
+find_package(OpenCV REQUIRED)
 
-include_directories(${catkin_INCLUDE_DIRS})
-include_directories(include ${OpenCV_INCLUDE_DIRS})
+include_directories(
+  include
+  ${OpenCV_INCLUDE_DIRS}
+)
 
 
-add_executable(run src/main_commande.cpp  src/commande.cpp src/capteurs.cpp src/actionneurs.cpp src/communication_baxter.cpp src/RobotsInterface.cpp src/AigsInterface.cpp)
-target_link_libraries(run ${catkin_LIBRARIES} ${OpenCV_LIBRARIES})
-add_dependencies(run ${PROJECT_NAME}_gencpp ${catkin_EXPORTED_TARGETS})
+# Exécutable
+add_executable(run
+  src/main_commande.cpp
+  src/commande.cpp
+  src/capteurs.cpp
+  src/actionneurs.cpp
+  src/communication_baxter.cpp
+  src/RobotsInterface.cpp
+  src/AigsInterface.cpp
+)
+
+# Dépendances ROS2
+ament_target_dependencies(run
+  rclcpp
+  std_msgs
+  robots
+  commande_locale
+  shuttles
+)
+
+# Link OpenCV
+target_link_libraries(run
+  ${OpenCV_LIBRARIES}
+)
+
+# Installation
+install(TARGETS
+  run
+  DESTINATION lib/${PROJECT_NAME}
+)
+
+
+ament_package()

@@ -1,24 +1,47 @@
-<package>
+<?xml version="1.0"?>
+<package format="3">
   <name>commande_locale</name>
+  <version>3.1.2</version>
   <description>commande_locale node</description>
   <maintainer email="simon.demmer@etu.enseeiht.fr">Simon Demmer</maintainer>
-  <version>3.1.2</version>
   <author>Emilie, Thibaut, Clement et Simon</author>
   <license>GPLv3</license>
-  <url>http://www.fr</url>
-  <buildtool_depend>catkin</buildtool_depend>
-  <build_depend>roscpp</build_depend>
+  <url type="website">http://www.fr</url>
+
+  <!-- Build tool -->
+  <buildtool_depend>ament_cmake</buildtool_depend>
+
+  <!-- Build dependencies -->
+  <build_depend>rclcpp</build_depend>
   <build_depend>std_msgs</build_depend>
   <build_depend>sensor_msgs</build_depend>
-  <build_depend>libopencv-dev</build_depend>
   <build_depend>image_transport</build_depend>
-  <build_depend>message_generation</build_depend>
-  <build_depend>scheduling</build_depend>
-  <build_depend>shuttles</build_depend>
-  <build_depend>aiguillages</build_depend>
-  <run_depend>roscpp</run_depend>
-  <run_depend>message_runtime</run_depend>
-  <build_depend>shuttles</build_depend>
+  <build_depend>cv_bridge</build_depend>
+  <build_depend>rosidl_default_generators</build_depend>
+  <!--<build_depend>shuttles</build_depend>-->
   <build_depend>aiguillages</build_depend>
 
+  <!-- Run dependencies -->
+  <exec_depend>rclcpp</exec_depend>
+  <exec_depend>std_msgs</exec_depend>
+  <exec_depend>sensor_msgs</exec_depend>
+  <exec_depend>image_transport</exec_depend>
+  <exec_depend>cv_bridge</exec_depend>
+  <exec_depend>rosidl_default_runtime</exec_depend>
+  <exec_depend>shuttles</exec_depend>
+
+  <exec_depend>aiguillages</exec_depend>
+
+  <!-- Test dependencies -->
+  <test_depend>ament_lint_auto</test_depend>
+  <test_depend>ament_lint_common</test_depend>
+
+  <member_of_group>rosidl_interface_packages</member_of_group>
+  <export>
+    <build_type>ament_cmake</build_type>
+  </export>
+
 </package>
+
+
+

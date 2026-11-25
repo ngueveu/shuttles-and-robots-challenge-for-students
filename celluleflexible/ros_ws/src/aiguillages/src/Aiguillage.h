@@ -1,37 +1,45 @@
 #ifndef AIGUILLAGE
 #define AIGUILLAGE
 
-#include <ros/ros.h>
-#include <std_msgs/Int32.h>
-#include <unistd.h>
-#include <std_msgs/Byte.h>
+#include "rclcpp/rclcpp.hpp"
+#include "std_msgs/msg/int32.hpp" 
+#include "std_msgs/msg/byte.hpp"
+#include <memory>
+#include <cmath> // Nécessaire pour pow()
 
-
-using namespace std;
-
-class Aiguillage
+class Aiguillage : public rclcpp::Node
 {
 private:
-	ros::Subscriber VREPsubSwitchSensor;//Capteurs butée aiguillage
-	ros::Subscriber sub_cmd_Droite;
-	ros::Subscriber sub_cmd_Gauche;
+    rclcpp::Subscription<std_msgs::msg::Byte>::SharedPtr sub_shutdown;
+    
 
-	ros::Rate* loop_rate;
+    rclcpp::Subscription<std_msgs::msg::Int32>::SharedPtr vrep_sub_switch_sensor;
 
-	ros::Publisher AigDev;
-	ros::Publisher AigVer;
-	ros::Publisher AigGauche;
-	ros::Publisher AigDroite;
+    rclcpp::CallbackGroup::SharedPtr callback_group_; 
+    
+    rclcpp::Subscription<std_msgs::msg::Int32>::SharedPtr sub_cmd_droite;
+    rclcpp::Subscription<std_msgs::msg::Int32>::SharedPtr sub_cmd_gauche;
 
-	bool Aig_D[12];//Capteurs butée
-	bool Aig_G[12];
+    std::unique_ptr<rclcpp::Rate> loop_rate;
+
+    rclcpp::Publisher<std_msgs::msg::Int32>::SharedPtr aig_dev; 
+    rclcpp::Publisher<std_msgs::msg::Int32>::SharedPtr aig_ver;
+    rclcpp::Publisher<std_msgs::msg::Int32>::SharedPtr aig_gauche;
+    rclcpp::Publisher<std_msgs::msg::Int32>::SharedPtr aig_droite;
+
+    bool aig_d[13];
+    bool aig_g[13];
 
 public:
-	Aiguillage(ros::NodeHandle nh);
-	~Aiguillage();
+    Aiguillage(); 
+    virtual ~Aiguillage();
 
-	void SwitchSensorCallback(const std_msgs::Int32::ConstPtr& msg);
-	void GaucheCallback(const std_msgs::Int32::ConstPtr& msg_aigs);
-	void DroiteCallback(const std_msgs::Int32::ConstPtr& msg_aigs);
+
+    void switch_sensor_callback(const std_msgs::msg::Int32::SharedPtr msg);
+    
+    void gauche_callback(const std_msgs::msg::Int32::SharedPtr msg_aigs);
+    void droite_callback(const std_msgs::msg::Int32::SharedPtr msg_aigs);
+    void shutdown_callback(const std_msgs::msg::Byte::SharedPtr msg);
 };
+
 #endif

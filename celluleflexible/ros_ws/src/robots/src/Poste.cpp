@@ -1,5 +1,6 @@
 /**** Projet long N7 2020 ****/
 #include "Poste.h"
+#include <iostream>
 
 //Constructeur
 Poste::Poste()
@@ -45,21 +46,21 @@ int Poste::get_duree()
 }
 
 
-void Poste::debutTask(float VREPtime, int duree)
+void Poste::debutTask(double VREPtime, int duree)
 {
 	task_en_cours_=true;
 	temps_debut_task_=VREPtime;
 	duree_task_=duree;
 }
 
-bool Poste::updateTask(float time)
+bool Poste::updateTask(double time)
 {
 	bool fin_tache=false;
-	float restant=(temps_debut_task_+duree_task_)-time;
+	double restant=(temps_debut_task_+duree_task_)-time;
 	if(restant<0)
 		restant=0;
 
-	cout << "Poste N=" << numero_poste_ << " task_en_cours=" << task_en_cours_ << fixed << setprecision(1) << " Temps restant=" << restant << " duree=" << duree_task_ << endl;
+	std::cout << "Poste N=" << numero_poste_ << " task_en_cours=" << task_en_cours_ << fixed << setprecision(1) << " Temps restant=" << restant << " duree=" << duree_task_ << std::endl;
 
 	if(task_en_cours_ && time>temps_debut_task_+duree_task_)
 	{
@@ -78,4 +79,9 @@ bool Poste::isTaskEnCours()
 void Poste::stopTask()
 {
 	task_en_cours_=false;
+}
+
+void Poste::decalerTemps(double decalage)
+{
+	temps_debut_task_ += decalage;
 }

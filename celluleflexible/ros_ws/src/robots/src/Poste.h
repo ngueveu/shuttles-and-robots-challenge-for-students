@@ -3,11 +3,9 @@
 #ifndef POSTE
 #define POSTE
 
-#include <ros/ros.h>
-#include <string>
-#include <string.h>
-#include <std_msgs/Int32.h>
-#include "commande_locale/Msg_AddProduct.h"
+#include <std_msgs/msg/string.hpp>
+#include <std_msgs/msg/int32.hpp>
+#include "commande_locale/msg/msg_add_product.hpp"
 
 using namespace std;
 
@@ -18,7 +16,7 @@ class Poste
 		int numero_poste_;
 		int couleur_;
 		int duree_task_;
-		float temps_debut_task_;
+		double temps_debut_task_;
 		bool task_en_cours_;
 
 	public:
@@ -30,9 +28,10 @@ class Poste
 		int get_numero();
 		int get_color();
 		int get_duree();
+		void decalerTemps(double decalage);
 
-		void debutTask(float VREPtime, int duree);
-		bool updateTask(float time);
+		void debutTask(double VREPtime, int duree);
+		bool updateTask(double time);
 		bool isTaskEnCours();
 		void stopTask();
 };

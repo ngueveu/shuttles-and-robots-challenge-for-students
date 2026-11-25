@@ -2,24 +2,23 @@
 #ifndef CAPT
 #define CAPT
 
-#include <aiguillages/Msg_SensorState.h>
-#include <ros/ros.h>
+#include <aiguillages/msg/msg_sensor_state.hpp>
+#include <rclcpp/rclcpp.hpp>
 
 class Capteurs
 {
 	private:
-		ros::Subscriber sub_capteurs_ligne;
-		ros::Subscriber sub_capteurs_simu;
+		rclcpp::Subscription<aiguillages::msg::MsgSensorState>::SharedPtr sub_capteurs_simu;
 
 		bool PSx[25],DxD[13],DxG[13],CPx[11],CPIx[9];
 
 	public:
-		Capteurs(ros::NodeHandle noeud);
+		Capteurs(rclcpp::Node::SharedPtr node);
 		~Capteurs();
 
 		void Actualiser(bool PS[],bool DD[],bool DG[],bool CP[],bool CPI[]);
 
-		void Callback_capteurs_simulation(const aiguillages::Msg_SensorState::ConstPtr& msg);
+		void Callback_capteurs_simulation(aiguillages::msg::MsgSensorState::SharedPtr msg);
 
 		bool get_CP(int num_CP);
 		bool get_CPI(int num_CPI);

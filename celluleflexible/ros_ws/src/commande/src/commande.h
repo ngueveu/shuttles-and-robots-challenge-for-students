@@ -1,15 +1,15 @@
 #ifndef COMMANDE_SIMU
 #define COMMANDE_SIMU
 
-#include <ros/ros.h>
+#include <rclcpp/rclcpp.hpp>
 #include "actionneurs.h"
 #include "capteurs.h"
 #include "RobotsInterface.h"
-#include <std_msgs/Bool.h>
-#include <std_msgs/Int32.h>
-#include <commande_locale/Msg_StopControl.h>
-#include <commande_locale/Msg_AddProduct.h>
-#include <commande_locale/SrvFinInit.h>
+#include <std_msgs/msg/bool.hpp>
+#include <std_msgs/msg/int32.hpp>
+#include <commande_locale/msg/msg_stop_control.hpp>
+#include <commande_locale/msg/msg_add_product.hpp>
+#include <commande_locale/srv/srv_fin_init.hpp>
 #include <iostream>
 #include <string>
 #include <cstdlib>
@@ -19,30 +19,30 @@ class Commande
 	private:
 
 	//Aiguillages
-	ros::Subscriber SubDeverouilleAiguillages;
-	ros::Subscriber SubVerouilleAiguillages;
-	ros::Subscriber SubAiguillagesGauches;
-	ros::Subscriber SubAiguillagesDroits;
+	rclcpp::Subscription<std_msgs::msg::Int32>::SharedPtr SubDeverouilleAiguillages;
+    rclcpp::Subscription<std_msgs::msg::Int32>::SharedPtr SubVerouilleAiguillages;
+    rclcpp::Subscription<std_msgs::msg::Int32>::SharedPtr SubAiguillagesGauches;
+    rclcpp::Subscription<std_msgs::msg::Int32>::SharedPtr SubAiguillagesDroits;
 
 	// Ergots
 	//ros::Subscriber subPinOn;
 	//ros::Subscriber subPinOff;
 
-	ros::Subscriber sub_nouveau_produit;
-	ros::Publisher pub_PetriTermine;
-	ros::Publisher pub_AutoRunSimu; //SUN
-	ros::Publisher pub_ShuttleManagerDisplay; //SUN
+	rclcpp::Subscription<std_msgs::msg::Byte>::SharedPtr sub_nouveau_produit;
+    rclcpp::Publisher<std_msgs::msg::Byte>::SharedPtr pub_PetriTermine;
+    rclcpp::Publisher<std_msgs::msg::Byte>::SharedPtr pub_AutoRunSimu; // SUN
+    rclcpp::Publisher<std_msgs::msg::Byte>::SharedPtr pub_ShuttleManagerDisplay; // SUN
 
-	ros::ServiceClient clientFinInit;
-	commande_locale::SrvFinInit srvFinInit;
+	rclcpp::Client<commande_locale::srv::SrvFinInit>::SharedPtr clientFinInit;
+    commande_locale::srv::SrvFinInit::Request::SharedPtr srvFinInit;
 
 	// Actionneurs
-	ros::Publisher pub_navettes_stops;
-	ros::Publisher pub_actionneurs_simu_aiguillages;
-  	ros::Publisher pub_actionneurs_simu_pins;
+	rclcpp::Publisher<commande_locale::msg::MsgStopControl>::SharedPtr pub_navettes_stops;
+    rclcpp::Publisher<commande_locale::msg::MsgSwitchControl>::SharedPtr pub_actionneurs_simu_aiguillages;
+    rclcpp::Publisher<commande_locale::msg::MsgPinControl>::SharedPtr pub_actionneurs_simu_pins;
 
-	ros::Subscriber sub_playSim;
-	ros::Subscriber sub_pauseSim;
+    rclcpp::Subscription<std_msgs::msg::Byte>::SharedPtr sub_playSim;
+    rclcpp::Subscription<std_msgs::msg::Byte>::SharedPtr sub_pauseSim;
 
 	bool play;
 	int arrivee_produit;
@@ -56,28 +56,28 @@ class Commande
 	bool STx[25],RxD[13],RxG[13],Vx[13],Dx[13],PIx[9];
 
 	//messages pour actionneurs
-	commande_locale::Msg_StopControl actionneurs_simulation_Stop;
-	commande_locale::Msg_SwitchControl actionneurs_simulation_Aiguillages;
-	commande_locale::Msg_PinControl actionneurs_simulation_Pin;
+	commande_locale::msg::MsgStopControl actionneurs_simulation_Stop;
+    commande_locale::msg::MsgSwitchControl actionneurs_simulation_Aiguillages;
+    commande_locale::msg::MsgPinControl actionneurs_simulation_Pin;
 
 public:
 
-	Commande(ros::NodeHandle noeud, std::string executionPath);
+	Commande(rclcpp::Node::SharedPtr node, std::string executionPath);
 
 	void Initialisation();
 
-	void PlayCallback(const std_msgs::Byte::ConstPtr& msg);
-	void PauseCallback(const std_msgs::Byte::ConstPtr& msg);
+	void PlayCallback(const std_msgs::msg::Byte::SharedPtr msg);
+	void PauseCallback(const std_msgs::msg::Byte::SharedPtr msg);
 	bool getPlay();
 
-  	void NouveauProduitCallback(const commande_locale::Msg_AddProduct::ConstPtr& msg);
+  	void NouveauProduitCallback(const commande_locale::msg::MsgAddProduct::SharedPtr msg);
 	void Stop_PS(int point_stop);
 	void Ouvrir_PS(int point_stop);
 
-	void DeverouilleAiguillagesCallback(const std_msgs::Int32::ConstPtr& msg);
-	void VerouilleAiguillagesCallback(const std_msgs::Int32::ConstPtr& msg);
-	void AiguillagesgauchesCallback(const std_msgs::Int32::ConstPtr& msg);
-	void AiguillagesdroitsCallback(const std_msgs::Int32::ConstPtr& msg);
+	void DeverouilleAiguillagesCallback(const std_msgs::msg::Int32::SharedPtr msg);
+	void VerouilleAiguillagesCallback(const std_msgs::msg::Int32::SharedPtr msg);
+	void AiguillagesgauchesCallback(const std_msgs::msg::Int32::SharedPtr msg);
+	void AiguillagesdroitsCallback(const std_msgs::msg::Int32::SharedPtr msg);
 
 	void SortirErgot(int num_ergot);
 	void RentrerErgot(int num_ergot);

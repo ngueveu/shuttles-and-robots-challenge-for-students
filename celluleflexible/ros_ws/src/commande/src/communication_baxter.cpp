@@ -1,8 +1,7 @@
 /**** Bruno DATO M1 EEA ISTR Université Paul Sabatier Toulouse III 2016 ****/
 
-#include <ros/ros.h>
 #include "communication_baxter.h"
-#include "std_msgs/Bool.h"
+
 
 #define RESET   "\033[0m"
 #define BOLDYELLOW  "\033[1m\033[33m"      /* Bold Yellow */
@@ -10,17 +9,17 @@
 #define BOLDGREEN   "\033[1m\033[32m"      /* Bold Green */
 
 // Constructeur
-Communication_Baxter::Communication_Baxter(ros::NodeHandle noeud)
+Communication_Baxter::Communication_Baxter(rclcpp::Node::SharedPtr node)
 {
-	pub_prise_demandee_bras_droit = noeud.advertise<std_msgs::Bool>("/pont_BaxterLigneTransitique/right_arm/prise_demandee", 1);
-	pub_prise_demandee_bras_gauche = noeud.advertise<std_msgs::Bool>("/pont_BaxterLigneTransitique/left_arm/prise_demandee", 1);
+	pub_prise_demandee_bras_droit = node->create_publisher<std_msgs::msg::Bool>("/pont_BaxterLigneTransitique/right_arm/prise_demandee", 1);
+	pub_prise_demandee_bras_gauche = node->create_publisher<std_msgs::msg::Bool>("/pont_BaxterLigneTransitique/left_arm/prise_demandee", 1);
 
-	sub_prise_effectuee_bras_droit = noeud.subscribe("/pont_BaxterLigneTransitique/right_arm/prise_effectuee", 1, &Communication_Baxter::Callback_prise_effectuee_bras_droit,this);
-	sub_prise_effectuee_bras_gauche = noeud.subscribe("/pont_BaxterLigneTransitique/left_arm/prise_effectuee", 1, &Communication_Baxter::Callback_prise_effectuee_bras_gauche,this);
-	sub_attente_prise_bras_droit = noeud.subscribe("/pont_BaxterLigneTransitique/right_arm/attente_prise", 1, &Communication_Baxter::Callback_attente_prise_bras_droit,this);
-	sub_attente_prise_bras_gauche = noeud.subscribe("/pont_BaxterLigneTransitique/left_arm/attente_prise", 1, &Communication_Baxter::Callback_attente_prise_bras_gauche,this);
+	sub_prise_effectuee_bras_droit = node->create_subscription<std_msgs::msg::Bool>("/pont_BaxterLigneTransitique/right_arm/prise_effectuee", 1, std::bind(&Communication_Baxter::Callback_prise_effectuee_bras_droit, this, std::placeholders::_1));
+	sub_prise_effectuee_bras_gauche = node->create_subscription<std_msgs::msg::Bool>("/pont_BaxterLigneTransitique/left_arm/prise_effectuee", 1, std::bind(&Communication_Baxter::Callback_prise_effectuee_bras_gauche, this, std::placeholders::_1));
+	sub_attente_prise_bras_droit = node->create_subscription<std_msgs::msg::Bool>("/pont_BaxterLigneTransitique/right_arm/attente_prise", 1, std::bind(&Communication_Baxter::Callback_attente_prise_bras_droit, this, std::placeholders::_1));
+	sub_attente_prise_bras_gauche = node->create_subscription<std_msgs::msg::Bool>("/pont_BaxterLigneTransitique/left_arm/attente_prise", 1, std::bind(&Communication_Baxter::Callback_attente_prise_bras_gauche, this, std::placeholders::_1));
 
-	ros::Duration(1).sleep();
+	//rclcpp::sleep_for(std::chrono::seconds(1));
 
 	msg_prise_demandee_bras_droit.data = false ;
 	msg_prise_effectuee_bras_droit.data = false ;
@@ -36,31 +35,31 @@ Communication_Baxter::~Communication_Baxter()
 {
 }
 
-void Communication_Baxter::Callback_prise_effectuee_bras_droit(const std_msgs::Bool& msg)
+void Communication_Baxter::Callback_prise_effectuee_bras_droit(const std_msgs::msg::Bool::SharedPtr msg)
 {
-	msg_prise_effectuee_bras_droit = msg ;
+	msg_prise_effectuee_bras_droit = *msg ;
 	// Mise à faux de prise demandée si prise effectuée
 	if (msg_prise_effectuee_bras_droit.data == 1) msg_prise_demandee_bras_droit.data = false;
 	//std::cout<<msg<<std::endl;
 }
 
-void Communication_Baxter::Callback_prise_effectuee_bras_gauche(const std_msgs::Bool& msg)
+void Communication_Baxter::Callback_prise_effectuee_bras_gauche(const std_msgs::msg::Bool::SharedPtr msg)
 {
-	msg_prise_effectuee_bras_gauche = msg ;
+	msg_prise_effectuee_bras_gauche = *msg ;
 	// Mise à faux de prise demandée si prise effectuée
 	if (msg_prise_effectuee_bras_gauche.data == 1) msg_prise_demandee_bras_gauche.data = false;
 	//std::cout<<msg<<std::endl;
 }
 
-void Communication_Baxter::Callback_attente_prise_bras_gauche(const std_msgs::Bool& msg)
+void Communication_Baxter::Callback_attente_prise_bras_gauche(const std_msgs::msg::Bool::SharedPtr msg)
 {
-	msg_attente_prise_bras_gauche = msg ;
+	msg_attente_prise_bras_gauche = *msg ;
 	//std::cout<<msg<<std::endl;
 }
 
-void Communication_Baxter::Callback_attente_prise_bras_droit(const std_msgs::Bool& msg)
+void Communication_Baxter::Callback_attente_prise_bras_droit(const std_msgs::msg::Bool::SharedPtr msg)
 {
-	msg_attente_prise_bras_droit = msg ;
+	msg_attente_prise_bras_droit = *msg ;
 	//std::cout<<msg<<std::endl;
 }
 
@@ -153,6 +152,6 @@ void Communication_Baxter::Afficher_Communication_Baxter()
 
 void Communication_Baxter::Update()
 {
-	pub_prise_demandee_bras_gauche.publish(msg_prise_demandee_bras_gauche);
-	pub_prise_demandee_bras_droit.publish(msg_prise_demandee_bras_droit);
+	pub_prise_demandee_bras_gauche->publish(msg_prise_demandee_bras_gauche);
+	pub_prise_demandee_bras_droit->publish(msg_prise_demandee_bras_droit);
 }

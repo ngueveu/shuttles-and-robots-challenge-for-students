@@ -17,7 +17,7 @@
 #include "commande.h"
 #include "RobotsInterface.h"
 #include "AigsInterface.h"
-#include <ros/ros.h>
+#include <rclcpp/rclcpp.hpp>
 #include <unistd.h>
 
 using namespace std;
@@ -33,9 +33,9 @@ using namespace std;
 
 int M[PlaceFin+1];
 
-/* ********************************************************
+/* *****************************************************************
 ///////////  | Exemple configuration produits : début |  //////////
- ******************************************************** */
+ ******************************************************************* */
 
 // type de produit : séquence de POSTES : durée par poste : nombre de produits
 // 2 : 1 4 : 4 5 : 2
@@ -65,6 +65,8 @@ const vector<vector<int>> Prod_dureeparposte{   { 4, 5 },
 /////////////////////////////////////////////////////////////////////////
 
 
+
+
 /////////////////////////////////////////////////////////////////////////
 /////////////////////  |  FIN DECLARE ETU  |   /////////////////
 /////////////////////////////////////////////////////////////////////////
@@ -73,111 +75,104 @@ const vector<vector<int>> Prod_dureeparposte{   { 4, 5 },
 // Pour l'affichage //
 void display()
 {
-	cout << endl;
-	for (int i=0;i<=PlaceFin;i++)
-	{
-		if(i==0)
-			cout << "Marquage : ";
+    cout << endl;
+    for (int i=0;i<=PlaceFin;i++)
+    {
+        if(i==0)
+            cout << "Marquage : ";
 
-		if(M[i]>0)
-			cout<<BOLDRED<<"M["<<i<<"]="<<M[i]<<RESET<<", ";
-		if(M[i]<0)
-			cout<<BOLDGREEN<<"M["<<i<<"]="<<M[i]<<RESET<<", ";
-	}
-	cout<<endl<<endl;
+        if(M[i]>0)
+            cout<<BOLDRED<<"M["<<i<<"]="<<M[i]<<RESET<<", ";
+        if(M[i]<0)
+            cout<<BOLDGREEN<<"M["<<i<<"]="<<M[i]<<RESET<<", ";
+    }
+    cout<<endl<<endl;
 }
 
-void ShutdownCallback(const std_msgs::Byte::ConstPtr& msg)
+void ShutdownCallback(const std_msgs::msg::Byte::SharedPtr msg)
 {
-		ros::shutdown();
+        rclcpp::shutdown();
 }
 
 int main(int argc, char **argv)
 {
     /* *************************************************
-	///////////  | Debut du Petri plus bas |  //////////
+    ///////////  | Debut du Petri plus bas |  //////////
      ************************************************* */
 
 
-	ros::init(argc, argv, "commande");
-	ros::NodeHandle noeud;
+    rclcpp::init(argc, argv); 
+    auto node = rclcpp::Node::make_shared("commande"); 
 
-	ros::Publisher pub_spawnShuttles = noeud.advertise<std_msgs::Int32>("/commande_locale/nbNavettes",10);
-	ros::Subscriber sub_shutdown = noeud.subscribe("/commande_locale/shutdown",10,&ShutdownCallback);
+    auto pub_spawnShuttles = node->create_publisher<std_msgs::msg::Int32>("/commande_locale/nbNavettes",10);
+    auto sub_shutdown = node->create_subscription<std_msgs::msg::Byte>("/commande_locale/shutdown", 10, ShutdownCallback);
 
-	int nbRobot=atoi(argv[1]);
+    int nbRobot=atoi(argv[1]);
 
-	Commande cmd(noeud,argv[0]);
-	RobotsInterface robot(noeud,nbRobot);
-	AigsInterface aiguillage(noeud);
-	Capteurs capteur(noeud);
+    Commande cmd(node,argv[0]);
+    RobotsInterface robot(node,nbRobot);
+    AigsInterface aiguillage(node);
+    Capteurs capteur(node);
 
-	ros::Rate loop_rate(25); //fréquence de la boucle
+    rclcpp::Rate loop_rate(25); //fréquence de la boucle
 
-	// On attend la fin de l'initialisation des robots
-	while(!robot.RobotInitialise(1) || !robot.RobotInitialise(2))
-	{
-		ros::spinOnce();
-		loop_rate.sleep();
-	}
-	while(nbRobot==4 && (!robot.RobotInitialise(3) || !robot.RobotInitialise(4)))
-	{
-		ros::spinOnce();
-		loop_rate.sleep();
-	}
+    // On attend la fin de l'initialisation des robots
+    while(!robot.RobotInitialise(1) || !robot.RobotInitialise(2))
+    {
+        rclcpp::spin_some(node); 
+        loop_rate.sleep();
+    }
+    while(nbRobot==4 && (!robot.RobotInitialise(3) || !robot.RobotInitialise(4)))
+    {
+        rclcpp::spin_some(node); 
+        loop_rate.sleep();
+    }
 
     /* *************************************************
-	// | Creation des Navettes | //
+    // | Creation des Navettes | //
      ************************************************* */
 
-	cmd.activateShuttleManagerDisplay();
-	// cmd.activateAutoRunSimu();
-	int nbNavettes=0;//Mettre 0 pour demander a l'utilisateur
-	while(nbNavettes<1||nbNavettes>6)
-	{
-		cout << "Combien voulez vous de navettes ? [1..6]" << endl;
-		cin >> nbNavettes;
-		if(cin.fail())
-		{
-			cout << endl << " [Erreur mauvais choix ..]" << endl;
-			cin.clear();
-			cin.ignore(256,'\n');
-		}
-	}
+    cmd.activateShuttleManagerDisplay();
+    // cmd.activateAutoRunSimu();
+    int nbNavettes=0;//Mettre 0 pour demander a l'utilisateur
+    while(nbNavettes<1||nbNavettes>6)
+    {
+        cout << "Combien voulez vous de navettes ? [1..6]" << endl;
+        cin >> nbNavettes;
+        if(cin.fail())
+        {
+            cout << endl << " [Erreur mauvais choix ..]" << endl;
+            cin.clear();
+            cin.ignore(256,'\n');
+        }
+    }
 
-	std_msgs::Int32 msg_nbNavettes;
-	msg_nbNavettes.data=nbNavettes;
-	pub_spawnShuttles.publish(msg_nbNavettes);
+    std_msgs::msg::Int32 msg_nbNavettes; 
+    msg_nbNavettes.data=nbNavettes;
+    pub_spawnShuttles->publish(msg_nbNavettes);
 
 
-	cmd.Initialisation();
-	for(int i=0;i<PlaceFin;i++) M[i]=0;
-
+    cmd.Initialisation();
+    for(int i=0;i<PlaceFin;i++) M[i]=0;
     /* *************************************************
-	////// | MARQUAGE INITIAL | ////////
+    ////// | MARQUAGE INITIAL | ////////
     ************************************************* */
-	M[0]=1;
-	display();
+    M[0]=1;
+    display();
 
     ///////////////////////////////////////////////////////////////////
     ///////////////////// | DEBUT INIT ETU | ///////////////////
     ///////////////////////////////////////////////////////////////////
 
 
-
-
-
-
-
-
     ///////////////////////////////////////////////////////////////////
     /////////////////////  |  FIN INIT ETU  |  ////////////////////
     ///////////////////////////////////////////////////////////////////
 
-	while (ros::ok())
-	{
-		// Seulement si la simulation est en cours
-		if(cmd.getPlay()==true)
+    while (rclcpp::ok()) 
+    {
+        // Seulement si la simulation est en cours
+        if(cmd.getPlay()==true)
 		{
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             //////////////////////////////////////// | DEBUT PETRI  ETU | /////////////////////////////////////////
@@ -212,22 +207,22 @@ int main(int argc, char **argv)
             //////////////////////////////////// | Place de fin de Petri ETU | //////////////////////////////////////
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-			if(M[PlaceFin])
-			{
-				display();
-				cout << endl << BOLDCYAN << " --[PETRI TERMINE]--" << RESET << endl;
-				cmd.FinPetri();
-				while(ros::ok())
-				{
-					ros::spinOnce();
-					loop_rate.sleep();
-				}
-			}
-		}
+            if(M[PlaceFin])
+            {
+                display();
+                cout << endl << BOLDCYAN << " --[PETRI TERMINE]--" << RESET << endl;
+                cmd.FinPetri();
+                while(rclcpp::ok()) 
+                {
+                    rclcpp::spin_some(node); 
+                    loop_rate.sleep();
+                }
+            }
+        }
 
-		ros::spinOnce(); //permet aux fonction callback de ros dans les objets d'êtres appelées
-		loop_rate.sleep(); //permet de synchroniser la boucle while. Il attend le temps qu'il reste pour faire le 25Hz (ou la fréquence indiquée dans le loop_rate)
-	}
+        rclcpp::spin_some(node); //permet aux fonction callback de ros dans les objets d'êtres appelées
+        loop_rate.sleep(); //permet de synchroniser la boucle while. Il attend le temps qu'il reste pour faire le 25Hz (ou la fréquence indiquée dans le loop_rate)
+    }
 
-	return 0;
+    return 0;
 }

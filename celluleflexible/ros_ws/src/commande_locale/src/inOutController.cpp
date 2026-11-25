@@ -1,142 +1,178 @@
 #include "inOutController.h"
+#include <cmath>
 
-// inOutController doit pouvoir actualiser l'UI à chaque actualisation de capteurs
 inOutController::inOutController(vrepController* vrepSA)
 {
-	vrepServiceAcces = vrepSA;
+    vrepServiceAcces = vrepSA;
 }
 
-void inOutController::TypeMode(const commande_locale::Msg_ChoixMode::ConstPtr& msg1)
+void inOutController::TypeMode(const commande_locale::msg::MsgChoixMode::SharedPtr msg1)
 {
-	mode = msg1->mode;
+    mode = msg1->mode;
 }
 
-// Fonction Callback pour les capteurs sur les rails
-void inOutController::SensorCallbackRail(const std_msgs::Int32::ConstPtr& msg)
+void inOutController::SensorCallbackRail(const std_msgs::msg::Int32::SharedPtr msg)
 {
-	if (mode==0){
-		for(int i=1;i<=10;i++) SensorState.CP[i] = (msg->data & (int32_t)pow(2,i-1)) > 0;
-		planifRailSensorState.publish(SensorState);
-	}
+    if (mode == 0) //je les avais mis en commentaires au debut quand ca marchait pas
+
+    {
+        for(int i=1;i<=10;i++)
+            SensorState.cp[i] = (msg->data & (int32_t)pow(2,i-1)) > 0;
+
+        planifRailSensorState->publish(SensorState);
+    }
 }
 
-// Fonction Callback pour les capteurs des stops
-void inOutController::SensorCallbackStop(const std_msgs::Int32::ConstPtr& msg)
+void inOutController::SensorCallbackStop(const std_msgs::msg::Int32::SharedPtr msg)
 {
-	if (mode==0){
-		for(int i=1;i<=24;i++) SensorState.PS[i] = (msg->data & (int32_t)pow(2,i-1)) > 0;
-		planifRailSensorState.publish(SensorState);
-	}
+    if (mode == 0)
+
+    {
+        for(int i=1;i<=24;i++)
+            SensorState.ps[i] = (msg->data & (int32_t)pow(2,i-1)) > 0;
+
+        planifRailSensorState->publish(SensorState);
+    }
 }
 
-// Fonction Callback pour les capteurs sur les aiguillages
-void inOutController::SensorCallbackSwitch(const std_msgs::Int32::ConstPtr& msg)
+void inOutController::SensorCallbackSwitch(const std_msgs::msg::Int32::SharedPtr msg)
 {
-	if (mode==0){
+    if (mode == 0)
 
-		for(int i=1;i<=12;i++){
-			SensorState.DD[i] = (msg->data & (int32_t)pow(2,2*i-2)) > 0;
-			SensorState.DG[i] = (msg->data & (int32_t)pow(2,2*i-1)) > 0;
-		}
-		planifRailSensorState.publish(SensorState);
-	}
+    {
+        for(int i=1;i<=12;i++)
+        {
+            SensorState.dd[i] = (msg->data & (int32_t)pow(2,2*i-2)) > 0;
+            SensorState.dg[i] = (msg->data & (int32_t)pow(2,2*i-1)) > 0;
+        }
+
+        planifRailSensorState->publish(SensorState);
+    }
 }
 
-// Fonction Callback pour les actionneurs sur les aiguillages
-void inOutController::StateSwitchCallBack(const commande_locale::Msg_SwitchControl::ConstPtr&  msg)
+void inOutController::StateSwitchCallBack(const commande_locale::msg::MsgSwitchControl::SharedPtr msg)
 {
-	int SwitchRightControl(0), SwitchLeftControl(0), SwitchLockControl(0);
-	std_msgs::Int32 Right, Left, Lock;
+    int SwitchRightControl(0), SwitchLeftControl(0), SwitchLockControl(0);
+    std_msgs::msg::Int32 Right, Left, Lock;
 
-	SwitchControl.RD = msg->RD;
-	SwitchControl.RG = msg->RG;
-	SwitchControl.LOCK = msg->LOCK;
+    SwitchControl.rd = msg->rd;
+    SwitchControl.rd = msg->rg;
+    SwitchControl.lock = msg->lock;
 
-	for (int i=1;i<=12;i++){
-		if (msg->RD[i]==true)
-			SwitchRightControl+=pow(2,i-1);
-		if (msg->RG[i]==true)
-			SwitchLeftControl+=pow(2,i-1);
-		if (msg->LOCK[i]==true)
-			SwitchLockControl+=pow(2,i-1);
-	}
+    for (int i=1;i<=12;i++)
+    {
+        if (msg->rd[i])
+            SwitchRightControl += pow(2,i-1);
 
-	Right.data=SwitchRightControl;
-	VREPSwitchControllerRight.publish(Right);
-	Left.data=SwitchLeftControl;
-	VREPSwitchControllerLeft.publish(Left);
-	Lock.data=SwitchLockControl;
-	VREPSwitchControllerLock.publish(Lock);
+        if (msg->rg[i])
+            SwitchLeftControl += pow(2,i-1);
+
+        if (msg->lock[i])
+            SwitchLockControl += pow(2,i-1);
+    }
+
+    Right.data = SwitchRightControl;
+    Left.data  = SwitchLeftControl;
+    Lock.data  = SwitchLockControl;
+
+    VREPSwitchControllerRight->publish(Right);
+    VREPSwitchControllerLeft->publish(Left);
+    VREPSwitchControllerLock->publish(Lock);
 }
 
-// Fonction Callback pour les actionneurs sur les stops
-void inOutController::StateStopCallBack(const commande_locale::Msg_StopControl::ConstPtr&  msg)
+void inOutController::StateStopCallBack(const commande_locale::msg::MsgStopControl::SharedPtr msg)
 {
-	int StopControlInt(0), GoControlInt(0);
-	std_msgs::Int32 Stop, Go;
+    int StopControlInt(0), GoControlInt(0);
+    std_msgs::msg::Int32 Stop, Go;
 
-	StopControl.STOP = msg->STOP;
-	StopControl.GO = msg->GO;
+    StopControl.stop = msg->stop;
+    StopControl.go   = msg->go;
 
-	for (int i=1;i<=24;i++){
-		if (msg->STOP[i]==true)
-			StopControlInt+=pow(2,i-1);
-		if (msg->GO[i]==true)
-			GoControlInt+=pow(2,i-1);
-	}
+    for (int i=1;i<=24;i++)
+    {
+        if (msg->stop[i])
+            StopControlInt += pow(2,i-1);
 
-	Stop.data=StopControlInt;
-	VREPStopController.publish(Stop);
-	Go.data=GoControlInt;
-	VREPGoController.publish(Go);
+        if (msg->go[i])
+            GoControlInt += pow(2,i-1);
+    }
+
+    Stop.data = StopControlInt;
+    Go.data   = GoControlInt;
+
+    VREPStopController->publish(Stop);
+    VREPGoController->publish(Go);
 }
 
-// Fonction Callback pour les actionneurs sur les ergots + capteurs des ergots
-void inOutController::StatePinCallBack(const commande_locale::Msg_PinControl::ConstPtr&  msg)
+void inOutController::StatePinCallBack(const commande_locale::msg::MsgPinControl::SharedPtr msg)
 {
-	int PinOnControlInt(0), PinOffControlInt(0);
-	std_msgs::Int32 PinOn, PinOff;
+    int PinOnControlInt(0), PinOffControlInt(0);
+    std_msgs::msg::Int32 PinOn, PinOff;
 
-	PinControl.PINON = msg->PINON;
-	PinControl.PINOFF = msg->PINOFF;
+    PinControl.pinon  = msg->pinon;
+    PinControl.pinoff = msg->pinoff;
 
-	for (int i=1;i<=8;i++){
-		if (msg->PINON[i]==true)
-			PinOnControlInt+=pow(2,i-1);
-		if (msg->PINOFF[i]==true)
-			PinOffControlInt+=pow(2,i-1);
-	}
-	PinOn.data=PinOnControlInt;
+    for (int i=1;i<=8;i++)
+    {
+        if (msg->pinon[i])
+            PinOnControlInt += pow(2,i-1);
 
-	PinOff.data=PinOffControlInt;
+        if (msg->pinoff[i])
+            PinOffControlInt += pow(2,i-1);
+    }
 
-	for(int i=1;i<=8;i++) SensorState.CPI[i] = (PinOn.data & (int32_t)pow(2,i-1)) > 0;
+    PinOn.data  = PinOnControlInt;
+    PinOff.data = PinOffControlInt;
 
-	planifRailSensorState.publish(SensorState);
+    for(int i=1;i<=8;i++)
+        SensorState.cpi[i] = (PinOn.data & (int32_t)pow(2,i-1)) > 0;
+
+    planifRailSensorState->publish(SensorState);
 }
 
-// On s'abonne aux topic de VREP et du noeud Commande + On se prepare à publier sur les topic de la commande_locale
-void inOutController::init(ros::NodeHandle nh)
+
+void inOutController::init(rclcpp::Node::SharedPtr n)
 {
-	// Subscribe
-	VREPsubRailSensor = nh.subscribe("sim_ros_interface/RailSensor", 100, &inOutController::SensorCallbackRail, this);
-	VREPsubStopSensor = nh.subscribe("sim_ros_interface/StopSensor", 100, &inOutController::SensorCallbackStop, this);
-	VREPsubSwitchSensor = nh.subscribe("sim_ros_interface/SwitchSensor", 100, &inOutController::SensorCallbackSwitch, this);
-	planifSubSwitchState = nh.subscribe("/commande/Simulation/Actionneurs_aiguillages", 100, &inOutController::StateSwitchCallBack, this);
-	planifSubStopState = nh.subscribe("/commande/Simulation/Actionneurs_stops", 100, &inOutController::StateStopCallBack, this);
-	planifSubPinState = nh.subscribe("/commande/Simulation/Actionneurs_pins", 100, &inOutController::StatePinCallBack, this);
-	choixMode = nh.subscribe("/commande_locale/ChoixMode", 10,&inOutController::TypeMode,this);
+    node = n;
 
-	// Publishers
-	VREPSwitchControllerRight = nh.advertise<std_msgs::Int32>("/sim_ros_interface/SwitchControllerRight", 100);
-	VREPSwitchControllerLeft = nh.advertise<std_msgs::Int32>("/sim_ros_interface/SwitchControllerLeft", 100);
-	VREPSwitchControllerLock = nh.advertise<std_msgs::Int32>("/sim_ros_interface/SwitchControllerLock", 100);
-	VREPStopController = nh.advertise<std_msgs::Int32>("/sim_ros_interface/StopController", 100);
-	VREPGoController = nh.advertise<std_msgs::Int32>("/sim_ros_interface/GoController", 100);
-	planifRailSensorState = nh.advertise<aiguillages::Msg_SensorState>("/commande/Simulation/Capteurs", 100);
+    // Subscribers
+    VREPsubRailSensor = node->create_subscription<std_msgs::msg::Int32>("/sim_ros_interface/RailSensor", 100,
+        std::bind(&inOutController::SensorCallbackRail, this, std::placeholders::_1));
 
-	// Initialisation des capteurs des Ergots
-	for(int i=1;i<9;i++) SensorState.CPI[i]=0;
+    VREPsubStopSensor = node->create_subscription<std_msgs::msg::Int32>("/sim_ros_interface/StopSensor", 100,
+        std::bind(&inOutController::SensorCallbackStop, this, std::placeholders::_1));
 
-	ros::Duration(1).sleep();
+    VREPsubSwitchSensor = node->create_subscription<std_msgs::msg::Int32>("/sim_ros_interface/aig", 100,
+        std::bind(&inOutController::SensorCallbackSwitch, this, std::placeholders::_1));
+
+    planifSubSwitchState = node->create_subscription<commande_locale::msg::MsgSwitchControl>("/commande/Simulation/Actionneurs_aiguillages", 100,
+        std::bind(&inOutController::StateSwitchCallBack, this, std::placeholders::_1));
+
+    planifSubStopState = node->create_subscription<commande_locale::msg::MsgStopControl>("/commande/Simulation/Actionneurs_stops", 100,
+        std::bind(&inOutController::StateStopCallBack, this, std::placeholders::_1));
+
+    planifSubPinState = node->create_subscription<commande_locale::msg::MsgPinControl>("/commande/Simulation/Actionneurs_pins", 100,
+        std::bind(&inOutController::StatePinCallBack, this, std::placeholders::_1));
+
+    choixMode = node->create_subscription<commande_locale::msg::MsgChoixMode>("/commande_locale/ChoixMode", 10,
+        std::bind(&inOutController::TypeMode, this, std::placeholders::_1));
+
+    // Publishers
+    VREPSwitchControllerRight = node->create_publisher<std_msgs::msg::Int32>("/sim_ros_interface/SwitchControllerRight", 100);
+
+    VREPSwitchControllerLeft = node->create_publisher<std_msgs::msg::Int32>("/sim_ros_interface/SwitchControllerLeft", 100);
+
+    VREPSwitchControllerLock = node->create_publisher<std_msgs::msg::Int32>("/sim_ros_interface/SwitchControllerLock", 100);
+
+    VREPStopController = node->create_publisher<std_msgs::msg::Int32>("/sim_ros_interface/StopController", 100);
+
+    VREPGoController = node->create_publisher<std_msgs::msg::Int32>("/sim_ros_interface/GoController", 100);
+
+    planifRailSensorState = node->create_publisher<aiguillages::msg::MsgSensorState>("/commande/Simulation/Capteurs", 100);
+
+    // Initialisation capteurs ergots
+    for(int i=1;i<9;i++)
+        SensorState.cpi[i] = 0;
+
+    //rclcpp::sleep_for(std::chrono::seconds(1));
 }

@@ -1,23 +1,23 @@
 #ifndef AIGSINTERFACE
 #define AIGSINTERFACE
 
-#include <ros/ros.h>
+#include <rclcpp/rclcpp.hpp>
 #include <iostream>
 //Messages
-#include <std_msgs/Int32.h>
+#include <std_msgs/msg/int32.hpp>
 
 
 class AigsInterface
 {
 private:
-	ros::Publisher pub_aig_Droite;
-	ros::Publisher pub_aig_Gauche;
+	rclcpp::Publisher<std_msgs::msg::Int32>::SharedPtr pub_aig_Droite;
+    rclcpp::Publisher<std_msgs::msg::Int32>::SharedPtr pub_aig_Gauche;
 
-	std_msgs::Int32 msg;
-	std_msgs::Int32 msg_aigs;
+	std_msgs::msg::Int32 msg;
+	std_msgs::msg::Int32 msg_aigs;
 
 public:
-	AigsInterface(ros::NodeHandle noeud);
+	AigsInterface(rclcpp::Node::SharedPtr node);
 	~AigsInterface();
 
 	//Contrôles des aiguillages

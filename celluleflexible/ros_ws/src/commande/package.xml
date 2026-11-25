@@ -1,24 +1,35 @@
-<package>
+<?xml version="1.0"?>
+<package format="3">
   <name>commande</name>
-  <description>commande node</description>
-  <maintainer email="projetlong.aip@gmail.com">Projet Long ENSEEIHT</maintainer>
   <version>4.0.0</version>
-  <author>Projet Long N7 2017</author>
+  <description>commande node</description>
+
+  <maintainer email="projetlong.aip@gmail.com">Projet Long ENSEEIHT</maintainer>
   <license>GPLv3</license>
-  <buildtool_depend>catkin</buildtool_depend>
-  <build_depend>roscpp</build_depend>
+  
+  <!-- Build tool -->
+  <buildtool_depend>ament_cmake</buildtool_depend>
+  
+  <!-- Build dependencies -->
+  <build_depend>rclcpp</build_depend>
   <build_depend>std_msgs</build_depend>
   <build_depend>sensor_msgs</build_depend>
-  <build_depend>libopencv-dev</build_depend>
   <build_depend>robots</build_depend>
   <build_depend>commande_locale</build_depend>
   <build_depend>shuttles</build_depend>
   <build_depend>image_transport</build_depend>
-  <build_depend>message_generation</build_depend>
+  <depend>opencv</depend>
 
-  <build_depend>robots</build_depend>
-  <build_depend>commande_locale</build_depend>
-  <build_depend>shuttles</build_depend>
-  <run_depend>roscpp</run_depend>
-  <run_depend>message_runtime</run_depend>
+  <!-- Execution dependencies -->
+  <exec_depend>rclcpp</exec_depend>
+  <exec_depend>std_msgs</exec_depend>
+  <exec_depend>sensor_msgs</exec_depend>
+  <exec_depend>robots</exec_depend>
+  <exec_depend>commande_locale</exec_depend>
+  <exec_depend>shuttles</exec_depend>
+  <exec_depend>image_transport</exec_depend>
+
+  <export>
+    <build_type>ament_cmake</build_type>
+  </export>
 </package>

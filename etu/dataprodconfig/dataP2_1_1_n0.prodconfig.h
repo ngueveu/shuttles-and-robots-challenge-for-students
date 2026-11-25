@@ -39,9 +39,11 @@
 
 // Start
 
-// 2 : 2 : 13 : 1
+// 2 : 2 : 3 : 1
 
 // End
+
+// Evac : 3 4
 
 // ProductConfig
 
@@ -50,8 +52,9 @@ const vector<int> Prod_type{ 2 };
 
 const vector<vector<int>> Prod_seqdeposte{  { POSTE_2 } };
 
-const vector<vector<int>> Prod_dureeparposte{  { 13 } };
+const vector<vector<int>> Prod_dureeparposte{  { 3 } };
 
 const vector<int> Prod_qte{ 1 };
 
+const vector<int> Postes_evacuation{ 3, 4 };
 

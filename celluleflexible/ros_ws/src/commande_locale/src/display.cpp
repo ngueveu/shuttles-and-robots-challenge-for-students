@@ -1,11 +1,10 @@
-#include <ros/ros.h>
-#include <ros/package.h>
+#include <rclcpp/rclcpp.hpp>
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
-#include <image_transport/image_transport.h>
-#include <cv_bridge/cv_bridge.h>
+#include <image_transport/image_transport.hpp>
+#include <cv_bridge/cv_bridge.hpp>
 #include <iostream>
-#include <std_msgs/Byte.h>
+#include <std_msgs/msg/byte.hpp>
 
 using namespace cv;
 using namespace std;
@@ -24,43 +23,43 @@ void update()
     }
     catch(cv::Exception)
     {
-        sleep(1);
+        //rclcpp::sleep_for(std::chrono::seconds(1));
     }
 }
 
-void ShutdownCallback(const std_msgs::Byte::ConstPtr& msg)
+void ShutdownCallback(const std_msgs::msg::Byte::SharedPtr msg)
 {
-		ros::shutdown();
+		rclcpp::shutdown();
 }
 
-void getSimuStream(const sensor_msgs::ImageConstPtr& msg)
+void getSimuStream(const sensor_msgs::msg::Image::ConstSharedPtr& msg)
 {
 	imageSimu = cv_bridge::toCvShare(msg, "bgr8")->image;
 	flip(imageSimu, imageSimuRenverse, 0);
 }
 
-ros::Publisher pub;
+rclcpp::Publisher<std_msgs::msg::Byte>::SharedPtr pub;
 
 int main(int argc, char **argv)
 {
-	ros::init(argc, argv, "display_node");
-	ros::NodeHandle nh;
+	rclcpp::init(argc, argv);
+	auto node = rclcpp::Node::make_shared("display_node");
 
 	cv::namedWindow("Display window",WINDOW_AUTOSIZE | CV_NORMAL);
 
-	image_transport::Subscriber subImage;	// Subscriber pour recuperer l'image depuis la simu V-rep
-	image_transport::ImageTransport it(nh);
-	subImage = it.subscribe("sim_ros_interface/VisionSensorData", 1, &getSimuStream);
-	pub = nh.advertise<std_msgs::Byte>("/actuator",100);
-    ros::Subscriber sub_shutdown = nh.subscribe("/commande_locale/shutdown",10,&ShutdownCallback);
+	image_transport::ImageTransport it(node);
+    auto subImage = it.subscribe("sim_ros_interface/VisionSensorData", 1, &getSimuStream);
 
-	usleep(3000000);
+    pub = node->create_publisher<std_msgs::msg::Byte>("/actuator", 100);
 
-	ros::Rate loop_rate(25); //fréquence de la boucle
+    auto sub_shutdown = node->create_subscription<std_msgs::msg::Byte>("/commande_locale/shutdown", 10, std::bind(&ShutdownCallback, std::placeholders::_1));
+	//rclcpp::sleep_for(std::chrono::milliseconds(3000));
 
-	while (ros::ok())
+	rclcpp::Rate loop_rate(25); //fréquence de la boucle
+
+	while (rclcpp::ok())
 	{
-		ros::spinOnce(); //permet aux fonction callback de ros dans les objets d'êtres appelées
+		rclcpp::spin_some(node); //permet aux fonction callback de ros dans les objets d'êtres appelées
         update();
 		loop_rate.sleep(); //permet de synchroniser la boucle while. Il attend le temps qu'il reste pour faire le 25Hz (ou la fréquence indiquée dans le loop_rate)
 	}
@@ -84,7 +83,7 @@ void check(int key)
 		if(index>=10)
 		{
 			cout << "bravo!" << endl;
-			pub.publish(std_msgs::Byte());
+			pub->publish(std_msgs::msg::Byte());
 			index=0;
 		}
 	}

@@ -1,10 +1,10 @@
 #ifndef FILEATTENTE
 #define FILEATTENTE
+
 #include <iostream>
 #include <queue>
 
 using namespace std;
-
 
 class FileAttente
 {

@@ -23,8 +23,13 @@ std_msgs/msg/UInt8
 std_msgs/msg/UInt16
 std_msgs/msg/UInt32
 std_msgs/msg/UInt64
+std_msgs/msg/MultiArrayLayout
+std_msgs/msg/MultiArrayDimension
+std_msgs/msg/Int32MultiArray
+std_msgs/msg/Float32MultiArray
 std_srvs/srv/Empty
 std_srvs/srv/SetBool
 std_srvs/srv/Trigger
+sensor_msgs/msg/JointState
 example_interfaces/srv/AddTwoInts
 example_interfaces/action/Fibonacci

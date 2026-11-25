@@ -1,19 +1,26 @@
-<package>
+<?xml version="1.0"?>
+<?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
+<package format="3">
   <name>aiguillages</name>
-  <description>commande node</description>
-  <maintainer email="etudiants-ups@univ-tlse3.fr">Dato Bruno</maintainer>
   <version>3.1.2</version>
-  <author>Abdellah, Bruno, Eugène</author>
+  <description>Migration ROS 2 du noeud de commande des aiguillages</description>
+  <maintainer email="etudiants-ups@univ-tlse3.fr">Dato Bruno</maintainer>
+  <author email="etudiants-ups@univ-tlse3.fr">Abdellah, Bruno, Eugène</author>
   <license>GPLv3</license>
-  <url>http://www.fr</url>
-  <buildtool_depend>catkin</buildtool_depend>
-  <build_depend>roscpp</build_depend>
-  <build_depend>std_msgs</build_depend>
-  <build_depend>sensor_msgs</build_depend>
-  <build_depend>libopencv-dev</build_depend>
-  <build_depend>image_transport</build_depend>
-  <build_depend>message_generation</build_depend>
 
-  <run_depend>roscpp</run_depend>
-  <run_depend>message_runtime</run_depend>
+  <buildtool_depend>ament_cmake</buildtool_depend>
+
+  <depend>rclcpp</depend>
+  <depend>std_msgs</depend>
+  <depend>sensor_msgs</depend>
+  <depend>image_transport</depend>
+  <depend>opencv</depend>
+
+  <build_depend>rosidl_default_generators</build_depend>
+  <exec_depend>rosidl_default_runtime</exec_depend>
+  <member_of_group>rosidl_interface_packages</member_of_group>
+
+  <export>
+    <build_type>ament_cmake</build_type>
+  </export>
 </package>

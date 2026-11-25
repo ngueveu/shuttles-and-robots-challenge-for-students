@@ -1,0 +1,37 @@
+# ─── Artefacts de build ROS2 / colcon ───
+**/build/
+**/install/
+**/log/
+
+# ─── Cache Python compilé ───
+__pycache__/
+*.pyc
+
+# ─── CoppeliaSim : binaires et fichiers générés à l'usage ───
+celluleflexible/CoppeliaSim/libsimExtROS2.so
+celluleflexible/CoppeliaSim/helpFiles/en/simROS2.htm
+celluleflexible/CoppeliaSim/helpFiles/index/simROS2.json
+celluleflexible/CoppeliaSim/lua/simROS2-typecheck.lua
+celluleflexible/CoppeliaSim/lua/simROS2.lua
+celluleflexible/CoppeliaSim/models/robots/non-mobile/simModelThumbnails.ttmt
+celluleflexible/CoppeliaSim/models/office items/simModelThumbnails.ttmt
+celluleflexible/CoppeliaSim/models/other/simModelThumbnails.ttmt
+celluleflexible/CoppeliaSim/models/people/simModelThumbnails.ttmt
+celluleflexible/CoppeliaSim/updtChck.dat
+
+# ─── Logs de simulation ───
+celluleflexible/log.txt
+
+# ─── Fichiers de compilation "de travail" écrasés par script0_Compile.sh ───
+celluleflexible/ros_ws/src/commande/src/main_commande.cpp
+celluleflexible/ros_ws/src/commande/src/prodconfig/productconfig.h
+
+# ─── Fichiers étudiants personnels dans etu/ (racine uniquement) ───
+etu/*.main_commande.cpp
+!etu/Tuto_Basique.main_commande.cpp
+!etu/TeamSALLAG.main_commande.cpp
+!etu/XXX_XXX.main_commande.cpp
+
+# ─── Sorties générées par la simulation (logs, doc) ───
+etu/output/
+etu/dataprodconfig/dataPsamy.prodconfig.h

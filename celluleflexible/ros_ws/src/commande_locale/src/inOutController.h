@@ -1,64 +1,63 @@
-/*
- * ********************************* *
- * Copyright 2016, STEC Projet Long. *
- * All rights reserved.  	     *
- * ********************************* *
- * Mise à jour par le Projet Long    *
- * ENSEEIHT 2017		     *
- * ********************************* *
-*/
-
-#ifndef IN_OUT_CONTROLLER
-#define IN_OUT_CONTROLLER
+#ifndef IN_OUT_CONTROLLER_HPP
+#define IN_OUT_CONTROLLER_HPP
 
 #include "vrepController.h"
 
-#include <ros/ros.h>
+#include <rclcpp/rclcpp.hpp>
+#include <std_msgs/msg/int32.hpp>
 
-#include "commande_locale/Msg_SwitchControl.h"
-#include "commande_locale/Msg_StopControl.h"
-#include "commande_locale/Msg_PinControl.h"
-#include "aiguillages/Msg_SensorState.h"
-#include <commande_locale/Msg_ChoixMode.h>
-#include <std_msgs/Int32.h>
-#include <unistd.h>
+#include "commande_locale/msg/msg_switch_control.hpp"
+#include "commande_locale/msg/msg_stop_control.hpp"
+#include "commande_locale/msg/msg_pin_control.hpp"
+#include "commande_locale/msg/msg_choix_mode.hpp"
+#include "aiguillages/msg/msg_sensor_state.hpp"
 
 class inOutController
 {
 private:
-	vrepController* vrepServiceAcces;
+    vrepController* vrepServiceAcces;
+    rclcpp::Node::SharedPtr node;
 
-	ros::Publisher VREPSwitchControllerRight;
-	ros::Publisher VREPSwitchControllerLeft;
-	ros::Publisher VREPSwitchControllerLock;
-	ros::Publisher VREPStopController;
-	ros::Publisher VREPGoController;
-	ros::Publisher planifRailSensorState;
-	ros::Subscriber subSensorState;
-	ros::Subscriber VREPsubRailSensor;
-	ros::Subscriber VREPsubStopSensor;
-	ros::Subscriber VREPsubSwitchSensor;
-	ros::Subscriber planifSubSwitchState;
-	ros::Subscriber planifSubStopState;
-	ros::Subscriber planifSubPinState;
-	ros::Subscriber choixMode;
+    // Publishers
+    rclcpp::Publisher<std_msgs::msg::Int32>::SharedPtr VREPSwitchControllerRight;
+    rclcpp::Publisher<std_msgs::msg::Int32>::SharedPtr VREPSwitchControllerLeft;
+    rclcpp::Publisher<std_msgs::msg::Int32>::SharedPtr VREPSwitchControllerLock;
+    rclcpp::Publisher<std_msgs::msg::Int32>::SharedPtr VREPStopController;
+    rclcpp::Publisher<std_msgs::msg::Int32>::SharedPtr VREPGoController;
+    rclcpp::Publisher<aiguillages::msg::MsgSensorState>::SharedPtr planifRailSensorState;
 
-	commande_locale::Msg_StopControl StopControl;
-	commande_locale::Msg_PinControl PinControl;
-	commande_locale::Msg_SwitchControl SwitchControl;
-	aiguillages::Msg_SensorState SensorState;
-	int mode;
+    // Subscribers
+    rclcpp::Subscription<std_msgs::msg::Int32>::SharedPtr VREPsubRailSensor;
+    rclcpp::Subscription<std_msgs::msg::Int32>::SharedPtr VREPsubStopSensor;
+    rclcpp::Subscription<std_msgs::msg::Int32>::SharedPtr VREPsubSwitchSensor;
+    rclcpp::Subscription<commande_locale::msg::MsgSwitchControl>::SharedPtr planifSubSwitchState;
+    rclcpp::Subscription<commande_locale::msg::MsgStopControl>::SharedPtr planifSubStopState;
+    rclcpp::Subscription<commande_locale::msg::MsgPinControl>::SharedPtr planifSubPinState;
+    rclcpp::Subscription<commande_locale::msg::MsgChoixMode>::SharedPtr choixMode;
+
+    commande_locale::msg::MsgStopControl StopControl;
+    commande_locale::msg::MsgPinControl PinControl;
+    commande_locale::msg::MsgSwitchControl SwitchControl;
+    aiguillages::msg::MsgSensorState SensorState;
+
+    int mode = 0;
+
 public:
-	inOutController(vrepController* vrepSA);
-	void init(ros::NodeHandle nh);
-	void TypeMode(const commande_locale::Msg_ChoixMode::ConstPtr& msg1);
-	// Sensors
-	void SensorCallbackRail(const std_msgs::Int32::ConstPtr& msg);
-	void SensorCallbackStop(const std_msgs::Int32::ConstPtr& msg);
-	void SensorCallbackSwitch(const std_msgs::Int32::ConstPtr& msg);
-	// Actuators
-	void StateSwitchCallBack(const commande_locale::Msg_SwitchControl::ConstPtr&  msg);
-	void StateStopCallBack(const commande_locale::Msg_StopControl::ConstPtr&  msg);
-	void StatePinCallBack(const commande_locale::Msg_PinControl::ConstPtr&  msg);
+    inOutController(vrepController* vrepSA);
+    void init(rclcpp::Node::SharedPtr n);
+    void TypeMode(const commande_locale::msg::MsgChoixMode::SharedPtr msg);
+
+    // Sensors
+    void SensorCallbackRail(const std_msgs::msg::Int32::SharedPtr msg);
+    void SensorCallbackStop(const std_msgs::msg::Int32::SharedPtr msg);
+    void SensorCallbackSwitch(const std_msgs::msg::Int32::SharedPtr msg);
+
+    // Actuators
+    void StateSwitchCallBack(const commande_locale::msg::MsgSwitchControl::SharedPtr msg);
+    void StateStopCallBack(const commande_locale::msg::MsgStopControl::SharedPtr msg);
+    void StatePinCallBack(const commande_locale::msg::MsgPinControl::SharedPtr msg);
+  
 };
+
 #endif
+

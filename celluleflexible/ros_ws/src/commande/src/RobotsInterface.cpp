@@ -1,13 +1,7 @@
 #include "RobotsInterface.h"
 
-#include <ros/ros.h>
 #include <iostream>
 #include <unistd.h>
-
-using namespace std;
-
-//Messages
-#include <std_msgs/Int32.h>
 
 using namespace std;
 
@@ -15,7 +9,7 @@ using namespace std;
 #define BOLDCYAN    "\033[1m\033[36m"      /* Bold Cyan */
 #define BOLDMAGENTA "\033[1m\033[35m"      /* Bold Magenta */
 
-RobotsInterface::RobotsInterface(ros::NodeHandle noeud, int nombre_robot)
+RobotsInterface::RobotsInterface(rclcpp::Node::SharedPtr node, int nombre_robot)
 {
 	nbRobot=nombre_robot;
 
@@ -36,27 +30,28 @@ RobotsInterface::RobotsInterface(ros::NodeHandle noeud, int nombre_robot)
 	}
 
 
-	pub_robot_position=noeud.advertise<robots::Msg_numrobot>("/commande/Simulation/SendPositionRobot",10);
-	pub_robot_joints=noeud.advertise<commande_locale::RobotJoints>("/commande/Simulation/SendJointsRobot",10);
-	pub_pince_fermer=noeud.advertise<robots::Msg_numrobot>("/commande/Simulation/FermerPinceRobot",10);
-	pub_pince_ouvrir=noeud.advertise<robots::Msg_numrobot>("/commande/Simulation/OuvrirPinceRobot",10);
-	pub_descendre=noeud.advertise<robots::Msg_numrobot>("/commande/Simulation/DescendreBras",10);
-	pub_monter=noeud.advertise<robots::Msg_numrobot>("/commande/Simulation/MonterBras",10);
-	pub_controler_robot=noeud.advertise<robots::MoveRobot>("/commande/Simulation/ControlerBras",10);
-	pub_faireTache=noeud.advertise<robots::FaireTacheMsg>("/commande/Simulation/faireTache", 10);
-	pub_evacuer_piece=noeud.advertise<std_msgs::Byte>("/commande/Simulation/Evacuer",10);
-	pubProductAdd= noeud.advertise<commande_locale::Msg_AddProduct>("/commande_locale/AddProduct",10);
-	pub_deplacer_piece= noeud.advertise<commande_locale::DeplacerPieceMsg>("/commande/Simulation/DeplacerPiece",10);
+	pub_robot_position = node->create_publisher<robots::msg::MsgNumRobot>("/commande/Simulation/SendPositionRobot",10);
+	pub_robot_joints = node->create_publisher<commande_locale::msg::RobotJoints>("/commande/Simulation/SendJointsRobot",10);
+	pub_pince_fermer = node->create_publisher<robots::msg::MsgNumRobot>("/commande/Simulation/FermerPinceRobot",10);
+	pub_pince_ouvrir = node->create_publisher<robots::msg::MsgNumRobot>("/commande/Simulation/OuvrirPinceRobot",10);
+	pub_descendre = node->create_publisher<robots::msg::MsgNumRobot>("/commande/Simulation/DescendreBras",10);
+	pub_monter = node->create_publisher<robots::msg::MsgNumRobot>("/commande/Simulation/MonterBras",10);
+	pub_controler_robot = node->create_publisher<robots::msg::MoveRobot>("/commande/Simulation/ControlerBras",10);
+	pub_faireTache = node->create_publisher<robots::msg::FaireTacheMsg>("/commande/Simulation/faireTache", 10);
+	//pub_evacuer_piece = node->create_publisher<std_msgs::msg::Byte>("/commande/Simulation/Evacuer",10);
+	pub_evacuer_piece = node->create_publisher<robots::msg::EvacuerMsg>("/commande/Simulation/Evacuer",10);
+	pubProductAdd = node->create_publisher<commande_locale::msg::MsgAddProduct>("/commande_locale/AddProduct",10);
+	pub_deplacer_piece = node->create_publisher<commande_locale::msg::DeplacerPieceMsg>("/commande/Simulation/DeplacerPiece",10);
 
 
 
 	//Retour des robots vers la commande
-	sub_retourRobot = noeud.subscribe("/commande/Simulation/retourCommande", 100, &RobotsInterface::RetourRobotCallback,this);
+	sub_retourRobot = node->create_subscription<robots::msg::MsgNumRobot>("/commande/Simulation/retourCommande", 100, std::bind(&RobotsInterface::RetourRobotCallback, this, std::placeholders::_1));
 
-	client = noeud.serviceClient<commande_locale::SrvAddProduct>("srv_add_product");
-	serverPushBack = noeud.advertiseService("srv_add_product_push_back",&RobotsInterface::ProductAddPushBack,this);
+	client = node->create_client<commande_locale::srv::SrvAddProduct>("srv_add_product");
+	serverPushBack = node->create_service<commande_locale::srv::SrvAddProductPushBack>("srv_add_product_push_back",std::bind(&RobotsInterface::ProductAddPushBack, this, std::placeholders::_1, std::placeholders::_2));
 
-	ros::Duration(1).sleep();
+	//rclcpp::sleep_for(std::chrono::seconds(1));
 }
 
 RobotsInterface::~RobotsInterface()
@@ -69,7 +64,7 @@ void RobotsInterface::EnvoyerPosition(int numRobot, int numPosition)
 {
 	if(numRobot>=1 && numRobot<=nbRobot)
 	{
-		robots::Msg_numrobot msg;
+		robots::msg::MsgNumRobot msg;
 		//Numéro de la position souhaitée
 		if(numPosition<1 || numPosition>4)
 			cout <<  BOLDMAGENTA << "Le numero de la position souhaitee doit etre compris entre 1 et 4." << RESET << endl;
@@ -77,7 +72,7 @@ void RobotsInterface::EnvoyerPosition(int numRobot, int numPosition)
 			msg.data = numPosition;
 		msg.num_robot=numRobot;
 		robotPosition[numRobot-1]=0;
-		pub_robot_position.publish(msg);
+		pub_robot_position->publish(msg);
 	}
 	else
 		cout <<  BOLDMAGENTA << "Le numero du robot doit etre compris entre 1 et "<< nbRobot << "." << RESET << endl;
@@ -90,7 +85,7 @@ void RobotsInterface::EnvoyerAngles(int numRobot, int angle1, int angle2, int an
 	//Publication du message vers le node robot en fonction du numéro de robot à commander
 	if(numRobot>=1 && numRobot<=nbRobot)
 	{
-		commande_locale::RobotJoints msg;
+		commande_locale::msg::RobotJoints msg;
 
 		//Angles (en degrés) choisis par l'utilisateur
 		msg.joint1 = angle1;
@@ -102,7 +97,7 @@ void RobotsInterface::EnvoyerAngles(int numRobot, int angle1, int angle2, int an
 		msg.joint7 = angle7;
 		msg.num_robot=numRobot;
 		robotPosition[numRobot-1]=0;
-		pub_robot_joints.publish(msg);
+		pub_robot_joints->publish(msg);
 	}
 	else
 		cout <<  BOLDMAGENTA << "Le numero du robot doit etre compris entre 1 et "<< nbRobot << "." << RESET << endl;
@@ -112,7 +107,7 @@ void RobotsInterface::EnvoyerAngles(int numRobot, int angle1, int angle2, int an
 //Fonction permettant d'envoyer une position prédéfinie, l'état souhaité du bras et l'état souhaité de la pince d'un robot choisi
 void RobotsInterface::ControlerRobot(int numRobot, int numPosition, int bras, int pince)
 {
-	robots::MoveRobot controle;
+	robots::msg::MoveRobot controle;
 
 	controle.position = numPosition;
 	controle.bras = bras;
@@ -145,7 +140,7 @@ void RobotsInterface::ControlerRobot(int numRobot, int numPosition, int bras, in
 	else
 	{
 		robotPosition[numRobot-1]=0;
-		pub_controler_robot.publish(controle);
+		pub_controler_robot->publish(controle);
 	}
 }
 
@@ -156,10 +151,10 @@ void RobotsInterface::FermerPince(int numRobot)
 	if(numRobot>=1 && numRobot<=nbRobot)
 	{
 		robotPince[numRobot-1]=0;
-		robots::Msg_numrobot msg;
+		robots::msg::MsgNumRobot msg;
 		msg.data=1;
 		msg.num_robot=numRobot;
-		pub_pince_fermer.publish(msg);
+		pub_pince_fermer->publish(msg);
 	}
 	else
 		cout <<  BOLDMAGENTA << "Le numero du robot doit etre compris entre 1 et "<< nbRobot << "." << RESET << endl;
@@ -172,10 +167,10 @@ void RobotsInterface::OuvrirPince(int numRobot)
 	if(numRobot>=1 && numRobot<=nbRobot)
 	{
 		robotPince[numRobot-1]=0;
-		robots::Msg_numrobot msg;
+		robots::msg::MsgNumRobot msg;
 		msg.data=0;
 		msg.num_robot=numRobot;
-		pub_pince_ouvrir.publish(msg);
+		pub_pince_ouvrir->publish(msg);
 	}
 	else
 		cout <<  BOLDMAGENTA << "Le numero du robot doit etre compris entre 1 et "<< nbRobot << "." << RESET << endl;
@@ -188,10 +183,10 @@ void RobotsInterface::DescendreBras(int numRobot)
 	if(numRobot>=1 && numRobot<=nbRobot)
 	{
 		robotBras[numRobot-1]=0;
-		robots::Msg_numrobot msg;
+		robots::msg::MsgNumRobot msg;
 		msg.data=1;
 		msg.num_robot=numRobot;
-		pub_descendre.publish(msg);
+		pub_descendre->publish(msg);
 	}
 	else
 		cout <<  BOLDMAGENTA << "Le numero du robot doit etre compris entre 1 et "<< nbRobot << "." << RESET << endl;
@@ -204,10 +199,10 @@ void RobotsInterface::MonterBras(int numRobot)
 	if(numRobot>=1 && numRobot<=nbRobot)
 	{
 		robotBras[numRobot-1]=0;
-		robots::Msg_numrobot msg;
+		robots::msg::MsgNumRobot msg;
 		msg.data=0;
 		msg.num_robot=numRobot;
-		pub_monter.publish(msg);
+		pub_monter->publish(msg);
 	}
 	else
 		cout <<  BOLDMAGENTA << "Le numero du robot doit etre compris entre 1 et "<< nbRobot << "." << RESET << endl;
@@ -216,7 +211,7 @@ void RobotsInterface::MonterBras(int numRobot)
 
 /*** Retour des robots ***/
 //Callback pour le retour des informations relatives au robot 1
-void RobotsInterface::RetourRobotCallback(const robots::Msg_numrobot::ConstPtr& msg)
+void RobotsInterface::RetourRobotCallback(const robots::msg::MsgNumRobot::SharedPtr msg)
 {
 	switch(msg->data)
 	{
@@ -383,9 +378,9 @@ void RobotsInterface::DeplacerPiece(int num_robot, int positionA, int positionB)
 		{
 			robotMacroDeplacement[num_robot-1]=0;
 			deplacer_msg.num_robot = num_robot;
-			deplacer_msg.positionA = positionA;
-			deplacer_msg.positionB = positionB;
-			pub_deplacer_piece.publish(deplacer_msg);
+			deplacer_msg.positiona = positionA;
+			deplacer_msg.positionb = positionB;
+			pub_deplacer_piece->publish(deplacer_msg);
 		}
 	}
 	else
@@ -447,23 +442,23 @@ void RobotsInterface::FaireTache(int num_poste, int duree)
 		tache_msg.num_robot=num_robot;
 		tache_msg.position=position;
 		tache_msg.duree=duree;
-		pub_faireTache.publish(tache_msg);
+		pub_faireTache->publish(tache_msg);
 
-		ros::Duration(1).sleep();
+		//rclcpp::sleep_for(std::chrono::seconds(1));
 	}
 	else
 		cout <<  BOLDMAGENTA << "Le numero du poste doit etre compris entre 1 et "<< nbRobot*2 << "." << RESET << endl;
 }
 
-void RobotsInterface::Evacuer()
+void RobotsInterface::Evacuer(int numero_poste)
 {
-	std_msgs::Byte msg;
-	pub_evacuer_piece.publish(msg);
+	robots::msg::EvacuerMsg msg;
+	msg.numero_poste = numero_poste;
+	pub_evacuer_piece->publish(msg);
 
-	// Pour eviter les conflits d'appel de service Coppelia en même temps
-	ros::Duration(1).sleep();
+	rclcpp::sleep_for(std::chrono::seconds(1));
 
-	cout << BOLDCYAN << "Evacuation !" << RESET << endl;
+	cout << BOLDCYAN << "Evacuation du poste " << numero_poste << " !" << RESET << endl;
 }
 
 void RobotsInterface::AjouterProduit(int poste, int produit)
@@ -472,15 +467,18 @@ void RobotsInterface::AjouterProduit(int poste, int produit)
 	{
 		if(produit>=1 && produit<=6)
 		{
-			srv.request.choixPoste = poste;
-			srv.request.choixProduit = produit;
-			client.call(srv);
+			auto request = std::make_shared<commande_locale::srv::SrvAddProduct::Request>();
+
+			request->choixposte = poste;
+			request->choixproduit = produit;
+
+			client->async_send_request(request);
 
 			// Pour le log
 			msg0.num_poste = poste;
 			//rappel, code produit A:14, B:24, C:34 etc.
 			msg0.num_produit = produit*10+4;
-			pubProductAdd.publish(msg0);
+			pubProductAdd->publish(msg0);
 
 			// produit_a_ajouter.push_back(poste*10+produit); SUN verif si peut etre supprimee sans bug
 		}
@@ -493,12 +491,12 @@ void RobotsInterface::AjouterProduit(int poste, int produit)
 
 }
 
-bool RobotsInterface::ProductAddPushBack(commande_locale::SrvAddProductPushBack::Request& req, commande_locale::SrvAddProductPushBack::Response& rep)
+void RobotsInterface::ProductAddPushBack(const std::shared_ptr<commande_locale::srv::SrvAddProductPushBack::Request> request, std::shared_ptr<commande_locale::srv::SrvAddProductPushBack::Response> response)
 {
-	int poste=req.poste;
-	int produit=req.produit;
-	// produit_a_ajouter.push_back(poste*10+produit); SUN verif si peut etre supprimee sans bug
-	return true;
+    int poste = request->poste;
+    int produit = request->produit;
+
+    response->success = true;
 }
 
 /*

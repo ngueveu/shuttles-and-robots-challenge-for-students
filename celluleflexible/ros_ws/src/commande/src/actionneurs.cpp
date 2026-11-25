@@ -1,33 +1,30 @@
 /**** Bruno DATO, Abdellah ELGOURAIN, Evgeny SHULGA M1 EEA ISTR Université Paul Sabatier Toulouse III 2016 ****/
-#include <ros/ros.h>
+
 #include "actionneurs.h"
 #include "capteurs.h"
-//#include "capteurs.h"
-#include <commande_locale/Msg_StopControl.h>
-#include "commande_locale/Msg_SwitchControl.h"
-#include "commande_locale/Msg_PinControl.h"
+#include <chrono>
 
-Actionneurs::Actionneurs(ros::NodeHandle noeud)
+Actionneurs::Actionneurs(rclcpp::Node::SharedPtr node)
 {
 	// Publisher
-	pub_actionneurs_ligne = noeud.advertise<commande_locale::Actionneurs>("/commande/Ligne_transitique/Actionneurs", 100);
-	pub_actionneurs_simu_aguillages = noeud.advertise<commande_locale::Msg_SwitchControl>("/commande/Simulation/Actionneurs_aiguillages", 100);
-	pub_actionneurs_simu_stops = noeud.advertise<commande_locale::Msg_StopControl>("/commande/Simulation/Actionneurs_stops", 100);
-	pub_actionneurs_simu_pins = noeud.advertise<commande_locale::Msg_PinControl>("/commande/Simulation/Actionneurs_pins", 100);
+	pub_actionneurs_ligne = node->create_publisher<commande_locale::msg::Actionneurs>("/commande/Ligne_transitique/Actionneurs", 100);
+	pub_actionneurs_simu_aguillages = node->create_publisher<commande_locale::msg::MsgSwitchControl>("/commande/Simulation/Actionneurs_aiguillages", 100);
+	pub_actionneurs_simu_stops = node->create_publisher<commande_locale::msg::MsgStopControl>("/commande/Simulation/Actionneurs_stops", 100);
+	pub_actionneurs_simu_pins = node->create_publisher<commande_locale::msg::MsgPinControl>("/commande/Simulation/Actionneurs_pins", 100);
 
-	ros::Duration(1).sleep();
+	//rclcpp::sleep_for(std::chrono::seconds(1));
 
 	Actionneurs_ligne=0;
 
-	for(int i=1;i<=24;i++) actionneurs_simulation_Stop.STOP[i] = 1;
-	for(int i=1;i<=24;i++) actionneurs_simulation_Stop.GO[i] = 0;
+	for(int i=1;i<=24;i++) actionneurs_simulation_Stop.stop[i] = 1;
+	for(int i=1;i<=24;i++) actionneurs_simulation_Stop.go[i] = 0;
 
-	for(int i=1;i<=12;i++) actionneurs_simulation_Aguillages.LOCK[i] = 0;
-	for(int i=1;i<=12;i++) actionneurs_simulation_Aguillages.RD[i] = 0;
-	for(int i=1;i<=12;i++) actionneurs_simulation_Aguillages.RG[i] = 0;
+	for(int i=1;i<=12;i++) actionneurs_simulation_Aguillages.lock[i] = 0;
+	for(int i=1;i<=12;i++) actionneurs_simulation_Aguillages.rd[i] = 0;
+	for(int i=1;i<=12;i++) actionneurs_simulation_Aguillages.rg[i] = 0;
 
-	for(int i=1;i<=8;i++) actionneurs_simulation_Pin.PINON[i] = 0;
-	for(int i=1;i<=8;i++) actionneurs_simulation_Pin.PINOFF[i] = 0;
+	for(int i=1;i<=8;i++) actionneurs_simulation_Pin.pinon[i] = 0;
+	for(int i=1;i<=8;i++) actionneurs_simulation_Pin.pinoff[i] = 0;
 }
 
 Actionneurs::~Actionneurs()
@@ -43,13 +40,13 @@ void Actionneurs::Envoyer(bool STx[],bool RxD[],bool RxG[],bool Vx[],bool Dx[],b
 	Actionneurs::Ecrire_ligne_Vx(Vx);
 	Actionneurs::Ecrire_ligne_Dx(Dx);
 
-	for(int i=1;i<=24;i++) actionneurs_simulation_Stop.STOP[i] = !STx[i];
-	for(int i=1;i<=24;i++) actionneurs_simulation_Stop.GO[i] = STx[i];
-	for(int i=1;i<=12;i++) actionneurs_simulation_Aguillages.LOCK[i] = !Vx[i] && Dx[i];
-	for(int i=1;i<=12;i++) actionneurs_simulation_Aguillages.RD[i] = RxD[i];
-	for(int i=1;i<=12;i++) actionneurs_simulation_Aguillages.RG[i] = RxG[i];
-	for(int i=1;i<=8;i++) actionneurs_simulation_Pin.PINON[i] = PIx[i];
-	for(int i=1;i<=8;i++) actionneurs_simulation_Pin.PINOFF[i] = !PIx[i];
+	for(int i=1;i<=24;i++) actionneurs_simulation_Stop.stop[i] = !STx[i];
+	for(int i=1;i<=24;i++) actionneurs_simulation_Stop.go[i] = STx[i];
+	for(int i=1;i<=12;i++) actionneurs_simulation_Aguillages.lock[i] = !Vx[i] && Dx[i];
+	for(int i=1;i<=12;i++) actionneurs_simulation_Aguillages.rd[i] = RxD[i];
+	for(int i=1;i<=12;i++) actionneurs_simulation_Aguillages.rg[i] = RxG[i];
+	for(int i=1;i<=8;i++) actionneurs_simulation_Pin.pinon[i] = PIx[i];
+	for(int i=1;i<=8;i++) actionneurs_simulation_Pin.pinoff[i] = !PIx[i];
 
 	Actionneurs::publish_actionneurs_ligne();
 	Actionneurs::publish_actionneurs_simulation();
@@ -111,16 +108,16 @@ void Actionneurs::Ecrire_ligne_Dx(bool Dx[])
 
 void Actionneurs::publish_actionneurs_ligne()
 {
-	commande_locale::Actionneurs msg;
+	commande_locale::msg::Actionneurs msg;
 	msg.actionneurs=Actionneurs_ligne;
-	pub_actionneurs_ligne.publish(msg);
+	pub_actionneurs_ligne->publish(msg);
 }
 
 void Actionneurs::publish_actionneurs_simulation()
 {
-	pub_actionneurs_simu_stops.publish(actionneurs_simulation_Stop);
-	pub_actionneurs_simu_aguillages.publish(actionneurs_simulation_Aguillages);
-	pub_actionneurs_simu_pins.publish(actionneurs_simulation_Pin);
+	pub_actionneurs_simu_stops->publish(actionneurs_simulation_Stop);
+	pub_actionneurs_simu_aguillages->publish(actionneurs_simulation_Aguillages);
+	pub_actionneurs_simu_pins->publish(actionneurs_simulation_Pin);
 }
 
 void WRITE(long int *registre,bool donnee,int numero_bit)

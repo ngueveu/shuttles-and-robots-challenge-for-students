@@ -1,3 +1,3 @@
 int32 num_robot
-int32 positionA
-int32 positionB
+int32 positiona
+int32 positionb

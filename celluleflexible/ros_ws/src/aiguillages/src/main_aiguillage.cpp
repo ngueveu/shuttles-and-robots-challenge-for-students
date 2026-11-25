@@ -1,34 +1,31 @@
-#include <ros/ros.h>
-#include <unistd.h>
-#include <vector>
+#include "rclcpp/rclcpp.hpp"
+#include "std_msgs/msg/byte.hpp"
 #include "Aiguillage.h"
-#include <iostream>
+#include <memory>
 
-
-using namespace std;
-
-void ShutdownCallback(const std_msgs::Byte::ConstPtr& msg)
+void shutdown_callback(const std_msgs::msg::Byte::SharedPtr msg)
 {
-		ros::shutdown();
+    (void)msg;
+    RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "Signal d'arrêt reçu. Fermeture du nœud...");
+    rclcpp::shutdown();
 }
 
 int main(int argc, char **argv)
 {
-	ros::init(argc, argv, "main_aiguillage");
-	ros::NodeHandle noeud;
-	ros::Subscriber sub_shutdown = noeud.subscribe("/commande_locale/shutdown",10,&ShutdownCallback);
+    rclcpp::init(argc, argv);
+    auto node_aiguillage = std::make_shared<Aiguillage>();
+    
+    // On souscrit au topic de shutdown
+    auto sub_shutdown = node_aiguillage->create_subscription<std_msgs::msg::Byte>("/commande_locale/shutdown", 10, shutdown_callback);
 
-	Aiguillage *gerer_aiguillage = new Aiguillage(noeud);
 
-	ros::Rate loop_rate(25); //fréquence de la boucle
+    // Mets ça pour forcer 12 threads (un par aiguillage possible + capteurs) :
+    rclcpp::executors::MultiThreadedExecutor executor(rclcpp::ExecutorOptions(), 15);
+    executor.add_node(node_aiguillage);
+    
+    RCLCPP_INFO(node_aiguillage->get_logger(), "Nœud démarré avec MultiThreadedExecutor.");
+    executor.spin();
 
-	while (ros::ok())
-	{
-		ros::spinOnce(); //permet aux fonction callback de ros dans les objets d'êtres appelées
-		loop_rate.sleep(); //permet de synchroniser la boucle while. Il attend le temps qu'il reste pour faire le 25Hz (ou la fréquence indiquée dans le loop_rate)
-	}
-
-	delete gerer_aiguillage;
-
-	return 0;
+    rclcpp::shutdown();
+    return 0;
 }

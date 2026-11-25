@@ -1,21 +1,23 @@
 #ifndef ROBOTS
 #define ROBOTS
 
-#include <ros/ros.h>
+#include <rclcpp/rclcpp.hpp>
 #include <iostream>
-
-#include <commande_locale/RobotJoints.h>
-#include <robots/MoveRobot.h>
-#include <std_msgs/Int32.h>
-#include <std_msgs/Bool.h>
-#include <std_msgs/Byte.h>
 #include <vector>
-#include "robots/FaireTacheMsg.h"
-#include "robots/Msg_numrobot.h"
-#include "commande_locale/SrvAddProduct.h"
-#include "commande_locale/Msg_AddProduct.h"
-#include "commande_locale/DeplacerPieceMsg.h"
-#include "commande_locale/SrvAddProductPushBack.h"
+
+#include <std_msgs/msg/int32.hpp>
+#include <std_msgs/msg/bool.hpp>
+#include <std_msgs/msg/byte.hpp>
+#include <robots/msg/faire_tache_msg.hpp>
+#include <robots/msg/msg_num_robot.hpp>
+#include <robots/msg/move_robot.hpp>
+#include <robots/msg/evacuer_msg.hpp>
+#include <commande_locale/srv/srv_add_product.hpp>
+#include <commande_locale/msg/msg_add_product.hpp>
+#include <commande_locale/msg/deplacer_piece_msg.hpp>
+#include <commande_locale/msg/robot_joints.hpp>
+#include <commande_locale/srv/srv_add_product_push_back.hpp>
+
 
 // Etats robot
 #define HAUT		1
@@ -45,30 +47,31 @@ class RobotsInterface
 {
 private:
 
-	ros::Publisher pub_robot_position;
-	ros::Publisher pub_robot_joints;
-	ros::Publisher pub_pince_fermer;
-	ros::Publisher pub_pince_ouvrir;
-	ros::Publisher pub_pince_descendre;
-	ros::Publisher pub_descendre;
-	ros::Publisher pub_monter;
-	ros::Publisher pub_controler_robot;
-	ros::Publisher pub_faireTache;
-	ros::Publisher pub_robot_transport1;
-	ros::Publisher pub_robot_transport2;
-	ros::Publisher pub_robot_transport3;
-	ros::Publisher pub_robot_transport4;
-	ros::Publisher pub_evacuer_piece;
-	ros::Publisher pubProductAdd;
-	ros::Publisher pub_deplacer_piece;
+	rclcpp::Publisher<robots::msg::MsgNumRobot>::SharedPtr pub_robot_position;
+    rclcpp::Publisher<commande_locale::msg::RobotJoints>::SharedPtr pub_robot_joints;
+    rclcpp::Publisher<robots::msg::MsgNumRobot>::SharedPtr pub_pince_fermer;
+    rclcpp::Publisher<robots::msg::MsgNumRobot>::SharedPtr pub_pince_ouvrir;
+    rclcpp::Publisher<robots::msg::MsgNumRobot>::SharedPtr pub_pince_descendre;
+    rclcpp::Publisher<robots::msg::MsgNumRobot>::SharedPtr pub_descendre;
+    rclcpp::Publisher<robots::msg::MsgNumRobot>::SharedPtr pub_monter;
+    rclcpp::Publisher<robots::msg::MoveRobot>::SharedPtr pub_controler_robot;
+    rclcpp::Publisher<robots::msg::FaireTacheMsg>::SharedPtr pub_faireTache;
+    rclcpp::Publisher<robots::msg::MsgNumRobot>::SharedPtr pub_robot_transport1;
+    rclcpp::Publisher<robots::msg::MsgNumRobot>::SharedPtr pub_robot_transport2;
+    rclcpp::Publisher<robots::msg::MsgNumRobot>::SharedPtr pub_robot_transport3;
+    rclcpp::Publisher<robots::msg::MsgNumRobot>::SharedPtr pub_robot_transport4;
+    //rclcpp::Publisher<std_msgs::msg::Byte>::SharedPtr pub_evacuer_piece;
+	rclcpp::Publisher<robots::msg::EvacuerMsg>::SharedPtr pub_evacuer_piece;
+    rclcpp::Publisher<commande_locale::msg::MsgAddProduct>::SharedPtr pubProductAdd;
+    rclcpp::Publisher<commande_locale::msg::DeplacerPieceMsg>::SharedPtr pub_deplacer_piece;
 
-	ros::Subscriber sub_retourRobot;
+    rclcpp::Subscription<robots::msg::MsgNumRobot>::SharedPtr sub_retourRobot;
 
-	ros::ServiceClient client;
-	ros::ServiceServer serverPushBack;
-	commande_locale::SrvAddProduct srv;
-	commande_locale::Msg_AddProduct msg0;
-	commande_locale::DeplacerPieceMsg deplacer_msg;
+    rclcpp::Client<commande_locale::srv::SrvAddProduct>::SharedPtr client;
+    rclcpp::Service<commande_locale::srv::SrvAddProductPushBack>::SharedPtr serverPushBack;
+	commande_locale::srv::SrvAddProduct srv;
+	commande_locale::msg::MsgAddProduct msg0;
+	commande_locale::msg::DeplacerPieceMsg deplacer_msg;
 
 	int nbRobot;
 	int robotInit[4];
@@ -82,10 +85,10 @@ private:
 
 	// std::vector<int> produit_a_ajouter; SUN todelete
 
-	robots::FaireTacheMsg tache_msg;
+	robots::msg::FaireTacheMsg tache_msg;
 
 public:
-	RobotsInterface(ros::NodeHandle noeud, int nombre_robot);
+	RobotsInterface(rclcpp::Node::SharedPtr node, int nombre_robot);
 	~RobotsInterface();
 
 	//Contrôles des robots
@@ -100,7 +103,7 @@ public:
 	void DeplacerPiece(int num_robot, int positionA, int positionB);
 
 	//Retour depuis les nodes des robots
-	void RetourRobotCallback(const robots::Msg_numrobot::ConstPtr& msg);
+	void RetourRobotCallback(const robots::msg::MsgNumRobot::SharedPtr msg);
 
 	int RobotInitialise(int numRobot); //retourne 1 si le robot numRobot est initialisé
 	int RobotEnPosition(int numRobot); //retourne 1 si le robot numRobot est en position
@@ -112,10 +115,11 @@ public:
 	int TacheFinie(int num_poste);
 	void computeFromNumPoste(int num_poste,int tab[2]);
 	int FinDeplacerPiece(int num_robot);
-	void Evacuer();
+	//void Evacuer();
+	void Evacuer(int numero_poste = 3);
 	void AjouterProduit(int poste, int produit);
 	// int AjoutProduitEnAttente(); SUN to delete
 
-	bool ProductAddPushBack(commande_locale::SrvAddProductPushBack::Request& req, commande_locale::SrvAddProductPushBack::Response& rep);
+	void ProductAddPushBack(const std::shared_ptr<commande_locale::srv::SrvAddProductPushBack::Request> request, std::shared_ptr<commande_locale::srv::SrvAddProductPushBack::Response> response);
 };
 #endif

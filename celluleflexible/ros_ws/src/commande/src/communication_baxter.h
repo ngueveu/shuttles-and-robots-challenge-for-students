@@ -2,30 +2,35 @@
 #ifndef BAXT
 #define BAXT
 
-#include <ros/ros.h>
-#include "std_msgs/Bool.h"
+#include <rclcpp/rclcpp.hpp>
+#include <std_msgs/msg/bool.hpp>
 
 class Communication_Baxter
 {
 private:
 
-	ros::Publisher pub_prise_demandee_bras_droit , pub_prise_demandee_bras_gauche ;
+    rclcpp::Publisher<std_msgs::msg::Bool>::SharedPtr pub_prise_demandee_bras_droit;
+	rclcpp::Publisher<std_msgs::msg::Bool>::SharedPtr pub_prise_demandee_bras_gauche;
 
-	ros::Subscriber sub_prise_effectuee_bras_droit , sub_prise_effectuee_bras_gauche, sub_attente_prise_bras_droit, sub_attente_prise_bras_gauche  ;
+	rclcpp::Subscription<std_msgs::msg::Bool>::SharedPtr sub_prise_effectuee_bras_droit;
+	rclcpp::Subscription<std_msgs::msg::Bool>::SharedPtr sub_prise_effectuee_bras_gauche;
+	rclcpp::Subscription<std_msgs::msg::Bool>::SharedPtr sub_attente_prise_bras_droit;
+	rclcpp::Subscription<std_msgs::msg::Bool>::SharedPtr sub_attente_prise_bras_gauche;
 
 public:
 
-	std_msgs::Bool msg_prise_demandee_bras_droit ,msg_prise_demandee_bras_gauche ;
-	std_msgs::Bool msg_prise_effectuee_bras_droit,msg_prise_effectuee_bras_gauche ;
-	std_msgs::Bool msg_attente_prise_bras_droit,msg_attente_prise_bras_gauche ;
+	std_msgs::msg::Bool msg_prise_demandee_bras_droit;
+	std_msgs::msg::Bool msg_prise_demandee_bras_gauche;
+	std_msgs::msg::Bool msg_prise_effectuee_bras_droit, msg_prise_effectuee_bras_gauche ;
+	std_msgs::msg::Bool msg_attente_prise_bras_droit, msg_attente_prise_bras_gauche ;
 
-	Communication_Baxter(ros::NodeHandle noeud);
+	Communication_Baxter(rclcpp::Node::SharedPtr node);
 	~Communication_Baxter();
 
-	void Callback_prise_effectuee_bras_droit(const std_msgs::Bool& msg);
-	void Callback_prise_effectuee_bras_gauche(const std_msgs::Bool& msg);
-	void Callback_attente_prise_bras_gauche(const std_msgs::Bool& msg);
-	void Callback_attente_prise_bras_droit(const std_msgs::Bool& msg);
+	void Callback_prise_effectuee_bras_droit(const std_msgs::msg::Bool::SharedPtr msg);
+	void Callback_prise_effectuee_bras_gauche(const std_msgs::msg::Bool::SharedPtr msg);
+	void Callback_attente_prise_bras_gauche(const std_msgs::msg::Bool::SharedPtr msg);
+	void Callback_attente_prise_bras_droit(const std_msgs::msg::Bool::SharedPtr msg);
 
 	bool Prise_effectuee_bras_droit();
 	bool Prise_effectuee_bras_gauche();

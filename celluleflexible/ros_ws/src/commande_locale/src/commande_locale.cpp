@@ -1,276 +1,220 @@
 #include <iostream>
+#include <string>
+#include <chrono>
+#include <thread>
+
+
+#include "rclcpp/rclcpp.hpp"
+#include "std_msgs/msg/byte.hpp"
+#include "std_msgs/msg/int32.hpp"
+
+#include "commande_locale/msg/msg_add_product.hpp"
+#include "commande_locale/msg/msg_choix_mode.hpp"
+#include "commande_locale/srv/srv_add_product.hpp"
+#include "commande_locale/srv/srv_fin_init.hpp"
+
 #include "vrepController.h"
 #include "inOutController.h"
-#include "commande_locale/SrvAddProduct.h"
-#include "commande_locale/Msg_AddProduct.h"
-#include "commande_locale/Msg_ChoixMode.h"
-#include "commande_locale/SrvFinInit.h"
-#include "commande_locale/SrvAddProductPushBack.h"
-#include <unistd.h>
-#include <thread>
-#include <ros/ros.h>
-#include <std_msgs/Byte.h>
 
+using namespace std::chrono_literals;
 
-using namespace std;
-
+// --- Variables globales ---
 vrepController VREPController;
-commande_locale::Msg_AddProduct msg0;
-commande_locale::Msg_ChoixMode msg1;
-bool initEnCours(true);
-bool initCoppeliaEnCours(true);
-bool autorunstop(false);//SUN
-bool petrifinished(false);//SUN
+commande_locale::msg::MsgAddProduct msg0;
+commande_locale::msg::MsgChoixMode msg1;
 
-void spinner()
+bool initEnCours = true;
+bool initCoppeliaEnCours = true;
+bool autorunstop = false;
+bool petrifinished = false;
+
+// --- Callbacks ---
+bool AddProduct(const std::shared_ptr<commande_locale::srv::SrvAddProduct::Request> req, std::shared_ptr<commande_locale::srv::SrvAddProduct::Response> res)
 {
-	ros::Rate loop_rate(25);
-	while(ros::ok())
-	{
-		ros::spinOnce();
-		loop_rate.sleep();
-	}
+    VREPController.addProduct(req->choixproduit, req->choixposte);
+    res->success = true;
+    return true;
 }
 
-bool AddProduct(commande_locale::SrvAddProduct::Request &req, commande_locale::SrvAddProduct::Response &res)
+void SpawnShuttlesCallback(const std_msgs::msg::Int32::SharedPtr msg)
 {
-	VREPController.addProduct(req.choixProduit,req.choixPoste);
-	return true;
+    for(int i = 0; i < msg->data; ++i)
+        VREPController.loadModelInit(i);
 }
 
-void SpawnShuttlesCallback(const std_msgs::Int32::ConstPtr& msg)
+void ShutdownCallback(const std_msgs::msg::Byte::SharedPtr)
 {
-    // VREPController.loadModelInit(msg->data); // SUN
-	for(int i=0; i<msg->data; i++) // i<nbShuttles
-	{
-		VREPController.loadModelInit(i);
-	}
+    rclcpp::shutdown();
 }
 
-void ShutdownCallback(const std_msgs::Byte::ConstPtr& msg)
+void FinInitCallback(const std::shared_ptr<commande_locale::srv::SrvFinInit::Request>, std::shared_ptr<commande_locale::srv::SrvFinInit::Response>)
 {
-		ros::shutdown();
+    initEnCours = false;
 }
 
-bool finInit(commande_locale::SrvFinInit::Request &req, commande_locale::SrvFinInit::Response &res)
+void CoppeliaFinInitCallback(const std_msgs::msg::Byte::SharedPtr)
 {
-	initEnCours=false;
-	return true;
+    initCoppeliaEnCours = false;
 }
 
-void CoppeliaFinInitCallback(const std_msgs::Byte::ConstPtr& msg)
+void IfPetriTermineCallback(const std_msgs::msg::Byte::SharedPtr)
 {
-	initCoppeliaEnCours=false;
+    petrifinished = true;
+    if(autorunstop)
+        std::cout << "\nPetri net finished and autorun=true. Shutdown will be launched.\n";
 }
 
-void IfPetriTermineCallback(const std_msgs::Byte::ConstPtr& msg)//SUN
+void AutoRunSimuCallback(const std_msgs::msg::Byte::SharedPtr)
 {
-	petrifinished = true;
-	if (autorunstop){
-		cout << "\n\n\n The petri net has reached its ending place and autorun is true. \n ===> shutdown will be launched. \n" << endl;
-	}
+    autorunstop = true;
+    std::cout << "\nautorunstop !!!!!!!! \n";
 }
 
-void AutoRunSimuCallback(const std_msgs::Byte::ConstPtr& msg)//SUN
+// --- Main ---
+int main(int argc, char** argv)
 {
-	autorunstop = true;
-	cout << "\n\n\n autorunstop !!!!!!!! \n" << endl;
-}
+    rclcpp::init(argc, argv);
+    auto node = std::make_shared<rclcpp::Node>("commande_locale");
+    
+    rclcpp::NodeOptions options;
+    options.use_global_arguments(false); 
+    auto vrep_node = std::make_shared<rclcpp::Node>("vrep_node", options);
 
-int main(int argc, char **argv)
-{
-	//Initialisation du noeud ROS
-	ros::init(argc, argv, "commande_locale");
-	ros::NodeHandle nh;
+    // auto vrep_node = std::make_shared<rclcpp::Node>("vrep_node"); VERSION ELVENN
 
-	ros::Publisher pubProductAdd= nh.advertise<commande_locale::Msg_AddProduct>("/commande_locale/AddProduct",10);
-	ros::Publisher pubModeType= nh.advertise<commande_locale::Msg_ChoixMode>("/commande_locale/ChoixMode",10);
-	ros::Subscriber sub_spawnShuttles = nh.subscribe("/commande_locale/nbNavettes",10,SpawnShuttlesCallback);
 
-	ros::ServiceServer service = nh.advertiseService("srv_add_product", AddProduct);
-	ros::ServiceClient clientAddProduct = nh.serviceClient<commande_locale::SrvAddProductPushBack>("srv_add_product_push_back");
-	commande_locale::SrvAddProductPushBack srv;
-	ros::Publisher pub_shutdown = nh.advertise<std_msgs::Byte>("/commande_locale/shutdown",10);
-	ros::Subscriber sub_shutdown = nh.subscribe("/commande_locale/shutdown",10,ShutdownCallback);
+    // --- Publishers ---
+    auto pubProductAdd = node->create_publisher<commande_locale::msg::MsgAddProduct>("/commande_locale/AddProduct", 10);
+    auto pubModeType   = node->create_publisher<commande_locale::msg::MsgChoixMode>("/commande_locale/ChoixMode", 10);
+    auto pub_stopSim   = node->create_publisher<std_msgs::msg::Byte>("/sim_ros_interface/StopSimulation", 100);
+    auto pub_actuator  = node->create_publisher<std_msgs::msg::Byte>("/actuator", 100);
+    auto pub_shutdown  = node->create_publisher<std_msgs::msg::Byte>("/commande_locale/shutdown", 10);
 
-	ros::ServiceServer serviceInit = nh.advertiseService("srv_fin_init", finInit);
-	ros::Subscriber sub_coppeliaFinInit = nh.subscribe("/sim_ros_interface/FinInit",10,&CoppeliaFinInitCallback);
+    // --- Subscribers ---
+    auto sub_spawnShuttles   = node->create_subscription<std_msgs::msg::Int32>("/commande_locale/nbNavettes", 10, SpawnShuttlesCallback);
+    auto sub_shutdown        = node->create_subscription<std_msgs::msg::Byte>("/commande_locale/shutdown", 10, ShutdownCallback);
+    auto sub_coppeliaFinInit = node->create_subscription<std_msgs::msg::Byte>("/sim_ros_interface/FinInit", 10, CoppeliaFinInitCallback);
+    auto sub_terminee        = node->create_subscription<std_msgs::msg::Byte>("/commande/PetriTermine", 10, IfPetriTermineCallback);
+    auto sub_autorunsimu     = node->create_subscription<std_msgs::msg::Byte>("/commande/AutoRunSimu", 10, AutoRunSimuCallback);
 
-	ros::Publisher pub_stopSim = nh.advertise<std_msgs::Byte>("/sim_ros_interface/StopSimulation",100);
+    // --- Services ---
+    auto serviceAddProduct = node->create_service<commande_locale::srv::SrvAddProduct>("srv_add_product", AddProduct);
+    auto serviceFinInit    = node->create_service<commande_locale::srv::SrvFinInit>("srv_fin_init", FinInitCallback);
 
-	ros::Publisher pub_actuator = nh.advertise<std_msgs::Byte>("/actuator",100);
+    // --- VREP Controller ---
+    std::string nombreRobotStr = (argc > 1) ? argv[1] : "4";
+    if(nombreRobotStr != "2" && nombreRobotStr != "4") nombreRobotStr = "4";
+    std::string simulationFile = "Simulation" + nombreRobotStr + "Robots";
+    VREPController.init(vrep_node, argv[0], simulationFile);
 
-	ros::Subscriber sub_terminee = nh.subscribe("/commande/PetriTermine",10,&IfPetriTermineCallback);//SUN
-	ros::Subscriber sub_autorunsimu = nh.subscribe("/commande/AutoRunSimu",10,&AutoRunSimuCallback);//SUN
+    // --- IN & OUT Controller ---
+    inOutController IOController(&VREPController);
+    IOController.init(node);
 
-	string nombreRobotStr=string(argv[1]);
-	if(nombreRobotStr!="2" && nombreRobotStr!="4")
-		nombreRobotStr="4";
+    // --- Attente du lancement de CoppeliaSim ---
+    rclcpp::Rate rate(2);
+    while(initCoppeliaEnCours && rclcpp::ok()){
+        std::cout << "Attente fin demarrage Coppelia ..." << std::endl;
+        rclcpp::spin_some(node);
+        rate.sleep();
+    }
 
-	string simulationFile="Simulation"+nombreRobotStr+"Robots";
-
-	// VREP CONTROLLER
-	VREPController.init(nh,argv[0], simulationFile.c_str());
-
-	// IN & OUT CONTROLLER
-	inOutController IOController(&VREPController);
-	IOController.init(nh);
-
-	ros::Rate loop_rate(2);
-	while(initCoppeliaEnCours && ros::ok())
-	{
-		cout << "Attente fin demarrage Coppelia ..." << endl;
-		ros::spinOnce();
-		loop_rate.sleep();
-	}
-
-	string cmd="roslaunch launcher launch_beta.launch nbRobot:=" + nombreRobotStr + " &";
+    std::string cmd="ros2 launch launcher launch_beta.launch.py nbRobot:=" + nombreRobotStr + " &";
 	system(cmd.c_str());
 
-	cout << "Pause envoyée" << endl;
-	VREPController.pause();
+    std::cout << "Pause envoyée" << std::endl;
+    VREPController.pause();
 
-	thread spinnerThread(spinner);
-	std_msgs::Byte msg_shutdown;
-	///////////////////////
+    while(initEnCours && rclcpp::ok()){
+        std::cout << "Attente fin de l'initialisation ..." << std::endl;
+        rclcpp::spin_some(node);
+        rate.sleep();
+    }
 
-	// On attend l'initialisation du reste du projet
-	while(initEnCours && ros::ok())
-	{
-		cout << "Attente fin de l'initialisation ..." << endl;
-		ros::spinOnce();
-		loop_rate.sleep();
-	}
 
-	//int choix=0;
-	string choix;
-	int choixProduit=0;
-	int choixPoste=0;
-	int choixMode=0;
+// --- Boucle principale utilisateur ou autorun ---
+    if(!autorunstop){
+        
+        // --- NOUVEAUTÉ : ON LANCE LE MENU DANS UN THREAD SÉPARÉ ---
+        std::thread menu_thread([&]() {
+            while(rclcpp::ok()){
+                std::string choix;
+                std::cout << "\nQue voulez faire ?\n1- Ajouter un produit\n2- Pause simu\n3- Play simu\n4- Fin programme\n5- Simu ou Atelier ?\nChoix : ";
+                std::cin >> choix;
 
-	if (!autorunstop) //SUN
-		{
-		while(ros::ok())
-			{
-			cout << endl << endl << endl;
-			cout << "Que voulez faire ?" 	<< endl <<
-				"	1- Ajouter un produit" << endl <<
-				"	2- Pause simu" 	<< endl <<
-				"	3- Play simu" 	<< endl<<
-				"	4- Fin programme" 	<< endl <<
-				"	5- Simu ou Atelier ?"	<< endl;
-			cout << "Choix : ";
-			cin >> choix;
-			if(choix=="hhbbgd")
-			{
-				cout << endl << "> The white rabbit tells you a long story about three men :";
-				cout << endl << ">  Kagemasa Kozuki, Yoshinobu Nakama and Tatsuo Miyasako ..." << endl;
-			}
-			else if(choix=="hhbbgdgdba")
-			{
-				cout << endl << "> Niiice ..." << endl;
-				pub_actuator.publish(std_msgs::Byte());
-			}
-			else if(choix.length()>1 || choix[0]<'1' || choix[0]>'9')
-			{
-				cout << endl << " [Erreur mauvais choix ..]" << endl;
-				cin.clear();
-				cin.ignore(256,'\n');
-			}
-			else
-			{
-				cout << endl;
-				int choixInt=atoi(choix.c_str());
-				switch(choixInt)
-				{
-					case 1:
-						cout << "Ajout de produit : quel poste ? [1..8]" << endl;
-						cin >> choixPoste;
-						if(cin.fail() || choixPoste<1 || choixPoste>8)
-						{
-							cout << endl << " [Erreur mauvais choix ..]" << endl;
-							cin.clear();
-							cin.ignore(256,'\n');
-							break;
-						}
-						cout << "Quel produit ? [1..6]" << endl;
-						cin >> choixProduit;
-						if(cin.fail() || choixProduit<1 || choixProduit>6)
-						{
-							cout << endl << " [Erreur mauvais choix ..]" << endl;
-							cin.clear();
-							cin.ignore(256,'\n');
-							break;
-						}
-						msg0.num_poste = choixPoste;
-						msg0.num_produit = choixProduit*10+4;
-						pubProductAdd.publish(msg0); // log
-						VREPController.addProduct(choixProduit,choixPoste);
-						srv.request.poste=choixPoste;
-						srv.request.produit=choixProduit;
-						clientAddProduct.call(srv);
-						break;
+                if(choix.length() != 1 || choix[0]<'1' || choix[0]>'9'){
+                    std::cout << "[Erreur mauvais choix]" << std::endl;
+                    std::cin.clear(); std::cin.ignore(256,'\n');
+                    continue;
+                }
 
-					case 2:
-						cout << "Mise en Pause de la simu" << endl;
-						VREPController.pause();
-						break;
+                int choixInt = std::stoi(choix);
+                switch(choixInt){
+                    case 1:
+                    {
+                        int choixPoste, choixProduit;
+                        std::cout << "Quel poste ? [1..8] "; std::cin >> choixPoste;
+                        std::cout << "Quel produit ? [1..6] "; std::cin >> choixProduit;
+                        if(choixPoste<1 || choixPoste>8 || choixProduit<1 || choixProduit>6){
+                            std::cout << "[Erreur mauvais choix]" << std::endl;
+                            std::cin.clear(); std::cin.ignore(256,'\n');
+                            break;
+                        }
+                        msg0.num_poste = choixPoste;
+                        msg0.num_produit = choixProduit*10+4;
+                        pubProductAdd->publish(msg0);
+                        VREPController.addProduct(choixProduit, choixPoste);
+                        break;
+                    }
+                    case 2: VREPController.pause(); break;
+                    case 3: VREPController.play(); break;
+                    case 4:
+                        pub_stopSim->publish(std_msgs::msg::Byte());
+                        pub_shutdown->publish(std_msgs::msg::Byte());
+                        //rclcpp::sleep_for(1s);
+                        rclcpp::shutdown();
+                        break;
+                    case 5:
+                    {
+                        int choixMode;
+                        std::cout << "Mode : Simu (0) ou Atelier (1)? "; std::cin >> choixMode;
+                        msg1.mode = choixMode;
+                        pubModeType->publish(msg1);
+                        break;
+                    }
+                    default: std::cout << "[Erreur mauvais choix]" << std::endl; break;
+                }
+            }
+        });
+        menu_thread.detach(); // On détache le menu pour qu'il vive sa vie en arrière-plan
+        // ----------------------------------------------------------
 
-					case 3:
-						cout << "Mise en Play de la simu" << endl;
-						VREPController.play();
-						break;
+        // --- LA BOUCLE PRINCIPALE (Capteurs) N'EST PLUS BLOQUÉE ! ---
+        rclcpp::Rate rate_spin(25); // On force une lecture à 25 Hz
+        while(rclcpp::ok()) {
+            rclcpp::spin_some(node); // On avale tous les capteurs en continu
+            rate_spin.sleep();
+        }
+    } else {
+        bool beg = true;
+        while(rclcpp::ok()){
+            if(beg){
+                std::cout << "Lancement automatique de la simulation" << std::endl;
+                VREPController.play();
+                beg = false;
+            }
+            if(petrifinished){
+                std::cout << "Fin Programme" << std::endl;
+                pub_stopSim->publish(std_msgs::msg::Byte());
+                pub_shutdown->publish(std_msgs::msg::Byte());
+                //rclcpp::sleep_for(1s);
+                rclcpp::shutdown();
+                break;
+            }
+            rclcpp::spin_some(node);
+        }
+    }
 
-					case 4:
-						cout << "Fin Programme" << endl;
-						pub_stopSim.publish(std_msgs::Byte());
-						pub_shutdown.publish(msg_shutdown);
-						ros::Duration(1).sleep();
-						break;
-					case 5:
-						cout << "Mode : Simu (0) ou Atelier (1)?"<<endl;
-						cin >> choixMode;
-						if(cin.fail() || choixMode<0 || choixMode>1)
-						{
-							cout << endl << " [Erreur mauvais choix ..]" << endl;
-							cin.clear();
-							cin.ignore(256,'\n');
-							break;
-						}
-						msg1.mode = choixMode;
-						pubModeType.publish(msg1);
-						break;
-					default:
-						cout << endl << " [Erreur mauvais choix ..]" << endl;
-						break;
-				}
-			}
-
-			ros::spinOnce();
-		}
-	}
-	else{ //SUN
-		bool beg=true;
-		while(ros::ok())
-		{
-			if (beg) {
-				cout << endl << endl << endl;
-				cout << "Lancement automatique de la simulation" 	<< endl;
-									VREPController.play();
-									beg=false;
-			}
-			if (petrifinished){
-				cout << "Fin Programme" << endl;
-				ros::Duration(1).sleep();
-				pub_stopSim.publish(std_msgs::Byte());
-				pub_shutdown.publish(msg_shutdown);
-				ros::Duration(1).sleep();
-			}
-			ros::spinOnce();
-		}
-
-}
-
-	VREPController.close();
-	return 0;
+    VREPController.close();
+    return 0;
 }

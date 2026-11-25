@@ -2,27 +2,30 @@
 #ifndef ACT
 #define ACT
 
-#include <commande_locale/Msg_StopControl.h>
-#include "commande_locale/Msg_SwitchControl.h"
-#include "commande_locale/Msg_PinControl.h"
-#include "commande_locale/Actionneurs.h"
-#include <ros/ros.h>
+#include <commande_locale/msg/msg_stop_control.hpp>
+#include "commande_locale/msg/msg_switch_control.hpp"
+#include "commande_locale/msg/msg_pin_control.hpp"
+#include "commande_locale/msg/actionneurs.hpp"
+#include <rclcpp/rclcpp.hpp>
 
 
 class Actionneurs
 {
 private:
 
-	ros::Publisher pub_actionneurs_ligne,pub_actionneurs_simu_aguillages,pub_actionneurs_simu_stops,pub_actionneurs_simu_pins;
+    rclcpp::Publisher<commande_locale::msg::Actionneurs>::SharedPtr pub_actionneurs_ligne;
+    rclcpp::Publisher<commande_locale::msg::MsgSwitchControl>::SharedPtr pub_actionneurs_simu_aguillages;
+    rclcpp::Publisher<commande_locale::msg::MsgStopControl>::SharedPtr pub_actionneurs_simu_stops;
+    rclcpp::Publisher<commande_locale::msg::MsgPinControl>::SharedPtr pub_actionneurs_simu_pins;
 
 public:
 	
 	long int Actionneurs_ligne;
-	commande_locale::Msg_StopControl actionneurs_simulation_Stop;
-	commande_locale::Msg_SwitchControl actionneurs_simulation_Aguillages;
-	commande_locale::Msg_PinControl actionneurs_simulation_Pin;
+	commande_locale::msg::MsgStopControl actionneurs_simulation_Stop;
+	commande_locale::msg::MsgSwitchControl actionneurs_simulation_Aguillages;
+	commande_locale::msg::MsgPinControl actionneurs_simulation_Pin;
 
-	Actionneurs(ros::NodeHandle noeud);
+	Actionneurs(rclcpp::Node::SharedPtr node);
 	~Actionneurs();
 
 	void Envoyer(bool STx[],bool RxD[],bool RxG[],bool Vx[],bool Dx[],bool PIx[]);
@@ -39,6 +42,7 @@ public:
 
 };
 
+// Fonction globale
 void WRITE(long int *registre,bool donnee,int numero_bit);
 
 #endif

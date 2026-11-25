@@ -63,7 +63,7 @@ erreur_config = 0  # Dit si il y a une erreur de déclaration dans le fichier .c
 # --------------- 1 - LIRE LE CONFIG ---------------
 
 def checkProductConfigKeys(ProductConfig):
-    if set(ProductConfig.keys()) != set(["Prod_qte", "Prod_type", "Prod_seqdeposte", "Prod_dureeparposte"]):
+    if set(ProductConfig.keys()) != set(["Prod_qte", "Prod_type", "Prod_seqdeposte", "Prod_dureeparposte", "Postes_evacuation"]):
         print(ProductConfig.keys())
         print("The set of dictionary keys [",ProductConfig.keys(), "] differs from the set([Prod_qte, Prod_type, Prod_seqdeposte, Prod_dureeparposte])")
         return -1
@@ -219,6 +219,12 @@ try:
         #if count <=0:
             #print("empty line ? ", splitted[i])
     print(ProductConfig)
+
+    # Recuperation des postes autorises pour l'evacuation (compatibilite si absent)
+    if "Postes_evacuation" in ProductConfig:
+        postes_autorises = ProductConfig["Postes_evacuation"]
+    else:
+        postes_autorises = []
 
     #createalllines (Prod_qte, Prod_type, Prod_seqdeposte, Prod_dureeparposte)
     erreur_config = checkProductConfigKeys(ProductConfig)
@@ -448,12 +454,12 @@ try:
 
 
             if ID == "Sortie":  # identification de la ligne de Log
-                P_list = list(info[1])
+                poste_evac = int(info[1])   # le poste d'evacuation est en 1ere position
+                P_list = list(info[2])      # le produit est en info[2]
                 taille_info = len(info)
-                for i in range(taille_info - 3):
-                    # D_list.append(info[2+i]) #SUN
-                    if info[2 + i] != '0':  # SUN
-                        D_list.append(info[2 + i])
+                for i in range(taille_info - 4):
+                    if info[3 + i] != '0':         # les taches commencent en info[3]
+                        D_list.append(info[3 + i])
                 time = float(info[taille_info - 1].strip('\n'))
                 P = int(P_list[0])
                 if P != 0:
@@ -463,25 +469,29 @@ try:
                     D[i][0] = int(D_list[i][0])
                     if D[i][0] != 0:
                         D[i][1] = int(D_list[i][1])
-                if P != 0:  # Donc si la sortie n'est pas vide, qu'il y a bien un produit qui est evacuer
+                if P != 0:  # Donc si la sortie n'est pas vide, qu'il y a bien un produit qui est evacue
+                    # Verification du poste d'evacuation autorise
+                    if poste_evac not in postes_autorises:
+                        test = 0
+                        print("ERREUR: evacuation par le poste {} qui n'est pas autorise (postes autorises : {})".format(poste_evac, postes_autorises))
                     produit_final = [P]
                     for i in range(MAX_TACHES):
                         produit_final.append(D[i][0])
                     # produit_final = [P, D1, D2, D3] # on ecrasera cette ligne du tableau apres le test
                     nb_produit_log[P - 1] = nb_produit_log[P - 1] + 1
                     # durée de vie du produit
-                    k = 0  # variable qui compte à quelle ligne dans produit_entree se trouve le plus ancien produit apparu
-                    while (
-                    1):  # On considère que c'est impossible d'avoir dans le log plus de "Sortie" que de "NouveauProduit". Il n'est donc pas nécessaire d'afficher une erreur sur ça car quoique fasse l'étudiant il y aura forcément plus ou le même nombre de NouveauProduit que de Sortie
-                        if produit_entree[k][
-                            0] == P:  # lorsqu'on a trouver la ligne où se trouve le plus ancien produit apparu
-                            produit_duree[P - 1] = produit_duree[P - 1] + (
-                                        time - produit_entree[k][1])  # Somme du temps de présence du produit P
-                            produit_entree[k][
-                                0] = 0.0  # Comme le produit est sortie on initialise sa ligne dans produit_entree à 0 comme ça elle ne pourra plus servir à calculer produit_duree
+                    k = 0  
+                    while k < len(produit_entree):  
+                        if produit_entree[k][0] == P:  
+                            produit_duree[P - 1] = produit_duree[P - 1] + (time - produit_entree[k][1])  
+                            produit_entree[k][0] = 0.0  
                             break
                         else:
                             k = k + 1
+                            
+                    if k >= len(produit_entree):
+                        print("ERREUR GRAVE : Sortie du produit {} détectée, mais il n'a jamais été créé (ou a déjà été évacué) !".format(P))
+                        test = 0
 
                     # Verif sortie
                     nbprodexit[P] = nbprodexit[P] + 1
@@ -537,7 +547,7 @@ try:
 
                 elif nb_produit[P - 1] == 0:  # Donc si P = 0 et qu'aucun produit est sorti
                     print(
-                        'ERREUR: il y a une évacuation vide au poste 3')  # Car ce n'est qu'au poste 3 qu'on peut évacuer les produits finis
+                        'ERREUR: il y a une évacuation vide au poste {}'.format(poste_evac))
                     test = 0
 
         # REMPLIR TABLEAU temps_log

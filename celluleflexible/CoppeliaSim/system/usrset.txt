@@ -181,7 +181,7 @@ macChildDialogType = -1 // -1=default.
 additionalLuaPath =  // e.g. d:/myLuaRoutines
 additionalPythonPath =  // e.g. d:/myPythonRoutines
 defaultPython =  // e.g. c:/Python38/python.exe
-executeUnsafe = false // recommended to keep false.
+executeUnsafe = true // recommended to keep false.
 desktopRecordingIndex = 0
 desktopRecordingWidth = -1 // -1=default.
 externalScriptEditor = 
