@@ -301,7 +301,7 @@ int main(int argc, char **argv)
                 M[7]--;
 
 
-                robot.Evacuer(3);
+                robot.Evacuer(POSTE_3);
                 M[8]++;
                 display();
             }
