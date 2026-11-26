@@ -60,13 +60,15 @@ Nous avons plusieurs moyens de lancer la simulation. Cependant, le moyen le plus
   ```bash
      ./script1_Run.sh
    ```
-* Pour récupérer les logs après la fin de la simulation, valider son bon déroulement et générer la documentation associée au fichier de commande.
+* Pour récupérer les logs après la fin de la simulation et valider son bon déroulement
   ```bash
      ./script2_GetSimuOutput.sh Tuto_Basique dataP2_1_1_n0
      ./script3_Validation.sh Tuto_Basique dataP2_1_1_n0
+   ```
+* Pour générer la documentation associée au fichier de commande.
+  ```bash
      ./script4_Documentation.sh Tuto_Basique
    ```
-
    
    
 ## 2) Partie développement
