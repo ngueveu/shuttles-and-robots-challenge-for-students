@@ -16,7 +16,7 @@ sudo apt update
 ### 1.2) Récupération du dossier GitHub sur votre espace de travail :
 Pour cela, exécutez dans votre espace de travail :
 ```bash
-git clone https://github.com/aip-primeca-occitanie/cellule_flexible_coppelia-2025-2026
+git clone https://github.com/ngueveu/shuttles-and-robots-challenge-for-students.git
 ```
 
 ### 1.3) Installation de ROS2 Jazzy
@@ -73,7 +73,7 @@ Il peut être bon d'installer en plus sur les PC Vs Code, pour visualiser propre
 # 2) Compilation de l'espace de travail (Workspace) et de CoppeliaSim :
 
 ### 2.1) Compilation globale de ros_ws
-Avant de compiler l'interface du simulateur, il est nécessaire de compiler l'intégralité des packages ROS 2 de notre projet. Ouvrez un nouveau terminal puis déplacez vous ici : `cellule_flexible_coppelia-2025-2026/celluleflexible/ros_ws`, exécutez alors:
+Avant de compiler l'interface du simulateur, il est nécessaire de compiler l'intégralité des packages ROS 2 de notre projet. Ouvrez un nouveau terminal puis déplacez vous ici : `shuttles-and-robots-challenge-for-students/celluleflexible/ros_ws`, exécutez alors:
 ```bash
 source /opt/ros/jazzy/setup.bash
 colcon build --symlink-install
