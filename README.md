@@ -34,9 +34,9 @@ L'évacuation du produit se fait lorsque toutes ses tâches sont terminées.
 Nous rappelons les règles à respecter : 
 * Le type du produit doit être compris entre 1 et 6
 * Le nombre de tâches à faire par produit doit être compris entre 1 et 5
-* L'évacuation se fait impérativement par le poste 3
 * Un poste ne peut faire qu'une seule tâche d'un seul produit en même temps
-* Interdiction de circuler sur les voies près des postes si ce n'est pour y amener/récupérer un produit
+* L'évacuation du produit doit s'effectuer exclusivement par l'un des postes de sortie désignés
+* Interdiction de circuler ou de stationner sur les voies près des postes si ce n'est pour y amener/récupérer un produit
 
 Le schéma suivant permet de repérer les aiguillages, les capteurs, les postes et les robots:
 ![Image_Capteurs_et_Actionneurs](celluleflexible/Doc/CelluleSchema.png)
